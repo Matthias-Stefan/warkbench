@@ -61,7 +61,7 @@ public class ContextMenuConverter : IMultiValueConverter
                 });
                 break;
 
-            case PackageBlueprintViewModel packageBlueprintViewModel:
+            case BlueprintViewModel packageBlueprintViewModel:
                 contextMenu.Items.Add(new MenuItem
                 {
                     Header = "Remove",

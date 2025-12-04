@@ -100,6 +100,39 @@
                                       Data="{StaticResource icon_class}" />
                         </MenuItem.Icon>
                     </MenuItem>
+                    
+                    <!--  Texture  -->
+                    <MenuItem Header="Add Texture">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="MediumSlateBlue"
+                                      Data="{StaticResource icon_texture}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <!--  Rect  -->
+                    <MenuItem Header="Add Rectangle">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="SeaGreen"
+                                      Data="{StaticResource icon_rectangle}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <!--  Vec2  -->
+                    <MenuItem Header="Add 2D-Vector">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="SlateGray"
+                                      Data="{StaticResource icon_vec}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <!--  Bool  -->
+                    <MenuItem Header="Add Bool">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="Violet"
+                                      Data="{StaticResource icon_toggle_off}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
                 </ContextMenu>
             </nodify:NodifyEditor.ContextMenu>
             

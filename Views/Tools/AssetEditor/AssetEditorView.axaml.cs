@@ -73,7 +73,7 @@ public partial class AssetEditorView : UserControl
         }
 
         var tag = mi.Tag;
-        if (tag is not PackageBlueprintViewModel packageBlueprintViewModel)
+        if (tag is not BlueprintViewModel packageBlueprintViewModel)
         {
             return;    
         }

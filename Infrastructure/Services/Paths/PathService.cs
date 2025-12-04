@@ -13,6 +13,7 @@ public class PathService
     public PathService()
     {
         var exePath = AppContext.BaseDirectory;
-        BasePath = UnixPath.GetFullPath(UnixPath.Combine(exePath, "../../../../../"));
+        // TODO: config
+        BasePath = UnixPath.GetFullPath(UnixPath.Combine(exePath, "../../../../warpunk.emberfall/"));
     }
 }

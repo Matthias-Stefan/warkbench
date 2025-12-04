@@ -17,7 +17,7 @@ public class ResourceIconConverter : IValueConverter
             PackageViewModel => "icon_package",
             
             RootPackageBlueprintViewModel => "icon_blueprint",
-            PackageBlueprintViewModel => "icon_blueprint_package",
+            BlueprintViewModel => "icon_blueprint_package",
             
             RootPropertiesViewModel => "icon_precision_manufacturing",
             

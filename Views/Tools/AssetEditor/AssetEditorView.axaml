@@ -42,7 +42,7 @@
             <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                 <!--  General  -->
                 <Menu>
-                    <!--  Packages  -->
+                    <!--  Assets  -->
                     <MenuItem Header="Package">
                         
                         <!--  Add Package  -->
@@ -68,9 +68,9 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         
-                        <!--  Add Package Blueprint  -->
+                        <!--  Add Blueprint  -->
                         <MenuItem Header="Add Blueprint"
-                                  Command="{Binding AddPackageBlueprint}">
+                                  Command="{Binding AddBlueprint}">
                             <MenuItem.Icon>
                                 <PathIcon Width="16"
                                           Height="16"
@@ -78,6 +78,22 @@
                                           Data="{StaticResource icon_blueprint_package}" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        
+                        <!--  Add Property  -->
+                        <MenuItem Header="Add Property"
+                                  Command="{Binding AddProperty}">
+                            <MenuItem.Icon>
+                                <PathIcon Width="16"
+                                          Height="16"
+                                          Foreground="Crimson"
+                                          Data="{StaticResource icon_precision_manufacturing}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        
+                        
+                        
+                        
+                        
                     </MenuItem>
                </Menu>
 

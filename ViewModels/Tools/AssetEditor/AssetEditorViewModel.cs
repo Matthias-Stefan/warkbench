@@ -52,7 +52,7 @@ public partial class AssetEditorViewModel : Tool
 
         foreach (var packageBlueprint in project.PackageBlueprints)
         {
-            AddPackageBlueprintNode(new PackageBlueprintViewModel(packageBlueprint));
+            AddBlueprintNode(new BlueprintViewModel(packageBlueprint));
         }
         
         foreach (var package in project.Packages)
@@ -91,7 +91,7 @@ public partial class AssetEditorViewModel : Tool
 
         var graphModel = Blueprints.Children
             .Select(t => t.Data)
-            .OfType<PackageBlueprintViewModel>()
+            .OfType<BlueprintViewModel>()
             .Where(pbvm => pbvm.Model.Guid == vm.Model.BlueprintGuid)
             .Select(pbvm => pbvm.Model)
             .FirstOrDefault();
@@ -136,9 +136,9 @@ public partial class AssetEditorViewModel : Tool
         OnPropertyChanged(nameof(Assets));
     }
 
-    public void AddPackageBlueprint()
+    public void AddBlueprint()
     {
-        AddPackageBlueprint(new GraphModel
+        AddBlueprint(new GraphModel
             {
                 Guid = System.Guid.NewGuid(),
                 Name = string.Empty
@@ -146,12 +146,12 @@ public partial class AssetEditorViewModel : Tool
         );
     }
 
-    public void AddPackageBlueprint(GraphModel model)
+    public void AddBlueprint(GraphModel model)
     {
-        AddPackageBlueprint(new PackageBlueprintViewModel(model));
+        AddBlueprint(new BlueprintViewModel(model));
     }
 
-    public void AddPackageBlueprint(PackageBlueprintViewModel vm)
+    public void AddBlueprint(BlueprintViewModel vm)
     {
         if (_projectManager.CurrentProject is null)
         {
@@ -159,19 +159,19 @@ public partial class AssetEditorViewModel : Tool
         }
 
         _projectManager.CurrentProject.PackageBlueprints.Add(vm.Model);
-        AddPackageBlueprintNode(vm);
+        AddBlueprintNode(vm);
     }
 
-    public void AddPackageBlueprintNode(PackageBlueprintViewModel vm)
+    public void AddBlueprintNode(BlueprintViewModel vm)
     {
         Blueprints.AddChild(new TreeNodeViewModel(vm));
         OnPropertyChanged(nameof(Assets));
     }
 
     [RelayCommand]
-    private void OnRemovePackageBlueprint(PackageBlueprintViewModel vm) => RemovePackageBlueprint(vm);
+    private void OnRemovePackageBlueprint(BlueprintViewModel vm) => RemovePackageBlueprint(vm);
 
-    public void RemovePackageBlueprint(PackageBlueprintViewModel packageBlueprintViewModel)
+    public void RemovePackageBlueprint(BlueprintViewModel packageBlueprintViewModel)
     {
         if (_projectManager.CurrentProject is null)
         {
@@ -215,6 +215,11 @@ public partial class AssetEditorViewModel : Tool
         packageNode.AddChild(new TreeNodeViewModel(item));
         
         OnPropertyChanged(nameof(Assets));
+    }
+
+    public void AddProperty()
+    {
+        
     }
 
     private AssetEditorModel Model { get; }

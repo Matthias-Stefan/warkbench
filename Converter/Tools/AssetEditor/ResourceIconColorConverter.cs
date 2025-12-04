@@ -13,8 +13,8 @@ public class ResourceIconColorConverter : IValueConverter
         return value switch
         {
             RootPackageViewModel or PackageViewModel => new SolidColorBrush(Colors.LightGreen),
-            RootPackageBlueprintViewModel or PackageBlueprintViewModel => new SolidColorBrush(Color.FromRgb(30, 144, 255)),
-            RootPropertiesViewModel => new SolidColorBrush(Colors.Violet),
+            RootPackageBlueprintViewModel or BlueprintViewModel => new SolidColorBrush(Color.FromRgb(30, 144, 255)),
+            RootPropertiesViewModel => new SolidColorBrush(Colors.Crimson),
             
             PackageItemViewModel => new SolidColorBrush(Colors.LightSalmon),
             _ => new SolidColorBrush(Colors.White)

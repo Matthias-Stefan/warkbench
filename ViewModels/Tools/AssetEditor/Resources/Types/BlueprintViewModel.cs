@@ -5,9 +5,9 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public sealed class PackageBlueprintViewModel : BasePackageViewModel, IGraphContainer, IBlueprint
+public sealed class BlueprintViewModel : BasePackageViewModel, IGraphContainer, IBlueprint
 {
-    public PackageBlueprintViewModel(GraphModel model)
+    public BlueprintViewModel(GraphModel model)
     {
         Model = model;
         SetName(model.Name);

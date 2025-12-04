@@ -25,7 +25,7 @@
         </DataTemplate>
         
         <!--  Package Blueprint  -->
-        <DataTemplate DataType="vm:PackageBlueprintViewModel">
+        <DataTemplate DataType="vm:BlueprintViewModel">
             <Grid>
                 <views:PackageBlueprintView />
             </Grid>
