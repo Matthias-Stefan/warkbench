@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" xmlns:bx="https://boxy-svg.com">
+  <text style="fill: rgb(0, 0, 0); font-family: &quot;Bakbak One&quot;; font-size: 106.9px; font-weight: 700; white-space: pre;" transform="matrix(2.083565, 0, 0, 2.192112, -2226.049805, 418.05191)" y="-277.87" x="1195.42">HPP</text>
+  <defs>
+    <style bx:fonts="Bakbak One">@import url(https://fonts.googleapis.com/css2?family=Bakbak+One%3Aital%2Cwght%400%2C400&amp;display=swap);</style>
+  </defs>
+  <path d="M 240.01 -80 C 218.01 -80 199.17 -87.9 183.51 -103.5 C 167.83 -119.2 160 -138 160 -160 L 160 -800 C 160 -822 167.83 -840.9 183.51 -856.5 C 199.17 -872.2 218.01 -880 240.01 -880 L 560.01 -880 L 800 -640 L 800 -160 C 800 -138 792.16 -119.2 776.5 -103.5 C 760.83 -87.9 742 -80 720 -80 L 240.01 -80 Z M 520.01 -600 L 520.01 -800 L 240.01 -800 L 240.01 -160 L 720 -160 L 720 -600 L 520.01 -600 Z M 240.01 -800 L 240.01 -600 L 240.01 -800 L 240.01 -160 L 240.01 -800 Z" style="fill: rgb(0, 0, 0); stroke-width: 1;"/>
+</svg>

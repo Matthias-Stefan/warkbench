@@ -1,0 +1,70 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Standard -->
+    <Style Selector="Expander">
+        <Setter Property="Background" Value="#191a1c" />
+        <Setter Property="Margin" Value="0,-15,0,0" />
+        
+        <Style Selector="^ /template/ ToggleButton:not(:pointerover):not(:checked) /template/ Border#ToggleButtonBackground">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,-15" />
+            <Setter Property="Background" Value="#26282b"/>
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:pointerover:not(:checked) /template/ Border#ToggleButtonBackground">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,-15" />
+            <Setter Property="Background" Value="#26282b"/>
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:checked /template/ Border#ToggleButtonBackground">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,-15" />
+            <Setter Property="Background" Value="#26282b"/>
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:pointerover:checked /template/ Border#ToggleButtonBackground">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Margin" Value="0,0,0,-15" />
+            <Setter Property="Background" Value="#26282b"/>
+        </Style>
+    </Style>
+
+    <!-- Grid -->
+    <Style Selector=":is(Expander).grid">
+        <Setter Property="Background" Value="#1e1f22" />
+    </Style>
+
+    <!-- Gridsub -->
+    <Style Selector=":is(Expander).gridsub">
+        <Setter Property="Background" Value="#191a1c" />
+        <Setter Property="BorderBrush" Value="#191a1c" />
+        <Setter Property="BorderThickness" Value="2" />
+        
+        <Style Selector="^ /template/ ToggleButton:not(:pointerover):not(:checked) /template/ Border#ToggleButtonBackground">
+            <Setter Property="Background" Value="#191a1c"/>
+            <Setter Property="BorderBrush" Value="#191a1c"/>
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:pointerover:not(:checked) /template/ Border#ToggleButtonBackground">
+            <Setter Property="Background" Value="#191a1c"/>
+            <Setter Property="BorderBrush" Value="#191a1c"/>
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:checked /template/ Border#ToggleButtonBackground">
+            <Setter Property="Background" Value="#26282b"/>
+            <Setter Property="BorderBrush" Value="#26282b"/>
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+
+        <Style Selector="^ /template/ ToggleButton:pointerover:checked /template/ Border#ToggleButtonBackground">
+            <Setter Property="Background" Value="#26282b"/>
+            <Setter Property="BorderBrush" Value="#26282b"/>
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+    </Style>
+</Styles>
+

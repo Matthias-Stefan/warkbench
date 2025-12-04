@@ -1,0 +1,96 @@
+﻿using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using warkbench.Models;
+
+
+namespace warkbench.ViewModels;
+public abstract partial class NodeViewModel : ObservableObject
+{
+    protected NodeViewModel(NodeModel model)
+    {
+        _model = model;
+    }
+
+    public abstract void HandleConnected(object? sender, ConnectionChangedEventArgs? args);
+    public abstract void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args);
+    
+    [ObservableProperty] 
+    private NodeModel _model;
+
+    public string Title => Model.Title;
+
+    public string Name
+    {
+        get => Model.Name;
+        set
+        {
+            if (Model.Name == value)
+            {
+                return;
+            }
+
+            Model.Name = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public string Description
+    {
+        get => Model.Description;
+        set
+        {
+            if (Model.Description == value)
+            {
+                return;
+            }
+
+            Model.Description = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public Avalonia.Point Location
+    {
+        get => Model.Location;
+        set
+        {
+            if (Model.Location == value)
+            {
+                return;
+            }
+
+            Model.Location = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public bool IsBlueprint
+    {
+        get => Model.IsBlueprint;
+        set
+        {
+            if (Model.IsBlueprint == value)
+            {
+                return;
+            }
+
+            Model.IsBlueprint = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    [ObservableProperty] 
+    private SolidColorBrush _borderColor = new SolidColorBrush(Colors.Gray);
+    
+    [ObservableProperty] 
+    private SolidColorBrush _selectedColor = new SolidColorBrush(Colors.White);
+    
+
+    public bool IsContentVisible
+    {
+        get => !IsBlueprint && _isContentVisible;
+        set => SetProperty(ref _isContentVisible, value);
+    }
+
+    private bool _isContentVisible = true;
+}

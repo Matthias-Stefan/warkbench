@@ -1,0 +1,165 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageIcon></PackageIcon>
+    <ApplicationIcon>Assets\Icons\App\warkbench.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Bold.ttf" />
+    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-BoldItalic.ttf" />
+    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Italic.ttf" />
+    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="Assets\IconResources.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Icons\App\warkbench.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Skia" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Dock.Avalonia" Version="11.3.8" />
+    <PackageReference Include="Dock.Avalonia.Themes.Fluent" Version="11.3.8" />
+    <PackageReference Include="Dock.Model.Mvvm" Version="11.3.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NodifyAvalonia" Version="6.5.0" />
+    <PackageReference Include="SkiaSharp" Version="3.119.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
+    <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Tools\ContentBrowser\ContentBrowserView.axaml.cs">
+      <DependentUpon>ContentBrowserView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tools\PackageEditor\Content\Types\WgeometryView.axaml.cs">
+      <DependentUpon>WgeometryView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tools\PackageEditor\Content\Types\WpackageView.axaml.cs">
+      <DependentUpon>WpackageView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tools\NodeEditor\NodeEditorView.axaml.cs">
+      <DependentUpon>DetailsView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\DetailsView.axaml.cs">
+      <DependentUpon>NodeEditorView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tools\AssetEditor\Resources\Types\Package\PackageToolbarView.axaml.cs">
+      <DependentUpon>PackageToolbarView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\NodeEditor\Resources\Graph\Node\Types\IntNodeView.axaml.cs">
+      <DependentUpon>PackageView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PackageBlueprintView.axaml.cs">
+      <DependentUpon>BasePackageView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\ClassNodeView.axaml.cs">
+      <DependentUpon>ClassNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\FloatNodeView.axaml.cs">
+      <DependentUpon>FloatNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\StringNodeView.axaml.cs">
+      <DependentUpon>StringNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PackageView.axaml.cs">
+      <DependentUpon>PackageView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Update="Assets\Icons\IconResources.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\Icons\App\warkbench.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\tiny_obj_loader.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>tiny_obj_loader.dll</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\tiny_obj_loader.pdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>tiny_obj_loader.pdb</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\tiny_obj_loader.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>tiny_obj_loader.so</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\stb_image.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>stb_image.dll</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\stb_image.pdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>stb_image.pdb</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="3rdParty\stb_image.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>stb_image.so</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Tools\Details\Resources\NodeEditor\" />
+  </ItemGroup>
+</Project>

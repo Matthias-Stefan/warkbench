@@ -1,0 +1,201 @@
+<UserControl x:Class="warkbench.Views.NodeEditorView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converter="using:warkbench.Converter"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dataTemplates="using:warkbench.DataTemplates"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:toolkit="clr-namespace:CommunityToolkit.Mvvm.ComponentModel;assembly=CommunityToolkit.Mvvm"
+             xmlns:views="using:warkbench.Views"
+             xmlns:vm="using:warkbench.ViewModels"
+             xmlns:nodify="https://miroiu.github.io/nodify"
+             x:Name="Root"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             Background="{DynamicResource NodifyEditor.BackgroundBrush}"
+             x:CompileBindings="False"
+             x:DataType="vm:NodeEditorViewModel"
+            mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/ClassNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/FloatNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/IntNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/StringNodeDataTemplate.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <!--  ==============================  -->
+    
+    <Grid RowDefinitions="Auto,*,Auto" Background="#191a1c" IsEnabled="{Binding IsEnabled}">
+        <Grid.Resources>
+            <VisualBrush x:Key="GridDrawingBrush"
+                         TileMode="Tile"
+                         DestinationRect="0 0 30 30"
+                         SourceRect="0 0 30 30"
+                         Transform="{Binding ViewportTransform, ElementName=Editor}">
+                <VisualBrush.Visual>
+                    <Rectangle Width="1"
+                               Height="1"
+                               Fill="White" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Grid.Resources>
+        
+        <!--  NodifyEditor  -->
+        <nodify:NodifyEditor x:Name="Editor" 
+                             Grid.Row="0" 
+                             Grid.RowSpan="3"
+                             ItemsSource="{Binding Nodes}"
+                             SelectedItem="{Binding SelectedNode}"
+                             Connections="{Binding Connections}"
+                             PendingConnection="{Binding PendingConnection}"
+                             DisconnectConnectorCommand="{Binding DisconnectCommand}"
+                             Background="{StaticResource GridDrawingBrush}"
+                             GridCellSize="5"
+                             KeyDown="NodifyEditor_OnKeyDown"
+                             PointerPressed="NodifyEditor_OnPointerPressed">
+            <nodify:NodifyEditor.ContextMenu>
+                <ContextMenu x:Name="NodePaletteMenu"
+                             Placement="Pointer">
+                    <!--  Int  -->
+                    <MenuItem Header="Add Int"
+                              Command="{Binding AddIntNodeFromMouseCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="IndianRed"
+                                      Data="{StaticResource icon_int}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                
+                    <!--  Float  -->
+                    <MenuItem Header="Add Float"
+                              Command="{Binding AddFloatNodeFromMouseCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="Goldenrod"
+                                      Data="{StaticResource icon_float}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                
+                    <!--  String  -->
+                    <MenuItem Header="Add String"
+                              Command="{Binding AddStringNodeFromMouseCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="OliveDrab"
+                                      Data="{StaticResource icon_string}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Class  -->
+                    <MenuItem Header="Add Class"
+                              Command="{Binding AddClassNodeFromMouseCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="Yellow"
+                                      Data="{StaticResource icon_class}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </nodify:NodifyEditor.ContextMenu>
+            
+            <!--  Node Types  -->
+            <nodify:NodifyEditor.DataTemplates>
+                <!--  Class Node  -->
+                <StaticResource ResourceKey="ClassNodeDataTemplate" />
+                <!--  Float Node  -->
+                <StaticResource ResourceKey="FloatNodeDataTemplate" />
+                <!--  Int Node  -->
+                <StaticResource ResourceKey="IntNodeDataTemplate" />
+                <!--  String Node  -->
+                <StaticResource ResourceKey="StringNodeDataTemplate" />
+            </nodify:NodifyEditor.DataTemplates>
+            
+            <!--  ItemContainerTheme  -->
+            <nodify:NodifyEditor.ItemContainerTheme>
+                <ControlTheme TargetType="{x:Type nodify:ItemContainer}"
+                              BasedOn="{StaticResource {x:Type nodify:ItemContainer}}">
+                    <Setter Property="BorderBrush"
+                            Value="{Binding BorderColor}" />
+                    <Setter Property="SelectedBrush"
+                            Value="{Binding SelectedColor}"/>
+                    <Setter Property="SelectedBorderThickness"
+                            Value="4"/>
+                    <Setter Property="Location"
+                            Value="{Binding Location}"/>
+                </ControlTheme>
+            </nodify:NodifyEditor.ItemContainerTheme>
+            
+            <!--  ConnectionTemplate  -->
+            <nodify:NodifyEditor.ConnectionTemplate>
+                <DataTemplate DataType="{x:Type vm:ConnectionViewModel}">
+                    <nodify:LineConnection Source="{Binding Source.Anchor}"
+                                           Target="{Binding Target.Anchor}"/>
+                </DataTemplate>
+            </nodify:NodifyEditor.ConnectionTemplate>
+            
+            <!--  PendingConnectionTemplate  -->
+            <nodify:NodifyEditor.PendingConnectionTemplate>
+                <DataTemplate DataType="{x:Type vm:PendingConnectionViewModel}">
+                    <nodify:PendingConnection StartedCommand="{Binding StartCommand}"
+                                              CompletedCommand="{Binding FinishCommand}"
+                                              AllowOnlyConnectors="True" />
+                </DataTemplate>
+            </nodify:NodifyEditor.PendingConnectionTemplate>
+            
+        </nodify:NodifyEditor>
+        
+        <!--  Menu  -->
+        <Border Grid.Row="0"
+                Margin="3,3,3,0"
+                Padding="6">
+            <Menu>
+                <MenuItem Header="Nodes">
+                    <!--  Int  -->
+                    <MenuItem Header="Add Int"
+                              Command="{Binding AddIntNodeCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="IndianRed"
+                                      Data="{StaticResource icon_int}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <!--  Float  -->
+                    <MenuItem Header="Add Float"
+                              Command="{Binding AddFloatNodeCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="Goldenrod"
+                                      Data="{StaticResource icon_float}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    
+                    <!--  String  -->
+                    <MenuItem Header="Add String"
+                              Command="{Binding AddStringNodeCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="OliveDrab"
+                                      Data="{StaticResource icon_string}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Class  -->
+                    <MenuItem Header="Add Class"
+                              Command="{Binding AddClassNodeCommand}"
+                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
+                        <MenuItem.Icon>
+                            <PathIcon Foreground="Yellow"
+                                      Data="{StaticResource icon_class}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+        </Border>
+    </Grid>
+</UserControl>

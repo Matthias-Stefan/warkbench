@@ -1,0 +1,58 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
+                    xmlns:vm="using:warkbench.ViewModels"
+                    x:CompileBindings="False"
+                    xmlns:converter="using:warkbench.Converter">
+
+    <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
+    <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
+    <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
+    
+    <SolidColorBrush x:Key="ClassNodeColor" Color="Yellow" />
+    
+    <DataTemplate x:Key="ClassNodeDataTemplate"  
+                  x:DataType="vm:ClassNodeViewModel">
+        <nodify:Node Input="{Binding Inputs}"
+                     HeaderBrush="{Binding IsBlueprint, Converter={StaticResource NodeIsBlueprintConverter}}">
+            <!--  Header  -->
+            <nodify:Node.Header>
+                <Grid ColumnDefinitions="Auto, Auto, *">
+                    <PathIcon Grid.Column="0" 
+                              Width="24" Height="24"
+                              Foreground="{StaticResource ClassNodeColor}"
+                              HorizontalAlignment="Left"
+                              Data="{StaticResource icon_class}" />
+                    <TextBlock Grid.Column="1" 
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource ClassNodeColor}"
+                               Text="{Binding Title}"
+                               Margin="5 0 0 0"/>
+                    <TextBlock Grid.Column="2" 
+                               VerticalAlignment="Center"
+                               Text="{Binding Name}"
+                               Margin="10 0 0 0"/>
+                </Grid>
+            </nodify:Node.Header>
+            
+            <!--  Content  -->
+            <StackPanel Orientation="Vertical">
+                <Grid ColumnDefinitions="Auto, 20, *" Margin="2 6 2 2">
+
+                </Grid>
+            </StackPanel>
+            
+            <!--  Connector  -->
+            <nodify:Node.InputConnectorTemplate>
+                <DataTemplate DataType="{x:Type vm:ConnectorViewModel}">
+                    <nodify:NodeInput Header="{Binding Title}"
+                                      IsConnected="{Binding IsConnected}"
+                                      Anchor="{Binding Anchor, Mode=OneWayToSource}"
+                                      BorderBrush="{StaticResource ClassNodeColor}"
+                                      ToolTip.Tip="Disconnect ALT+LeftClick">
+                    </nodify:NodeInput>
+                </DataTemplate>
+            </nodify:Node.InputConnectorTemplate>
+        </nodify:Node>
+    </DataTemplate>
+</ResourceDictionary>

@@ -1,0 +1,19 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Standard -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="#1e1f22" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="CaretBrush" Value="#e806a3" />
+    </Style>
+
+    <Style Selector="TextBox:pointerover /template/ Border">
+        <Setter Property="Background" Value="#26282b" />
+    </Style>
+
+    <Style Selector="TextBox:focus /template/ Border">
+        <Setter Property="Background" Value="#1e1f22" />
+    </Style>
+</Styles>
+

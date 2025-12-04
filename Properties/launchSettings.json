@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "warkbench": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
