@@ -105,7 +105,7 @@
                     <MenuItem Header="Add Texture">
                         <MenuItem.Icon>
                             <PathIcon Foreground="MediumSlateBlue"
-                                      Data="{StaticResource icon_texture}" />
+                                      Data="{StaticResource icon_texture_node}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     
@@ -121,7 +121,7 @@
                     <MenuItem Header="Add 2D-Vector">
                         <MenuItem.Icon>
                             <PathIcon Foreground="SlateGray"
-                                      Data="{StaticResource icon_vec}" />
+                                      Data="{StaticResource icon_vec2}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     
