@@ -1,17 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using warkbench.Brushes;
 using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class Vec2NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public IntNodeViewModel(IntNodeModel model)
+    public Vec2NodeViewModel(Vec2NodeModel model)
         : base(model)
     {
-        BorderColor = NodeBrushes.Int;
-        SelectedColor = NodeBrushes.Int;
+        BorderColor = NodeBrushes.Vector2D;
+        SelectedColor = NodeBrushes.Vector2D;
         
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
@@ -35,17 +36,32 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
     
-    public int Value
+    public double X
     {
-        get => IntModel.Value;
+        get => Vec2Model.X;
         set
         {
-            if (IntModel.Value == value)
+            if (!(Math.Abs(Vec2Model.X - value) > 0.0001))
             {
                 return;
             }
 
-            IntModel.Value = value;
+            Vec2Model.X = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public double Y
+    {
+        get => Vec2Model.Y;
+        set
+        {
+            if (!(Math.Abs(Vec2Model.Y - value) > 0.0001))
+            {
+                return;
+            }
+
+            Vec2Model.Y = value;
             OnPropertyChanged();
         }
     }
@@ -56,7 +72,7 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.OldItems)
             {
-                IntModel.Outputs.Remove(connectorViewModel.Model);    
+                Vec2Model.Outputs.Remove(connectorViewModel.Model);    
             }
         }
 
@@ -64,11 +80,11 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.NewItems)
             {
-                IntModel.Outputs.Add(connectorViewModel.Model);    
+                Vec2Model.Outputs.Add(connectorViewModel.Model);    
             }
         }
     }
     
-    public IntNodeModel IntModel => (Model as IntNodeModel)!;
+    public Vec2NodeModel Vec2Model => (Model as Vec2NodeModel)!;
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

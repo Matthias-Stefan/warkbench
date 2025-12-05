@@ -1,14 +1,17 @@
-﻿namespace warkbench.Models;
-public class ClassNodeModel : NodeModel
-{
-    public ClassNodeModel()
-    {
-        Title = "Class";
-    }
+﻿using Newtonsoft.Json;
 
+
+namespace warkbench.Models;
+public class Vec2NodeModel : NodeModel
+{
+    public Vec2NodeModel()
+    {
+        Title = "Vector 2D";
+    }
+    
     public override NodeModel DeepClone()
     {
-        var model = new ClassNodeModel
+        var model = new Vec2NodeModel
         {
             Guid = System.Guid.NewGuid(),
             Title = Title,
@@ -31,4 +34,10 @@ public class ClassNodeModel : NodeModel
 
         return model;
     }
+    
+    [JsonProperty] 
+    public double X { get; set; } = 0.0;
+
+    [JsonProperty]
+    public double Y { get; set; } = 0.0;
 }

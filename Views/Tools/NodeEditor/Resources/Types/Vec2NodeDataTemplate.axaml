@@ -1,0 +1,80 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
+                    xmlns:vm="using:warkbench.ViewModels"
+                    xmlns:br="using:warkbench.Brushes"
+                    xmlns:converter="using:warkbench.Converter">
+
+    <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
+    <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
+    <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
+    
+    <DataTemplate x:Key="Vec2NodeDataTemplate" 
+                  x:DataType="vm:Vec2NodeViewModel">
+        <nodify:Node Output="{Binding Outputs}"
+                     HeaderBrush="{Binding IsBlueprint, Converter={StaticResource NodeIsBlueprintConverter}}">
+            <!--  Header  -->
+            <nodify:Node.Header>
+                <Grid ColumnDefinitions="Auto, Auto, Auto, *">
+                    <PathIcon Grid.Column="0" 
+                              Width="24" Height="24"
+                              Foreground="{x:Static br:NodeBrushes.Vector2D}"
+                              HorizontalAlignment="Left"
+                              Data="{StaticResource icon_vec2}" />
+                    <TextBlock Grid.Column="1" 
+                               VerticalAlignment="Center"
+                               Foreground="{x:Static br:NodeBrushes.Vector2D}"
+                               Text="{Binding Title}"
+                               Margin="5 0 0 0"/>
+                    <TextBlock Grid.Column="2" 
+                               VerticalAlignment="Center"
+                               Text="{Binding Name}"
+                               Margin="10 0 0 0"/>
+                    
+                    <!--  Instance mode  -->
+                    <ToggleButton Grid.Column="3"
+                                  Margin="6 0 0 0"
+                                  Width="20"
+                                  Height="20"
+                                  VerticalAlignment="Top"
+                                  HorizontalAlignment="Right"
+                                  Background="Transparent"
+                                  IsChecked="{Binding IsContentVisible}"
+                                  IsVisible="{Binding IsBlueprint, Converter={StaticResource BoolInvertConverter}}">
+                        <PathIcon Width="8"
+                                  Height="8"
+                                  Data="{Binding IsContentVisible, Converter={StaticResource NodeContentToggleButtonIconConverter}}" />
+                    </ToggleButton>
+                </Grid>
+            </nodify:Node.Header>
+            
+            <!--  Content  -->
+            <StackPanel Orientation="Vertical"
+                        IsVisible="{Binding IsContentVisible}">
+                <Grid ColumnDefinitions="Auto, 20, *" Margin="2 6 2 0">
+                    <TextBlock Grid.Column="0" 
+                               Text="X: " />
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding X, StringFormat={}{0:0.##}}"/>
+                </Grid>
+                <Grid ColumnDefinitions="Auto, 20, *" Margin="2 0 2 2">
+                    <TextBlock Grid.Column="0" 
+                               Text="Y: " />
+                    <TextBlock Grid.Column="2" 
+                               Text="{Binding Y, StringFormat={}{0:0.##}}"/>
+                </Grid>
+            </StackPanel>
+            
+            <!--  Connector  -->
+            <nodify:Node.OutputConnectorTemplate>
+                <DataTemplate DataType="{x:Type vm:ConnectorViewModel}">
+                    <nodify:NodeOutput IsConnected="{Binding IsConnected}"
+                                       Anchor="{Binding Anchor, Mode=OneWayToSource}"
+                                       BorderBrush="{x:Static br:NodeBrushes.Vector2D}"
+                                       ToolTip.Tip="Disconnect Alt+LeftClick"/>
+                </DataTemplate>
+            </nodify:Node.OutputConnectorTemplate>
+            
+        </nodify:Node>
+    </DataTemplate>
+</ResourceDictionary>

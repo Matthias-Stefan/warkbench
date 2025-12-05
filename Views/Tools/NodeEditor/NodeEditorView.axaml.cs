@@ -26,21 +26,21 @@ public partial class NodeEditorView : UserControl
     
     private void BuildMenus(NodeEditorViewModel vm)
     {
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add 2D-Vector", "icon_vec2", NodeBrushes.Vector2D, null));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Bool", "icon_bool_node", NodeBrushes.Bool, null));
+        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add 2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeCommand));
+        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Int", "icon_int", NodeBrushes.Int, vm.AddIntNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Rectangle", "icon_rect_node", NodeBrushes.Rectangle, null));
+        NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Add String", "icon_string", NodeBrushes.String, vm.AddStringNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Add Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeCommand));
         
-        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add 2D-Vector", "icon_vec2", NodeBrushes.Vector2D, null));
-        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Bool", "icon_bool_node", NodeBrushes.Bool, null));
+        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add 2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeFromMouseCommand));
+        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Int", "icon_int", NodeBrushes.Int, vm.AddIntNodeFromMouseCommand));
-        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Rectangle", "icon_rect_node", NodeBrushes.Rectangle, null));
+        NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Add String", "icon_string", NodeBrushes.String, vm.AddStringNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Add Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeFromMouseCommand));
     }

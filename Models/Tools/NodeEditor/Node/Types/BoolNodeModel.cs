@@ -1,14 +1,17 @@
-﻿namespace warkbench.Models;
-public class ClassNodeModel : NodeModel
-{
-    public ClassNodeModel()
-    {
-        Title = "Class";
-    }
+﻿using Newtonsoft.Json;
 
+
+namespace warkbench.Models;
+public class BoolNodeModel : NodeModel
+{
+    public BoolNodeModel()
+    {
+        Title = "Bool";
+    }
+    
     public override NodeModel DeepClone()
     {
-        var model = new ClassNodeModel
+        var model = new BoolNodeModel
         {
             Guid = System.Guid.NewGuid(),
             Title = Title,
@@ -31,4 +34,7 @@ public class ClassNodeModel : NodeModel
 
         return model;
     }
+
+    [JsonProperty] 
+    public bool Value { get; set; } = false;
 }

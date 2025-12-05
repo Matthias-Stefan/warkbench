@@ -35,11 +35,14 @@ public partial class NodeEditorViewModel : Tool
     /// </summary>
     private static readonly Dictionary<Type, Type> NodeTypeMap = new()
     {
+        { typeof(BoolNodeViewModel),    typeof(BoolNodeModel) },
         { typeof(ClassNodeViewModel),   typeof(ClassNodeModel) },
         { typeof(FloatNodeViewModel),   typeof(FloatNodeModel) },
         { typeof(IntNodeViewModel),     typeof(IntNodeModel) },
+        { typeof(RectNodeViewModel),    typeof(RectNodeModel) },
         { typeof(StringNodeViewModel),  typeof(StringNodeModel) },
         { typeof(TextureNodeViewModel), typeof(TextureNodeModel) },
+        { typeof(Vec2NodeViewModel),    typeof(Vec2NodeModel) },
     };
     
     /// <summary>
@@ -203,6 +206,75 @@ public partial class NodeEditorViewModel : Tool
     private Task OnAddTextureNodeFromMouse(TransformGroup transform)
     {
         AddNodeAtLocation<TextureNodeViewModel>(GetLocation(transform, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="BoolNodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddBoolNode(TransformGroup transform)
+    {
+        AddNodeAtLocation<BoolNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="BoolNodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddBoolNodeFromMouse(TransformGroup transform)
+    {
+        AddNodeAtLocation<BoolNodeViewModel>(GetLocation(transform, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="RectNodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddRectNode(TransformGroup transform)
+    {
+        AddNodeAtLocation<RectNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="RectNodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddRectNodeFromMouse(TransformGroup transform)
+    {
+        AddNodeAtLocation<RectNodeViewModel>(GetLocation(transform, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="Vec2NodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddVec2Node(TransformGroup transform)
+    {
+        AddNodeAtLocation<Vec2NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="Vec2NodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddVec2NodeFromMouse(TransformGroup transform)
+    {
+        AddNodeAtLocation<Vec2NodeViewModel>(GetLocation(transform, LastMousePosition));
         return Task.CompletedTask;
     }
     

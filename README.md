@@ -55,8 +55,8 @@ private Task OnAdd<Name>NodeFromMouse(TransformGroup transform)
 }
 ```
 
-5. Optional Add-Ons
+5. Create Menu item callback in `NodeEditorView.axaml.cs::BuildMenus`
 
-Create Icon
+6. Optional Icon
 
 

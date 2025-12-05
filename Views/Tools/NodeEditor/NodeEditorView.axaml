@@ -20,11 +20,14 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/BoolNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/ClassNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/FloatNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/IntNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/RectNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/StringNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/TextureNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/Vec2NodeDataTemplate.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -66,16 +69,14 @@
             
             <!--  Node Types  -->
             <nodify:NodifyEditor.DataTemplates>
-                <!--  Class Node  -->
+                <StaticResource ResourceKey="BoolNodeDataTemplate" />
                 <StaticResource ResourceKey="ClassNodeDataTemplate" />
-                <!--  Float Node  -->
                 <StaticResource ResourceKey="FloatNodeDataTemplate" />
-                <!--  Int Node  -->
                 <StaticResource ResourceKey="IntNodeDataTemplate" />
-                <!--  String Node  -->
+                <StaticResource ResourceKey="RectNodeDataTemplate" />
                 <StaticResource ResourceKey="StringNodeDataTemplate" />
-                <!--  Texture Node  -->
                 <StaticResource ResourceKey="TextureNodeDataTemplate" />
+                <StaticResource ResourceKey="Vec2NodeDataTemplate" />
             </nodify:NodifyEditor.DataTemplates>
             
             <!--  ItemContainerTheme  -->

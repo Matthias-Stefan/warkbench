@@ -5,13 +5,13 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class RectNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public IntNodeViewModel(IntNodeModel model)
+    public RectNodeViewModel(RectNodeModel model)
         : base(model)
     {
-        BorderColor = NodeBrushes.Int;
-        SelectedColor = NodeBrushes.Int;
+        BorderColor = NodeBrushes.Rectangle;
+        SelectedColor = NodeBrushes.Rectangle;
         
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
@@ -35,17 +35,62 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
     
-    public int Value
+    public int X
     {
-        get => IntModel.Value;
+        get => RectModel.X;
         set
         {
-            if (IntModel.Value == value)
+            if (RectModel.X == value)
             {
                 return;
             }
 
-            IntModel.Value = value;
+            RectModel.X = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public int Y
+    {
+        get => RectModel.Y;
+        set
+        {
+            if (RectModel.Y == value)
+            {
+                return;
+            }
+
+            RectModel.Y = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public int Width
+    {
+        get => RectModel.Width;
+        set
+        {
+            if (RectModel.Width == value)
+            {
+                return;
+            }
+
+            RectModel.Width = value;
+            OnPropertyChanged();
+        }
+    }
+    
+    public int Height
+    {
+        get => RectModel.Height;
+        set
+        {
+            if (RectModel.Height == value)
+            {
+                return;
+            }
+
+            RectModel.Height = value;
             OnPropertyChanged();
         }
     }
@@ -56,7 +101,7 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.OldItems)
             {
-                IntModel.Outputs.Remove(connectorViewModel.Model);    
+                RectModel.Outputs.Remove(connectorViewModel.Model);    
             }
         }
 
@@ -64,11 +109,11 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.NewItems)
             {
-                IntModel.Outputs.Add(connectorViewModel.Model);    
+                RectModel.Outputs.Add(connectorViewModel.Model);    
             }
         }
     }
     
-    public IntNodeModel IntModel => (Model as IntNodeModel)!;
+    public RectNodeModel RectModel => (Model as RectNodeModel)!;
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

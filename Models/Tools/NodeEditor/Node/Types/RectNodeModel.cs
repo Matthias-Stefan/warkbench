@@ -1,14 +1,17 @@
-﻿namespace warkbench.Models;
-public class ClassNodeModel : NodeModel
-{
-    public ClassNodeModel()
-    {
-        Title = "Class";
-    }
+﻿using Newtonsoft.Json;
 
+
+namespace warkbench.Models;
+public class RectNodeModel : NodeModel
+{
+    public RectNodeModel()
+    {
+        Title = "Rect";
+    }
+    
     public override NodeModel DeepClone()
     {
-        var model = new ClassNodeModel
+        var model = new RectNodeModel
         {
             Guid = System.Guid.NewGuid(),
             Title = Title,
@@ -31,4 +34,16 @@ public class ClassNodeModel : NodeModel
 
         return model;
     }
+
+    [JsonProperty] 
+    public int X { get; set; } = 0;
+    
+    [JsonProperty] 
+    public int Y { get; set; } = 0;
+    
+    [JsonProperty] 
+    public int Width { get; set; } = 0;
+    
+    [JsonProperty] 
+    public int Height { get; set; } = 0;
 }

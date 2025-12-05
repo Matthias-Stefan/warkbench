@@ -5,14 +5,14 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class BoolNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public IntNodeViewModel(IntNodeModel model)
+    public BoolNodeViewModel(BoolNodeModel model)
         : base(model)
     {
-        BorderColor = NodeBrushes.Int;
-        SelectedColor = NodeBrushes.Int;
-        
+        BorderColor = NodeBrushes.Bool;
+        SelectedColor = NodeBrushes.Bool;
+
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
         {
@@ -34,18 +34,18 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
-    
-    public int Value
+
+    public bool Value
     {
-        get => IntModel.Value;
+        get => BoolModel.Value;
         set
         {
-            if (IntModel.Value == value)
+            if (BoolModel.Value == value)
             {
                 return;
             }
-
-            IntModel.Value = value;
+            
+            BoolModel.Value = value;
             OnPropertyChanged();
         }
     }
@@ -56,7 +56,7 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.OldItems)
             {
-                IntModel.Outputs.Remove(connectorViewModel.Model);    
+                BoolModel.Outputs.Remove(connectorViewModel.Model);    
             }
         }
 
@@ -64,11 +64,11 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.NewItems)
             {
-                IntModel.Outputs.Add(connectorViewModel.Model);    
+                BoolModel.Outputs.Add(connectorViewModel.Model);    
             }
         }
     }
     
-    public IntNodeModel IntModel => (Model as IntNodeModel)!;
+    public BoolNodeModel BoolModel => (Model as BoolNodeModel)!;
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }
