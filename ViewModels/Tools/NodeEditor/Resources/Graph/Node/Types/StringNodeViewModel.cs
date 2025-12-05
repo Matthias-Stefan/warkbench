@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using warkbench.Brushes;
 using warkbench.Models;
 
 
@@ -10,8 +11,8 @@ public partial class StringNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public StringNodeViewModel(StringNodeModel model)
         : base(model)
     {
-        BorderColor = new SolidColorBrush(Colors.OliveDrab);
-        SelectedColor = new SolidColorBrush(Colors.OliveDrab);
+        BorderColor = NodeBrushes.String;
+        SelectedColor = NodeBrushes.String;
 
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
@@ -34,8 +35,6 @@ public partial class StringNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
-
-
 
     public string Value
     {

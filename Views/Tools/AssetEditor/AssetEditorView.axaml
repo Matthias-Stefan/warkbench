@@ -43,7 +43,7 @@
                 <!--  General  -->
                 <Menu>
                     <!--  Assets  -->
-                    <MenuItem Header="Package">
+                    <MenuItem Header="Assets">
                         
                         <!--  Add Package  -->
                         <MenuItem Header="Add Package"
@@ -89,10 +89,6 @@
                                           Data="{StaticResource icon_precision_manufacturing}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        
-                        
-                        
-                        
                         
                     </MenuItem>
                </Menu>

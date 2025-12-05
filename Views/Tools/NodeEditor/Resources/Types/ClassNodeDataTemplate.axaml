@@ -2,14 +2,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
                     xmlns:vm="using:warkbench.ViewModels"
+                    xmlns:br="using:warkbench.Brushes"
                     x:CompileBindings="False"
                     xmlns:converter="using:warkbench.Converter">
 
     <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
     <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
-    
-    <SolidColorBrush x:Key="ClassNodeColor" Color="Yellow" />
     
     <DataTemplate x:Key="ClassNodeDataTemplate"  
                   x:DataType="vm:ClassNodeViewModel">
@@ -20,12 +19,12 @@
                 <Grid ColumnDefinitions="Auto, Auto, *">
                     <PathIcon Grid.Column="0" 
                               Width="24" Height="24"
-                              Foreground="{StaticResource ClassNodeColor}"
+                              Foreground="{x:Static br:NodeBrushes.Class}"
                               HorizontalAlignment="Left"
                               Data="{StaticResource icon_class}" />
                     <TextBlock Grid.Column="1" 
                                VerticalAlignment="Center"
-                               Foreground="{StaticResource ClassNodeColor}"
+                               Foreground="{x:Static br:NodeBrushes.Class}"
                                Text="{Binding Title}"
                                Margin="5 0 0 0"/>
                     <TextBlock Grid.Column="2" 
@@ -48,7 +47,7 @@
                     <nodify:NodeInput Header="{Binding Title}"
                                       IsConnected="{Binding IsConnected}"
                                       Anchor="{Binding Anchor, Mode=OneWayToSource}"
-                                      BorderBrush="{StaticResource ClassNodeColor}"
+                                      BorderBrush="{x:Static br:NodeBrushes.Class}"
                                       ToolTip.Tip="Disconnect ALT+LeftClick">
                     </nodify:NodeInput>
                 </DataTemplate>

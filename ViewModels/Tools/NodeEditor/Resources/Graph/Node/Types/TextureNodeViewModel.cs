@@ -1,24 +1,23 @@
 ﻿using Avalonia.Media;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System;
 using warkbench.Brushes;
 using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class TextureNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public FloatNodeViewModel(FloatNodeModel model)
+    public TextureNodeViewModel(TextureNodeModel model)
         : base(model)
     {
-        BorderColor = NodeBrushes.Float;
-        SelectedColor = NodeBrushes.Float;
+        BorderColor = NodeBrushes.Texture;
+        SelectedColor = NodeBrushes.Texture;
 
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
         {
-            Outputs.Add(new ConnectorViewModel(new ConnectorModel{ Guid = System.Guid.NewGuid() }, this));    
+            Outputs.Add(new ConnectorViewModel(new ConnectorModel{ Guid  = System.Guid.NewGuid() }, this));    
         }
         else
         {
@@ -37,17 +36,17 @@ public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
 
-    public float Value
+    public string Value
     {
-        get => FloatModel.Value;
+        get => TextureModel.Value;
         set
         {
-            if (!(Math.Abs(FloatModel.Value - value) > 0.0001f))
+            if (TextureModel.Value == value)
             {
-                return;    
+                return;
             }
-            
-            FloatModel.Value = value;
+
+            TextureModel.Value = value;
             OnPropertyChanged();
         }
     }
@@ -58,7 +57,7 @@ public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.OldItems)
             {
-                FloatModel.Outputs.Remove(connectorViewModel.Model);    
+                TextureModel.Outputs.Remove(connectorViewModel.Model);    
             }
         }
 
@@ -66,11 +65,12 @@ public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.NewItems)
             {
-                FloatModel.Outputs.Add(connectorViewModel.Model);    
+                TextureModel.Outputs.Add(connectorViewModel.Model);    
             }
         }
     }
-    
-    public FloatNodeModel FloatModel => (Model as FloatNodeModel)!;
+
+    public TextureNodeModel TextureModel => (Model as TextureNodeModel)!;
+
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

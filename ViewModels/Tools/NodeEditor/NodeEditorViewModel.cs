@@ -33,12 +33,13 @@ public partial class NodeEditorViewModel : Tool
     /// <see cref="NodeModel"/> type. This allows <see cref="NewNodeViewModel{T}"/>
     /// to dynamically create the appropriate model instance for a given view model.
     /// </summary>
-    private static readonly Dictionary<Type, Type> _nodeTypeMap = new()
+    private static readonly Dictionary<Type, Type> NodeTypeMap = new()
     {
-        { typeof(ClassNodeViewModel),  typeof(ClassNodeModel) },
-        { typeof(IntNodeViewModel),    typeof(IntNodeModel) },
-        { typeof(FloatNodeViewModel),  typeof(FloatNodeModel) },
-        { typeof(StringNodeViewModel), typeof(StringNodeModel) },
+        { typeof(ClassNodeViewModel),   typeof(ClassNodeModel) },
+        { typeof(FloatNodeViewModel),   typeof(FloatNodeModel) },
+        { typeof(IntNodeViewModel),     typeof(IntNodeModel) },
+        { typeof(StringNodeViewModel),  typeof(StringNodeModel) },
+        { typeof(TextureNodeViewModel), typeof(TextureNodeModel) },
     };
     
     /// <summary>
@@ -183,6 +184,29 @@ public partial class NodeEditorViewModel : Tool
     }
     
     /// <summary>
+    /// Creates and adds a new <see cref="TextureNodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddTextureNode(TransformGroup transform)
+    {
+        AddNodeAtLocation<TextureNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="TextureNodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddTextureNodeFromMouse(TransformGroup transform)
+    {
+        AddNodeAtLocation<TextureNodeViewModel>(GetLocation(transform, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
     /// Removes the specified node from the editor, including all connections
     /// that reference it, and keeps the underlying model and view-model
     /// collections in sync.
@@ -265,7 +289,7 @@ public partial class NodeEditorViewModel : Tool
     {
         // Determine the underlying model type for this view model
         var vmType = typeof(T);
-        if (!_nodeTypeMap.TryGetValue(vmType, out var modelType))
+        if (!NodeTypeMap.TryGetValue(vmType, out var modelType))
             throw new NotSupportedException($"No model type mapped for {vmType.Name}");
 
         // Locate the editor model method responsible for creating this type of NodeModel

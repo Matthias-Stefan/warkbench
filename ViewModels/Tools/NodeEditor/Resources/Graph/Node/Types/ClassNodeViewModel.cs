@@ -1,10 +1,9 @@
-using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using warkbench.Brushes;
 using warkbench.Models;
 
 
@@ -14,8 +13,8 @@ public partial class ClassNodeViewModel : NodeViewModel, IInputNodeViewModel
     public ClassNodeViewModel(ClassNodeModel model) 
         : base(model)
     {
-        BorderColor = new SolidColorBrush(Colors.Yellow);
-        SelectedColor = new SolidColorBrush(Colors.Yellow);
+        BorderColor = NodeBrushes.Class;
+        SelectedColor = NodeBrushes.Class;
         
         Inputs.CollectionChanged += OnInputsChanged;
         if (model.Inputs.Count == 0)

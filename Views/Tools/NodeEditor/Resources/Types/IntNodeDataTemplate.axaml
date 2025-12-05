@@ -2,13 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:nodify="clr-namespace:Nodify;assembly=Nodify"
                     xmlns:vm="using:warkbench.ViewModels"
+                    xmlns:br="using:warkbench.Brushes"
                     xmlns:converter="using:warkbench.Converter">
 
     <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
     <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
-    
-    <SolidColorBrush x:Key="IntNodeColor" Color="IndianRed" />
     
     <DataTemplate x:Key="IntNodeDataTemplate" 
                   x:DataType="vm:IntNodeViewModel">
@@ -19,12 +18,12 @@
                 <Grid ColumnDefinitions="Auto, Auto, Auto, *">
                     <PathIcon Grid.Column="0" 
                               Width="24" Height="24"
-                              Foreground="{StaticResource IntNodeColor}"
+                              Foreground="{x:Static br:NodeBrushes.Int}"
                               HorizontalAlignment="Left"
                               Data="{StaticResource icon_int}" />
                     <TextBlock Grid.Column="1" 
                                VerticalAlignment="Center"
-                               Foreground="{StaticResource IntNodeColor}"
+                               Foreground="{x:Static br:NodeBrushes.Int}"
                                Text="{Binding Title}"
                                Margin="5 0 0 0"/>
                     <TextBlock Grid.Column="2" 
@@ -65,7 +64,7 @@
                 <DataTemplate DataType="{x:Type vm:ConnectorViewModel}">
                     <nodify:NodeOutput IsConnected="{Binding IsConnected}"
                                        Anchor="{Binding Anchor, Mode=OneWayToSource}"
-                                       BorderBrush="{StaticResource IntNodeColor}"
+                                       BorderBrush="{x:Static br:NodeBrushes.Int}"
                                        ToolTip.Tip="Disconnect Alt+LeftClick"/>
                 </DataTemplate>
             </nodify:Node.OutputConnectorTemplate>

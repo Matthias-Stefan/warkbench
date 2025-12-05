@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Avalonia.Media;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using Avalonia.Media;
-using CommunityToolkit.Mvvm.ComponentModel;
+using warkbench.Brushes;
 using warkbench.Models;
 
 
@@ -12,8 +11,8 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public IntNodeViewModel(IntNodeModel model)
         : base(model)
     {
-        BorderColor = new SolidColorBrush(Colors.IndianRed);
-        SelectedColor = new SolidColorBrush(Colors.IndianRed);
+        BorderColor = NodeBrushes.Int;
+        SelectedColor = NodeBrushes.Int;
         
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)

@@ -24,6 +24,7 @@
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/FloatNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/IntNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/StringNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/TextureNodeDataTemplate.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -60,80 +61,7 @@
                              PointerPressed="NodifyEditor_OnPointerPressed">
             <nodify:NodifyEditor.ContextMenu>
                 <ContextMenu x:Name="NodePaletteMenu"
-                             Placement="Pointer">
-                    <!--  Int  -->
-                    <MenuItem Header="Add Int"
-                              Command="{Binding AddIntNodeFromMouseCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="IndianRed"
-                                      Data="{StaticResource icon_int}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                
-                    <!--  Float  -->
-                    <MenuItem Header="Add Float"
-                              Command="{Binding AddFloatNodeFromMouseCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="Goldenrod"
-                                      Data="{StaticResource icon_float}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                
-                    <!--  String  -->
-                    <MenuItem Header="Add String"
-                              Command="{Binding AddStringNodeFromMouseCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="OliveDrab"
-                                      Data="{StaticResource icon_string}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <!--  Class  -->
-                    <MenuItem Header="Add Class"
-                              Command="{Binding AddClassNodeFromMouseCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="Yellow"
-                                      Data="{StaticResource icon_class}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  Texture  -->
-                    <MenuItem Header="Add Texture">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="MediumSlateBlue"
-                                      Data="{StaticResource icon_texture_node}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  Rect  -->
-                    <MenuItem Header="Add Rectangle">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="SeaGreen"
-                                      Data="{StaticResource icon_rectangle}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  Vec2  -->
-                    <MenuItem Header="Add 2D-Vector">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="SlateGray"
-                                      Data="{StaticResource icon_vec2}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  Bool  -->
-                    <MenuItem Header="Add Bool">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="Violet"
-                                      Data="{StaticResource icon_toggle_off}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                </ContextMenu>
+                             Placement="Pointer" />
             </nodify:NodifyEditor.ContextMenu>
             
             <!--  Node Types  -->
@@ -146,6 +74,8 @@
                 <StaticResource ResourceKey="IntNodeDataTemplate" />
                 <!--  String Node  -->
                 <StaticResource ResourceKey="StringNodeDataTemplate" />
+                <!--  Texture Node  -->
+                <StaticResource ResourceKey="TextureNodeDataTemplate" />
             </nodify:NodifyEditor.DataTemplates>
             
             <!--  ItemContainerTheme  -->
@@ -187,47 +117,8 @@
                 Margin="3,3,3,0"
                 Padding="6">
             <Menu>
-                <MenuItem Header="Nodes">
-                    <!--  Int  -->
-                    <MenuItem Header="Add Int"
-                              Command="{Binding AddIntNodeCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="IndianRed"
-                                      Data="{StaticResource icon_int}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  Float  -->
-                    <MenuItem Header="Add Float"
-                              Command="{Binding AddFloatNodeCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="Goldenrod"
-                                      Data="{StaticResource icon_float}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    
-                    <!--  String  -->
-                    <MenuItem Header="Add String"
-                              Command="{Binding AddStringNodeCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="OliveDrab"
-                                      Data="{StaticResource icon_string}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <!--  Class  -->
-                    <MenuItem Header="Add Class"
-                              Command="{Binding AddClassNodeCommand}"
-                              CommandParameter="{Binding ViewportTransform, ElementName=Editor}">
-                        <MenuItem.Icon>
-                            <PathIcon Foreground="Yellow"
-                                      Data="{StaticResource icon_class}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </MenuItem>
+                <MenuItem Header="Nodes"
+                          x:Name="NodesMenuRoot" />
             </Menu>
         </Border>
     </Grid>
