@@ -30,10 +30,17 @@
             </Grid>
         </DataTemplate>
         
-        <!--  Package Blueprint  -->
+        <!--  Blueprint  -->
         <DataTemplate DataType="vm:BlueprintViewModel">
             <Grid>
-                <views:PackageBlueprintView />
+                <views:BlueprintView />
+            </Grid>
+        </DataTemplate>
+        
+        <!--  Property  -->
+        <DataTemplate DataType="vm:PropertyViewModel">
+            <Grid>
+                <views:PropertyView />
             </Grid>
         </DataTemplate>
         

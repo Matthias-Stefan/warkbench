@@ -82,7 +82,7 @@
       <DependentUpon>PackageView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PackageBlueprintView.axaml.cs">
+    <Compile Update="Views\Tools\Details\Resources\AssetEditor\BlueprintView.axaml.cs">
       <DependentUpon>BasePackageView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -116,6 +116,10 @@
     </Compile>
     <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\TextureNodeView.axaml.cs">
       <DependentUpon>TextureNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PropertyView.axaml.cs">
+      <DependentUpon>PropertyView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

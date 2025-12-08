@@ -66,7 +66,7 @@ public class ContextMenuConverter : IMultiValueConverter
                 {
                     Header = "Remove",
                     Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_delete")! },
-                    Command = assetEditorViewModel.RemovePackageBlueprintCommand,
+                    Command = assetEditorViewModel.RemoveBlueprintCommand,
                     CommandParameter = packageBlueprintViewModel
                 });
                 break;

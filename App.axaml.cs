@@ -116,6 +116,7 @@ namespace warkbench
             services.AddTransient<Func<NodeEditorViewModel>>(sp =>
             {
                 return () => new NodeEditorViewModel(
+                    sp.GetRequiredService<IProjectManager>(),
                     sp.GetRequiredService<NodeEditorModel>(),
                     sp.GetRequiredService<ISelectionService>()
                     );

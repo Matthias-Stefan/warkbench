@@ -19,8 +19,7 @@ public partial class AssetEditorViewModel : Tool
         _projectManager = projectManager;
         _selectionService = selectionService;
         selectionService.WhenSelectionChanged.Subscribe(OnSelectionChanged);
-
-
+        
         var rootVirtualPath = string.Empty;
         Packages = new TreeNodeViewModel(new RootPackageViewModel(rootVirtualPath));
         Blueprints = new TreeNodeViewModel(new RootPackageBlueprintViewModel(rootVirtualPath));
@@ -87,7 +86,7 @@ public partial class AssetEditorViewModel : Tool
             AddPropertyNode(propertyViewModel);
         }
     }
-
+    
     public void AddPackage(PackageViewModel vm)
     {
         if (_projectManager.CurrentProject is null)
@@ -174,12 +173,10 @@ public partial class AssetEditorViewModel : Tool
         OnPropertyChanged(nameof(Assets));
     }
 
-    // TODO: Rename to Blueprint
     [RelayCommand]
-    private void OnRemovePackageBlueprint(BlueprintViewModel vm) => RemovePackageBlueprint(vm);
+    private void OnRemoveBlueprint(BlueprintViewModel vm) => RemoveBlueprint(vm);
 
-    // TODO: Rename to Blueprint
-    public void RemovePackageBlueprint(BlueprintViewModel packageBlueprintViewModel)
+    public void RemoveBlueprint(BlueprintViewModel packageBlueprintViewModel)
     {
         if (_projectManager.CurrentProject is null)
         {

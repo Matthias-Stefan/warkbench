@@ -1,4 +1,4 @@
-<UserControl x:Class="warkbench.Views.PackageBlueprintView"
+<UserControl x:Class="warkbench.Views.BlueprintView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converter="using:warkbench.Converter"
@@ -22,7 +22,7 @@
                       VerticalAlignment="Center"
                       Data="{StaticResource icon_blueprint_package}" />
             <TextBlock Grid.Column="1" 
-                       Text="Blueprint Package"
+                       Text="Blueprint"
                        FontSize="24"
                        Margin="12 0 0 0"/>
         </Grid>

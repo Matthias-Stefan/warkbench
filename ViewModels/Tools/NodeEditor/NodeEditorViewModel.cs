@@ -15,10 +15,12 @@ namespace warkbench.ViewModels;
 public partial class NodeEditorViewModel : Tool
 {
     public NodeEditorViewModel(
+        IProjectManager projectManager,
         NodeEditorModel model,
         ISelectionService selectionService)
     {
         Model = model;
+        ProjectManager = projectManager;
         _selectionService = selectionService;
         _selectionService.WhenSelectionChanged.Subscribe(OnSelectionChanged);
         PendingConnection = new PendingConnectionViewModel(this);
@@ -611,6 +613,8 @@ public partial class NodeEditorViewModel : Tool
             OnPropertyChanged();
         }
     }
+
+    public IProjectManager ProjectManager { get; init; }
 
     private NodeEditorModel Model { get; }
     

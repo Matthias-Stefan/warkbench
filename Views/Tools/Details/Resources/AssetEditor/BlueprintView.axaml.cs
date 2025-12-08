@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace warkbench.Views;
 
-public partial class PackageBlueprintView : UserControl
+public partial class BlueprintView : UserControl
 {
-    public PackageBlueprintView()
+    public BlueprintView()
     {
         InitializeComponent();
     }
