@@ -5,7 +5,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public sealed class PropertyViewModel : BasePackageViewModel, IGraphContainer, IBlueprint
+public sealed class PropertyViewModel : AssetViewModel, IGraphContainer, IBlueprint
 {
     public PropertyViewModel(GraphModel model)
     {

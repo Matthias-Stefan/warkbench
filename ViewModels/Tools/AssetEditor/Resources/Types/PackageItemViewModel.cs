@@ -5,7 +5,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public class PackageItemViewModel : BasePackageViewModel, IGraphContainer
+public class PackageItemViewModel : AssetViewModel, IGraphContainer
 {
     public PackageItemViewModel(GraphModel blueprint)
     {

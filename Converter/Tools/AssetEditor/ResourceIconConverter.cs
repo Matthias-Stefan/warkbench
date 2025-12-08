@@ -22,7 +22,7 @@ public class ResourceIconConverter : IValueConverter
             RootPropertiesViewModel => "icon_precision_manufacturing",
             PropertyViewModel => "icon_precision_manufacturing",
             
-            PackageItemViewModel => "icon_ev_shadow",
+            PackageItemViewModel => "icon_add_package_item",
             _ => string.Empty
         };
 

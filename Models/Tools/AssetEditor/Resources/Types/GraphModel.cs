@@ -64,7 +64,7 @@ public class GraphModel : IDeepCloneable<GraphModel>
     public required System.Guid Guid { get; set; } = System.Guid.Empty;
     
     [JsonProperty]
-    public required string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     
     [JsonProperty]
     public HashSet<NodeModel> Nodes { get; set; } = [];

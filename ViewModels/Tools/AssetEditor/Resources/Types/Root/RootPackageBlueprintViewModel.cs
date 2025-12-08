@@ -1,5 +1,5 @@
 ﻿namespace warkbench.ViewModels;
-public class RootPackageBlueprintViewModel : BasePackageViewModel
+public class RootPackageBlueprintViewModel : AssetViewModel
 {
     public RootPackageBlueprintViewModel(string rootVirtualPath)
     {

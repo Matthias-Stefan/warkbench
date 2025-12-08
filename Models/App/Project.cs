@@ -11,7 +11,7 @@ public sealed class Project
     {
         _pathService = pathService;
         Packages.CollectionChanged += (_, _) => IsDirty = true;
-        PackageBlueprints.CollectionChanged += (_, _) => IsDirty = true;
+        Blueprints.CollectionChanged += (_, _) => IsDirty = true;
     }
     
     [JsonProperty]
@@ -21,7 +21,7 @@ public sealed class Project
     public ObservableCollection<PackageModel> Packages { get; } = [];
     
     [JsonProperty]
-    public ObservableCollection<GraphModel> PackageBlueprints { get; } = [];
+    public ObservableCollection<GraphModel> Blueprints { get; } = [];
     
     [JsonProperty]
     public ObservableCollection<GraphModel> Properties { get; } = [];

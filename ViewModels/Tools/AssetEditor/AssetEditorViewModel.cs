@@ -38,7 +38,7 @@ public partial class AssetEditorViewModel : Tool
 
     private void OnSelectionChanged(object? obj)
     {
-        if (obj is not BasePackageViewModel)
+        if (obj is not AssetViewModel)
         {
             _selectedAsset = null;
             OnPropertyChanged(nameof(SelectedAsset));
@@ -50,14 +50,14 @@ public partial class AssetEditorViewModel : Tool
         Packages.Children.Clear();
         Blueprints.Children.Clear();
 
-        foreach (var packageBlueprint in project.PackageBlueprints)
+        foreach (var packageBlueprint in project.Blueprints)
         {
             AddBlueprintNode(new BlueprintViewModel(packageBlueprint));
         }
         
         foreach (var package in project.Packages)
         {
-            var blueprint = project.PackageBlueprints.FirstOrDefault(blueprint => blueprint.Guid == package.BlueprintGuid);
+            var blueprint = project.Blueprints.FirstOrDefault(blueprint => blueprint.Guid == package.BlueprintGuid);
             if (blueprint is null)
             {
                 continue;
@@ -79,6 +79,12 @@ public partial class AssetEditorViewModel : Tool
         
                 OnPropertyChanged(nameof(Assets));
             }
+        }
+
+        foreach (var property in project.Properties)
+        {
+            var propertyViewModel = new PropertyViewModel(property);
+            AddPropertyNode(propertyViewModel);
         }
     }
 
@@ -158,7 +164,7 @@ public partial class AssetEditorViewModel : Tool
             return;
         }
 
-        _projectManager.CurrentProject.PackageBlueprints.Add(vm.Model);
+        _projectManager.CurrentProject.Blueprints.Add(vm.Model);
         AddBlueprintNode(vm);
     }
 
@@ -186,7 +192,7 @@ public partial class AssetEditorViewModel : Tool
             return;
         }
 
-        _projectManager.CurrentProject.PackageBlueprints.Remove(packageBlueprintViewModel.Model);
+        _projectManager.CurrentProject.Blueprints.Remove(packageBlueprintViewModel.Model);
         packageBlueprintViewModel.Nodes.Clear();
         packageBlueprintViewModel.Connections.Clear();
         Blueprints.RemoveChild(node);
