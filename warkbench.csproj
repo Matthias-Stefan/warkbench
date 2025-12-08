@@ -122,6 +122,10 @@
       <DependentUpon>PropertyView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\PropertyNodeView.axaml.cs">
+      <DependentUpon>PropertyNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

@@ -37,14 +37,15 @@ public partial class NodeEditorViewModel : Tool
     /// </summary>
     private static readonly Dictionary<Type, Type> NodeTypeMap = new()
     {
-        { typeof(BoolNodeViewModel),    typeof(BoolNodeModel) },
-        { typeof(ClassNodeViewModel),   typeof(ClassNodeModel) },
-        { typeof(FloatNodeViewModel),   typeof(FloatNodeModel) },
-        { typeof(IntNodeViewModel),     typeof(IntNodeModel) },
-        { typeof(RectNodeViewModel),    typeof(RectNodeModel) },
-        { typeof(StringNodeViewModel),  typeof(StringNodeModel) },
-        { typeof(TextureNodeViewModel), typeof(TextureNodeModel) },
-        { typeof(Vec2NodeViewModel),    typeof(Vec2NodeModel) },
+        { typeof(BoolNodeViewModel),     typeof(BoolNodeModel) },
+        { typeof(ClassNodeViewModel),    typeof(ClassNodeModel) },
+        { typeof(FloatNodeViewModel),    typeof(FloatNodeModel) },
+        { typeof(IntNodeViewModel),      typeof(IntNodeModel) },
+        { typeof(PropertyNodeViewModel), typeof(PropertyNodeModel) },
+        { typeof(RectNodeViewModel),     typeof(RectNodeModel) },
+        { typeof(StringNodeViewModel),   typeof(StringNodeModel) },
+        { typeof(TextureNodeViewModel),  typeof(TextureNodeModel) },
+        { typeof(Vec2NodeViewModel),     typeof(Vec2NodeModel) },
     };
     
     /// <summary>
@@ -281,6 +282,29 @@ public partial class NodeEditorViewModel : Tool
     }
     
     /// <summary>
+    /// Creates and adds a new <see cref="PropertyNodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddPropertyNode(Tuple<TransformGroup, GraphModel> args)
+    {
+        AddNodeAtLocation<PropertyNodeViewModel>(GetLocation(args.Item1, new Vector(60, 60)), args.Item2.Name);
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="PropertyNodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddPropertyNodeFromMouse(Tuple<TransformGroup, GraphModel> args)
+    {
+        AddNodeAtLocation<PropertyNodeViewModel>(GetLocation(args.Item1, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
     /// Removes the specified node from the editor, including all connections
     /// that reference it, and keeps the underlying model and view-model
     /// collections in sync.
@@ -322,12 +346,14 @@ public partial class NodeEditorViewModel : Tool
     /// </summary>
     /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
     /// <param name="location">The graph-space position where the node should appear.</param>
-    private void AddNodeAtLocation<T>(Avalonia.Point location)
+    /// <param name="name">The node name.</param>
+    private void AddNodeAtLocation<T>(Avalonia.Point location, string name = "")
         where T : NodeViewModel
     {
         var nodeViewModel = _selectedNodeContainer is IBlueprint 
             ? NewBlueprintNodeViewModel<T>(location: location) 
             : NewNodeViewModel<T>(location: location);
+        nodeViewModel.Name = name;
         AddNodeViewModel(nodeViewModel);
     }
     

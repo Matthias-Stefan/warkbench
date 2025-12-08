@@ -1,4 +1,4 @@
-<UserControl x:Class="warkbench.Views.ClassNodeView"
+<UserControl x:Class="warkbench.Views.PropertyNodeView"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converter="using:warkbench.Converter"
@@ -11,8 +11,12 @@
              d:DesignHeight="450"
              d:DesignWidth="800"
              x:CompileBindings="True"
-             x:DataType="vm:ClassNodeViewModel"
+             x:DataType="vm:PropertyNodeViewModel"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <converter:BoolInvertConverter x:Key="BoolInvertConverter" />
+    </UserControl.Resources>
+    
     <Grid RowDefinitions="Auto,*">
         <!--  Header  -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Center">
@@ -20,9 +24,9 @@
                       Width="24" Height="24"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
-                      Data="{StaticResource icon_class}" />
+                      Data="{StaticResource icon_property_node}" />
             <TextBlock Grid.Column="1" 
-                       Text="Class Node"
+                       Text="Property Node"
                        FontSize="24"
                        Margin="12 0 0 0"/>
         </Grid>
@@ -65,6 +69,38 @@
                                      HorizontalAlignment="Left"
                                      VerticalAlignment="Center"
                                      Text="{Binding Name}" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!--  Value  -->
+                <Border Height="32" IsVisible="{Binding IsBlueprint, Converter={StaticResource BoolInvertConverter}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"
+                                              MinWidth="100"
+                                              SharedSizeGroup="Left" />
+                            <ColumnDefinition Width="2" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Background="#191a1c">
+                            <TextBlock Margin="19,0,0,0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       Text="Value" />
+                        </Border>
+
+                        <GridSplitter Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"
+                                      Background="Transparent" />
+
+                        <Border Grid.Column="2" Background="#191a1c">
+                            <ToggleSwitch Margin="19,0,0,0"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          IsChecked="{Binding Value}" />
                         </Border>
                     </Grid>
                 </Border>

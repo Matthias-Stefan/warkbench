@@ -1,9 +1,11 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia;
 using System.Windows.Input;
 using warkbench.Brushes;
+using warkbench.Models;
 using warkbench.ViewModels;
 
 
@@ -26,19 +28,26 @@ public partial class NodeEditorView : UserControl
     
     private void BuildMenus(NodeEditorViewModel vm)
     {
-        var PropertiesNodesMenuRootItem = CreateMainMenuItem("Properties", "icon_precision_manufacturing",
-            new SolidColorBrush(Colors.Crimson), null);
-        NodesMenuRoot.Items.Add(PropertiesNodesMenuRootItem);
-        
-        // LEFT:
+        var propertiesNodesMenuRootItem = CreateMainMenuItem("Properties", "icon_precision_manufacturing", NodeBrushes.Property, null);
         if (vm.ProjectManager.CurrentProject is not null) 
         {
             foreach (var property in vm.ProjectManager.CurrentProject.Properties)
             {
-                PropertiesNodesMenuRootItem.Items.Add(CreateMainMenuItem(property.Name, "icon_precision_manufacturing",
-                    new SolidColorBrush(Colors.Crimson), null));
+                var propertyItem = new MenuItem
+                {
+                    Header = new TextBlock { Text = property.Name },
+                    Command = vm.AddPropertyNodeCommand,
+                    CommandParameter = new Tuple<TransformGroup, GraphModel>(Editor.ViewportTransform as TransformGroup, property),
+                    Icon = new PathIcon
+                    {
+                        Data = (Geometry)Application.Current!.FindResource("icon_property_node")!,
+                        Foreground = NodeBrushes.Property,
+                    }
+                };
+                propertiesNodesMenuRootItem.Items.Add(propertyItem);
             }
         }
+        NodesMenuRoot.Items.Add(propertiesNodesMenuRootItem);
         
         NodesMenuRoot.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));
@@ -48,6 +57,8 @@ public partial class NodeEditorView : UserControl
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("String", "icon_string", NodeBrushes.String, vm.AddStringNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeCommand));
+        
+        
         
         NodePaletteMenu.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeFromMouseCommand));
@@ -63,12 +74,12 @@ public partial class NodeEditorView : UserControl
     {
         return new MenuItem
         {
-            Header = header,
+            Header = new TextBlock { Text = header },
             Command = command,
             CommandParameter = Editor.ViewportTransform,
             Icon = new PathIcon
             {
-                Data = (Geometry)Application.Current.FindResource(iconKey)!,
+                Data = (Geometry)Application.Current!.FindResource(iconKey)!,
                 Foreground = color,
             }
         };

@@ -1,94 +1,62 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
 using warkbench.Brushes;
 using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class PropertyNodeViewModel : NodeViewModel, IInputNodeViewModel
+public partial class PropertyNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public PropertyNodeViewModel(PropertyNodeModel model) 
+    public PropertyNodeViewModel(PropertyNodeModel model)
         : base(model)
     {
         BorderColor = NodeBrushes.Property;
         SelectedColor = NodeBrushes.Property;
-        
-        Inputs.CollectionChanged += OnInputsChanged;
-        if (model.Inputs.Count == 0)
+
+        Outputs.CollectionChanged += OnOutputsChanged;
+        if (model.Outputs.Count == 0)
         {
-            Inputs.Add(new ConnectorViewModel(new ConnectorModel{ Guid = System.Guid.NewGuid() }, this));    
+            Outputs.Add(new ConnectorViewModel(new ConnectorModel{ Guid = System.Guid.NewGuid() }, this));    
         }
         else
         {
-            foreach (var connector in model.Inputs)
+            foreach (var connector in model.Outputs)
             {
-                Inputs.Add(new ConnectorViewModel(connector, this));
+                Outputs.Add(new ConnectorViewModel(connector, this));
             }
         }
     }
     
     public override void HandleConnected(object? sender, ConnectionChangedEventArgs? args)
     {
-        if (args is null)
-        {
-            return;
-        }
-
-        var sourceNode = args.SourceConnector.Node;
-        if (!_subscriptions.ContainsKey(args.Connection))
-        {
-            sourceNode.PropertyChanged += OnSourceNodePropertyChanged;
-            _subscriptions[args.Connection] = sourceNode;
-        }
-        
-        args.TargetConnector.Title = sourceNode.Name;
-        if (Inputs.Last().IsConnected)
-        {
-            Inputs.Add(new ConnectorViewModel(new ConnectorModel{ Guid = System.Guid.NewGuid() }, this));    
-        }
     }
 
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
-        if (args is null)
-        {
-            return;
-        }
-        
-        if (_subscriptions.TryGetValue(args.Connection, out var sourceNode))
-        {
-            sourceNode.PropertyChanged -= OnSourceNodePropertyChanged;
-            _subscriptions.Remove(args.Connection);
-        }
-        
-        Inputs.Remove(args.TargetConnector);
     }
 
-
-
-    private void OnSourceNodePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    public object Value
     {
-        if (sender is not NodeViewModel node || e.PropertyName != nameof(NodeViewModel.Name))
+        get => PropertyModel.Value;
+        set
         {
-            return;
-        }
-
-        foreach (var kvp in _subscriptions.Where(kvp => Equals(kvp.Key.Source.Node, node)))
-        {
-            kvp.Key.Target.Title = node.Name;
+            if (PropertyModel.Value == value)
+            {
+                return;
+            }
+            
+            PropertyModel.Value = value;
+            OnPropertyChanged();
         }
     }
-
-    private void OnInputsChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    
+    private void OnOutputsChanged(object? sender, NotifyCollectionChangedEventArgs args)
     {
         if (args.OldItems is not null)
         {
             foreach (ConnectorViewModel connectorViewModel in args.OldItems)
             {
-                PropertyModel.Inputs.Remove(connectorViewModel.Model);    
+                PropertyModel.Outputs.Remove(connectorViewModel.Model);    
             }
         }
 
@@ -96,12 +64,11 @@ public partial class PropertyNodeViewModel : NodeViewModel, IInputNodeViewModel
         {
             foreach (ConnectorViewModel connectorViewModel in args.NewItems)
             {
-                PropertyModel.Inputs.Add(connectorViewModel.Model);    
+                PropertyModel.Outputs.Add(connectorViewModel.Model);    
             }
         }
     }
-
+    
     public PropertyNodeModel PropertyModel => (Model as PropertyNodeModel)!;
-    public ObservableCollection<ConnectorViewModel> Inputs { get; } = [];
-    private readonly Dictionary<ConnectionViewModel, INotifyPropertyChanged> _subscriptions = [];
+    public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

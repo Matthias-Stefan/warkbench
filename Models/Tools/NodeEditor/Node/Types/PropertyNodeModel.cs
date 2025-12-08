@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+
+
 namespace warkbench.Models;
 public class PropertyNodeModel : NodeModel
 {
@@ -5,7 +8,7 @@ public class PropertyNodeModel : NodeModel
     {
         Title = "Property";
     }
-
+    
     public override NodeModel DeepClone()
     {
         var model = new PropertyNodeModel
@@ -31,4 +34,7 @@ public class PropertyNodeModel : NodeModel
 
         return model;
     }
+
+    [JsonProperty] 
+    public object Value { get; set; } = new();
 }

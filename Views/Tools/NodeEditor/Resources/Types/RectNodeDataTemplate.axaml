@@ -86,7 +86,6 @@
                                        ToolTip.Tip="Disconnect Alt+LeftClick"/>
                 </DataTemplate>
             </nodify:Node.OutputConnectorTemplate>
-            
         </nodify:Node>
     </DataTemplate>
 </ResourceDictionary>
