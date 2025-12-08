@@ -15,6 +15,12 @@
              x:DataType="vm:DetailsViewModel"
              mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <!--  Converter  -->
+        <converter:ResourceIconConverter x:Key="ResourceIconConverter" />
+    </UserControl.Resources>
+    
+    
     <UserControl.DataTemplates>
         <!--  ASSET EDITOR  -->
         <!--  Package  -->
@@ -31,7 +37,30 @@
             </Grid>
         </DataTemplate>
         
+        <!--  INameable  -->
+        <DataTemplate DataType="vm:INameable">
+            <!--  Header  -->
+            <Grid ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Top">
+                <PathIcon Grid.Column="0" 
+                          Width="24" Height="24"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Data="{Binding DataType=Binding, Converter={StaticResource ResourceIconConverter}}" />
+                <TextBlock Grid.Column="1" 
+                           Text="{Binding Name}"
+                           FontSize="24"
+                           Margin="12 0 0 0"/>
+            </Grid>
+        </DataTemplate>
+        
         <!--  NODE EDITOR  -->
+        <!--  Bool Node  -->
+        <DataTemplate DataType="vm:BoolNodeViewModel">
+            <Grid>
+                <views:BoolNodeView />
+            </Grid>
+        </DataTemplate>
+        
         <!--  Class Node  -->
         <DataTemplate DataType="vm:ClassNodeViewModel">
             <Grid>
@@ -53,10 +82,31 @@
             </Grid>
         </DataTemplate>
         
+        <!--  Rect Node  -->
+        <DataTemplate DataType="vm:RectNodeViewModel">
+            <Grid>
+                <views:RectNodeView />
+            </Grid>
+        </DataTemplate>
+        
         <!--  String Node  -->
         <DataTemplate DataType="vm:StringNodeViewModel">
             <Grid>
                 <views:StringNodeView />
+            </Grid>
+        </DataTemplate>
+        
+        <!--  Texture Node  -->
+        <DataTemplate DataType="vm:TextureNodeViewModel">
+            <Grid>
+                <views:TextureNodeView />
+            </Grid>
+        </DataTemplate>
+        
+        <!--  Vec2 Node  -->
+        <DataTemplate DataType="vm:Vec2NodeViewModel">
+            <Grid>
+                <views:Vec2NodeView />
             </Grid>
         </DataTemplate>
         

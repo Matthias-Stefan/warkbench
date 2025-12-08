@@ -14,7 +14,7 @@ public class ResourceIconColorConverter : IValueConverter
         {
             RootPackageViewModel or PackageViewModel => new SolidColorBrush(Colors.LightGreen),
             RootPackageBlueprintViewModel or BlueprintViewModel => new SolidColorBrush(Color.FromRgb(30, 144, 255)),
-            RootPropertiesViewModel => new SolidColorBrush(Colors.Crimson),
+            RootPropertiesViewModel or PropertyViewModel => new SolidColorBrush(Colors.Crimson),
             
             PackageItemViewModel => new SolidColorBrush(Colors.LightSalmon),
             _ => new SolidColorBrush(Colors.White)

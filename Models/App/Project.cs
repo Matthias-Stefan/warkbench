@@ -22,6 +22,9 @@ public sealed class Project
     
     [JsonProperty]
     public ObservableCollection<GraphModel> PackageBlueprints { get; } = [];
+    
+    [JsonProperty]
+    public ObservableCollection<GraphModel> Properties { get; } = [];
 
     [JsonIgnore] 
     public bool IsDirty { get; set; } = false;

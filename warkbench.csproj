@@ -102,6 +102,22 @@
       <DependentUpon>PackageView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\BoolNodeView.axaml.cs">
+      <DependentUpon>BoolNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\RectNodeView.axaml.cs">
+      <DependentUpon>RectNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\Vec2NodeView.axaml.cs">
+      <DependentUpon>Vec2NodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\TextureNodeView.axaml.cs">
+      <DependentUpon>TextureNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

@@ -168,9 +168,11 @@ public partial class AssetEditorViewModel : Tool
         OnPropertyChanged(nameof(Assets));
     }
 
+    // TODO: Rename to Blueprint
     [RelayCommand]
     private void OnRemovePackageBlueprint(BlueprintViewModel vm) => RemovePackageBlueprint(vm);
 
+    // TODO: Rename to Blueprint
     public void RemovePackageBlueprint(BlueprintViewModel packageBlueprintViewModel)
     {
         if (_projectManager.CurrentProject is null)
@@ -219,7 +221,57 @@ public partial class AssetEditorViewModel : Tool
 
     public void AddProperty()
     {
-        
+        AddProperty(new GraphModel
+            {
+                Guid = System.Guid.NewGuid(),
+                Name = string.Empty
+            }
+        );
+    }
+
+    public void AddProperty(GraphModel model)
+    {
+        AddProperty(new PropertyViewModel(model));
+    }
+
+    public void AddProperty(PropertyViewModel vm)
+    {
+        if (_projectManager.CurrentProject is null)
+        {
+            return;
+        }
+
+        _projectManager.CurrentProject.Properties.Add(vm.Model);
+        AddPropertyNode(vm);
+    }
+
+    public void AddPropertyNode(PropertyViewModel vm)
+    {
+        Properties.AddChild(new TreeNodeViewModel(vm));
+        OnPropertyChanged(nameof(Assets));
+    }
+
+    [RelayCommand]
+    private void OnRemoveProperty(PropertyViewModel vm) => RemoveProperty(vm);
+
+    public void RemoveProperty(PropertyViewModel propertyViewModel)
+    {
+        if (_projectManager.CurrentProject is null)
+        {
+            return;
+        }
+
+        var node = Properties.Children.Where(tree => tree.Data == propertyViewModel)?.First();
+        if (node is null)
+        {
+            return;
+        }
+
+        _projectManager.CurrentProject.Properties.Remove(propertyViewModel.Model);
+        propertyViewModel.Nodes.Clear();
+        propertyViewModel.Connections.Clear();
+        Properties.RemoveChild(node);
+        OnPropertyChanged(nameof(Assets));
     }
 
     private AssetEditorModel Model { get; }

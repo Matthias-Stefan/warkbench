@@ -9,14 +9,15 @@ public static class NodeFactory
     {
         return model switch
         {
-            ClassNodeModel   m => new ClassNodeViewModel(m),
-            FloatNodeModel   m => new FloatNodeViewModel(m),
-            IntNodeModel     m => new IntNodeViewModel(m),
-            StringNodeModel  m => new StringNodeViewModel(m),
-            TextureNodeModel m => new TextureNodeViewModel(m),
-            BoolNodeModel    m => new BoolNodeViewModel(m),
-            RectNodeModel    m => new RectNodeViewModel(m),
-            Vec2NodeModel    m => new Vec2NodeViewModel(m),
+            BoolNodeModel     m => new BoolNodeViewModel(m),
+            ClassNodeModel    m => new ClassNodeViewModel(m),
+            FloatNodeModel    m => new FloatNodeViewModel(m),
+            IntNodeModel      m => new IntNodeViewModel(m),
+            PropertyNodeModel m => new PropertyNodeViewModel(m),
+            RectNodeModel     m => new RectNodeViewModel(m),
+            StringNodeModel   m => new StringNodeViewModel(m),
+            TextureNodeModel  m => new TextureNodeViewModel(m),
+            Vec2NodeModel     m => new Vec2NodeViewModel(m),
             
             _ => throw new NotSupportedException(
                 $"Unsupported NodeModel type: {model.GetType().Name}")

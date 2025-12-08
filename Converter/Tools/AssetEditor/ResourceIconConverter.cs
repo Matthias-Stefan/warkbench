@@ -20,6 +20,7 @@ public class ResourceIconConverter : IValueConverter
             BlueprintViewModel => "icon_blueprint_package",
             
             RootPropertiesViewModel => "icon_precision_manufacturing",
+            PropertyViewModel => "icon_precision_manufacturing",
             
             PackageItemViewModel => "icon_ev_shadow",
             _ => string.Empty
