@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using warkbench.Models;
 
-// LEFT: Container vor different Nodeviews!
 namespace warkbench.ViewModels;
 public sealed class BlueprintViewModel : AssetViewModel, IGraphContainer, IBlueprint
 {

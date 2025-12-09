@@ -27,7 +27,7 @@ public class NodeHeaderBrushConverter : IValueConverter
         return nodeHeaderBrushType switch
         {
             NodeHeaderBrushType.Blueprint => NodeBrushes.BlueprintBackground,
-            NodeHeaderBrushType.Property  => NodeBrushes.Property,
+            NodeHeaderBrushType.Property  => NodeBrushes.PropertyBackground,
             _ => throw new ArgumentOutOfRangeException(nameof(nodeHeaderBrushType))
         };
     }

@@ -134,7 +134,7 @@
                     </StackPanel>
                 </Button>
                 
-                <Button>
+                <Button Command="{Binding SortNodesCommand}">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <PathIcon Width="16"
                                   Height="16" 

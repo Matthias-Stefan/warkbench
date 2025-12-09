@@ -11,7 +11,7 @@ namespace warkbench.Brushes
             var background = new GeometryDrawing
             {
                 Geometry = new RectangleGeometry(new Rect(0, 0, 40, 40)),
-                Brush = new SolidColorBrush(Color.Parse("#420708"))
+                Brush = new SolidColorBrush(Color.Parse("#520000"))
             };
 
             var hexGroup = new GeometryGroup();
@@ -30,7 +30,7 @@ namespace warkbench.Brushes
             AddHexagon(hexGroup, new Point(30, 10 + 2 * vertOffset), radius);
 
             var hexPen = new Pen(
-                new SolidColorBrush(Color.Parse("#510b0c")),
+                new SolidColorBrush(Color.Parse("#790000")),
                 1.4)
             {
                 LineJoin = PenLineJoin.Round

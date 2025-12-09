@@ -87,6 +87,24 @@ public partial class NodeEditorViewModel : Tool
     }
     
     /// <summary>
+    /// Creates a property node of the specified <typeparamref name="T"/> type,
+    /// initializes it within the editor model, constructs the corresponding view model,
+    /// and adds it to the editor's visual collection.
+    /// </summary>
+    /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
+    /// <param name="name">The display name assigned to the blueprint node.</param>
+    /// <param name="description">An optional description for the blueprint node.</param>
+    /// <param name="location">The initial graph-space position of the node.</param>
+    /// <returns>
+    /// A fully initialized blueprint instance of <typeparamref name="T"/>.
+    /// </returns>
+    public T NewPropertyNodeViewModel<T>(string name = "", string description = "", Avalonia.Point location = new())
+        where T : NodeViewModel
+    {
+        return NewNodeViewModelInternal<T>(nameof(NodeEditorModel.NewPropertyNode), name, description, location);
+    }
+    
+    /// <summary>
     /// Adds the specified <see cref="NodeViewModel"/> to the editor’s view-model
     /// collection and registers it for connection-related events.
     /// </summary>
@@ -363,9 +381,12 @@ public partial class NodeEditorViewModel : Tool
     private void AddNodeAtLocation<T>(Avalonia.Point location, string name = "")
         where T : NodeViewModel
     {
-        var nodeViewModel = _selectedNodeContainer is IBlueprint 
-            ? NewBlueprintNodeViewModel<T>(location: location) 
-            : NewNodeViewModel<T>(location: location);
+        NodeViewModel nodeViewModel = _selectedNodeContainer switch
+        {
+            IBlueprint _ => NewBlueprintNodeViewModel<T>(location: location),
+            IProperty _ => NewPropertyNodeViewModel<T>(location: location),
+            _ => NewNodeViewModel<T>(location: location)
+        };
         nodeViewModel.Name = name;
     }
     
@@ -629,7 +650,49 @@ public partial class NodeEditorViewModel : Tool
         OnPropertyChanged(nameof(Nodes));
         OnPropertyChanged(nameof(Connections));
     }
-    
+
+    [RelayCommand]
+    private Task OnSortNodes()
+    {
+        var nodesByLevel = new Dictionary<int, NodeViewModel>();
+        foreach (var node in Nodes)
+        {
+            if (node is IOutputNodeViewModel oNode)
+            {
+                if (oNode.Outputs.Count == 0)
+                {
+                    nodesByLevel.Add(0, node);
+                }
+                
+            }
+            else if (node is IInputNodeViewModel iNode)
+            {
+                if (iNode.Inputs.Count == 0)
+                {
+                    nodesByLevel.Add(0, node);
+                }
+            }
+            else if (node is IInputOutputNodeViewModel ioNode)
+            {
+                if (ioNode.Inputs.Count == 0 && ioNode.Outputs.Count == 0)
+                {
+                    nodesByLevel.Add(0, node);
+                }
+            }
+            else
+            {
+                throw  new NotImplementedException();
+            }
+        }
+        
+        
+        return Task.CompletedTask;
+    }
+
+
+
+
+
     public bool IsEnabled => _selectedNodeContainer is not null;
     public PendingConnectionViewModel PendingConnection { get; }
     public ObservableCollection<NodeViewModel> Nodes { get; set; } = [];

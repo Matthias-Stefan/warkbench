@@ -76,6 +76,38 @@ public class NodeEditorModel
     }
     
     /// <summary>
+    /// Creates a new property node of the specified type, initializes it with the
+    /// provided metadata, adds it to the graph, and notifies listeners that the 
+    /// set of nodes has changed.
+    /// </summary>
+    /// <typeparam name="T">The concrete node type to create.</typeparam>
+    /// <param name="name">An optional display name for the blueprint node.</param>
+    /// <param name="description">An optional description associated with the node.</param>
+    /// <param name="location">The initial position of the node within the graph.</param>
+    /// <returns>The newly created blueprint node instance.</returns>
+    public T NewPropertyNode<T>(string name = "", string description = "", Avalonia.Point location = new()) 
+        where T : NodeModel, new()
+    {
+        var node = new T
+        {
+            Guid = System.Guid.NewGuid(),
+            Name = name,
+            Description = description,
+            Location = location,
+            NodeHeaderBrushType = NodeHeaderBrushType.Property
+        };
+
+        _nodes.Add(node);
+        OnNodesChanged(new NodesChangedEventArgs 
+        {
+            Type = NodeChangeType.New,
+            Node = node
+        });
+        
+        return node;
+    }
+    
+    /// <summary>
     /// Adds the specified node to the graph and notifies listeners
     /// if the set of nodes has changed.
     /// </summary>
