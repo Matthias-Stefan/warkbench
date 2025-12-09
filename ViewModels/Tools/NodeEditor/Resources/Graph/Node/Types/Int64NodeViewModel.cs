@@ -1,17 +1,18 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using warkbench.Brushes;
 using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class Int32NodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class Int64NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public Int32NodeViewModel(Int32NodeModel model)
+    public Int64NodeViewModel(Int64NodeModel model)
         : base(model)
     {
-        BorderColor = NodeBrushes.Int32;
-        SelectedColor = NodeBrushes.Int32;
+        BorderColor = NodeBrushes.Int64;
+        SelectedColor = NodeBrushes.Int64;
         
         Outputs.CollectionChanged += OnOutputsChanged;
         if (model.Outputs.Count == 0)
@@ -35,7 +36,7 @@ public partial class Int32NodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
     
-    public int Value
+    public Int64 Value
     {
         get => IntModel.Value;
         set
@@ -69,6 +70,6 @@ public partial class Int32NodeViewModel : NodeViewModel, IOutputNodeViewModel
         }
     }
     
-    public Int32NodeModel IntModel => (Model as Int32NodeModel)!;
+    public Int64NodeModel IntModel => (Model as Int64NodeModel)!;
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

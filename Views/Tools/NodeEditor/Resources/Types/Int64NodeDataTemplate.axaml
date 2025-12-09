@@ -9,8 +9,8 @@
     <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
     
-    <DataTemplate x:Key="Int32NodeDataTemplate" 
-                  x:DataType="vm:Int32NodeViewModel">
+    <DataTemplate x:Key="Int64NodeDataTemplate" 
+                  x:DataType="vm:Int64NodeViewModel">
         <nodify:Node Output="{Binding Outputs}"
                      HeaderBrush="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushConverter}}">
             <!--  Header  -->
@@ -18,12 +18,12 @@
                 <Grid ColumnDefinitions="Auto, Auto, Auto, *">
                     <PathIcon Grid.Column="0" 
                               Width="24" Height="24"
-                              Foreground="{x:Static br:NodeBrushes.Int32}"
+                              Foreground="{x:Static br:NodeBrushes.Int64}"
                               HorizontalAlignment="Left"
-                              Data="{StaticResource icon_int32}" />
+                              Data="{StaticResource icon_int64}" />
                     <TextBlock Grid.Column="1" 
                                VerticalAlignment="Center"
-                               Foreground="{x:Static br:NodeBrushes.Int32}"
+                               Foreground="{x:Static br:NodeBrushes.Int64}"
                                Text="{Binding Title}"
                                Margin="5 0 0 0"/>
                     <TextBlock Grid.Column="2" 
@@ -64,7 +64,7 @@
                 <DataTemplate DataType="{x:Type vm:ConnectorViewModel}">
                     <nodify:NodeOutput IsConnected="{Binding IsConnected}"
                                        Anchor="{Binding Anchor, Mode=OneWayToSource}"
-                                       BorderBrush="{x:Static br:NodeBrushes.Int32}"
+                                       BorderBrush="{x:Static br:NodeBrushes.Int64}"
                                        ToolTip.Tip="Disconnect Alt+LeftClick"/>
                 </DataTemplate>
             </nodify:Node.OutputConnectorTemplate>

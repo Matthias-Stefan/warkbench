@@ -82,10 +82,17 @@
             </Grid>
         </DataTemplate>
         
-        <!--  Int Node  -->
+        <!--  Int32 Node  -->
         <DataTemplate DataType="vm:Int32NodeViewModel">
             <Grid>
-                <views:IntNodeView />
+                <views:Int32NodeView />
+            </Grid>
+        </DataTemplate>
+        
+        <!--  Int64 Node  -->
+        <DataTemplate DataType="vm:Int64NodeViewModel">
+            <Grid>
+                <views:Int64NodeView />
             </Grid>
         </DataTemplate>
         

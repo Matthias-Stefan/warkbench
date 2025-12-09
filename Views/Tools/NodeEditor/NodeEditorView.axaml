@@ -24,6 +24,7 @@
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/ClassNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/FloatNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/Int32NodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/Int64NodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/PropertyNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/RectNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/StringNodeDataTemplate.axaml" />
@@ -73,7 +74,8 @@
                 <StaticResource ResourceKey="BoolNodeDataTemplate" />
                 <StaticResource ResourceKey="ClassNodeDataTemplate" />
                 <StaticResource ResourceKey="FloatNodeDataTemplate" />
-                <StaticResource ResourceKey="IntNodeDataTemplate" />
+                <StaticResource ResourceKey="Int32NodeDataTemplate" />
+                <StaticResource ResourceKey="Int64NodeDataTemplate" />
                 <StaticResource ResourceKey="PropertyNodeDataTemplate" />
                 <StaticResource ResourceKey="RectNodeDataTemplate" />
                 <StaticResource ResourceKey="StringNodeDataTemplate" />

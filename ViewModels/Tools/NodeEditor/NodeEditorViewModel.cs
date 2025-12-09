@@ -42,7 +42,8 @@ public partial class NodeEditorViewModel : Tool
         { typeof(BoolNodeViewModel),     typeof(BoolNodeModel) },
         { typeof(ClassNodeViewModel),    typeof(ClassNodeModel) },
         { typeof(FloatNodeViewModel),    typeof(FloatNodeModel) },
-        { typeof(Int32NodeViewModel),      typeof(Int32NodeModel) },
+        { typeof(Int32NodeViewModel),    typeof(Int32NodeModel) },
+        { typeof(Int64NodeViewModel),    typeof(Int64NodeModel) },
         { typeof(PropertyNodeViewModel), typeof(PropertyNodeModel) },
         { typeof(RectNodeViewModel),     typeof(RectNodeModel) },
         { typeof(StringNodeViewModel),   typeof(StringNodeModel) },
@@ -148,6 +149,29 @@ public partial class NodeEditorViewModel : Tool
     private Task OnAddInt32NodeFromMouse(TransformGroup transform)
     {
         AddNodeAtLocation<Int32NodeViewModel>(GetLocation(transform, LastMousePosition));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="Int64NodeViewModel"/> at a position 
+    /// derived from the provided transform, using a fixed offset.
+    /// Intended for toolbar or menu actions.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddInt64Node(TransformGroup transform)
+    {
+        AddNodeAtLocation<Int64NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        return Task.CompletedTask;
+    }
+    
+    /// <summary>
+    /// Creates and adds a new <see cref="Int64NodeViewModel"/> at the current
+    /// mouse position within the graph editor.
+    /// </summary>
+    [RelayCommand]
+    private Task OnAddInt64NodeFromMouse(TransformGroup transform)
+    {
+        AddNodeAtLocation<Int64NodeViewModel>(GetLocation(transform, LastMousePosition));
         return Task.CompletedTask;
     }
     

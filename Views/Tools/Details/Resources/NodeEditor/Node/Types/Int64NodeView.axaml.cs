@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace warkbench.Views;
 
-public partial class IntNodeView : UserControl
+public partial class Int64NodeView : UserControl
 {
-    public IntNodeView()
+    public Int64NodeView()
     {
         InitializeComponent();
     }

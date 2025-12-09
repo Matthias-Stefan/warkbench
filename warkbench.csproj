@@ -126,6 +126,10 @@
       <DependentUpon>PropertyNodeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\Int64NodeView.axaml.cs">
+      <DependentUpon>Int64NodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
