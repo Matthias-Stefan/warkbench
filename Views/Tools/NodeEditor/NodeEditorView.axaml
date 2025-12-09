@@ -23,7 +23,7 @@
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/BoolNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/ClassNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/FloatNodeDataTemplate.axaml" />
-                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/IntNodeDataTemplate.axaml" />
+                <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/Int32NodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/PropertyNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/RectNodeDataTemplate.axaml" />
                 <ResourceInclude Source="avares://warkbench/Views/Tools/NodeEditor/Resources/Types/StringNodeDataTemplate.axaml" />
@@ -119,10 +119,30 @@
         <Border Grid.Row="0"
                 Margin="3,3,3,0"
                 Padding="6">
-            <Menu>
-                <MenuItem Header="Nodes"
-                          x:Name="NodesMenuRoot" />
-            </Menu>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Menu>
+                    <MenuItem Header="Nodes"
+                              x:Name="NodesMenuRoot" />
+                </Menu>
+                
+                <Button>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Width="16"
+                                  Height="16" 
+                                  Data="{StaticResource icon_crop_free}"/>
+                        <TextBlock Text="Bring into view" />
+                    </StackPanel>
+                </Button>
+                
+                <Button>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon Width="16"
+                                  Height="16" 
+                                  Data="{StaticResource icon_graph}"/>
+                        <TextBlock Text="Sort" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>

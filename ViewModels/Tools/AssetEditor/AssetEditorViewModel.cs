@@ -39,8 +39,8 @@ public partial class AssetEditorViewModel : Tool
     {
         if (obj is not AssetViewModel)
         {
-            _selectedAsset = null;
-            OnPropertyChanged(nameof(SelectedAsset));
+            //_selectedAsset = null;
+            //OnPropertyChanged(nameof(SelectedAsset));
         }
     }
     

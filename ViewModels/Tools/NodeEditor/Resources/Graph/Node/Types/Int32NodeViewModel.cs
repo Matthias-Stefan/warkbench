@@ -5,9 +5,9 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
+public partial class Int32NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
-    public IntNodeViewModel(IntNodeModel model)
+    public Int32NodeViewModel(Int32NodeModel model)
         : base(model)
     {
         BorderColor = NodeBrushes.Int;
@@ -69,6 +69,6 @@ public partial class IntNodeViewModel : NodeViewModel, IOutputNodeViewModel
         }
     }
     
-    public IntNodeModel IntModel => (Model as IntNodeModel)!;
+    public Int32NodeModel IntModel => (Model as Int32NodeModel)!;
     public ObservableCollection<ConnectorViewModel> Outputs { get; } = [];
 }

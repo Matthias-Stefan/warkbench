@@ -83,7 +83,7 @@
         </DataTemplate>
         
         <!--  Int Node  -->
-        <DataTemplate DataType="vm:IntNodeViewModel">
+        <DataTemplate DataType="vm:Int32NodeViewModel">
             <Grid>
                 <views:IntNodeView />
             </Grid>

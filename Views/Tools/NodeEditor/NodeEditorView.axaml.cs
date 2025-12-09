@@ -53,18 +53,18 @@ public partial class NodeEditorView : UserControl
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Int", "icon_int", NodeBrushes.Int, vm.AddIntNodeCommand));
+        NodesMenuRoot.Items.Add(CreateMainMenuItem("Int32", "icon_int", NodeBrushes.Int, vm.AddInt32NodeCommand));
+        //NodesMenuRoot.Items.Add(CreateMainMenuItem("Int64", "icon_int", NodeBrushes.Int, vm.AddInt64NodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("String", "icon_string", NodeBrushes.String, vm.AddStringNodeCommand));
         NodesMenuRoot.Items.Add(CreateMainMenuItem("Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeCommand));
-        
-        
         
         NodePaletteMenu.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeFromMouseCommand));
-        NodePaletteMenu.Items.Add(CreateMainMenuItem("Int", "icon_int", NodeBrushes.Int, vm.AddIntNodeFromMouseCommand));
+        NodePaletteMenu.Items.Add(CreateMainMenuItem("Int32", "icon_int", NodeBrushes.Int, vm.AddInt32NodeFromMouseCommand));
+        //NodePaletteMenu.Items.Add(CreateMainMenuItem("Int64", "icon_int", NodeBrushes.Int, vm.AddInt64NodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("String", "icon_string", NodeBrushes.String, vm.AddStringNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeFromMouseCommand));

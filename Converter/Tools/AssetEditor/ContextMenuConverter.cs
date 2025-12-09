@@ -71,6 +71,16 @@ public class ContextMenuConverter : IMultiValueConverter
                 });
                 break;
             
+            case PropertyViewModel propertyViewModel:
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Remove",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_delete")! },
+                    Command = assetEditorViewModel.RemovePropertyCommand,
+                    CommandParameter = propertyViewModel
+                });
+                break;
+            
             default:
                 contextMenu.IsVisible = false;
                 break;

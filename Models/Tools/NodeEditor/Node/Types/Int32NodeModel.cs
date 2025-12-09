@@ -2,23 +2,23 @@
 
 
 namespace warkbench.Models;
-public class IntNodeModel : NodeModel
+public class Int32NodeModel : NodeModel
 {
-    public IntNodeModel()
+    public Int32NodeModel()
     {
-        Title = "Int";
+        Title = "Int32";
     }
     
     public override NodeModel DeepClone()
     {
-        var model = new IntNodeModel
+        var model = new Int32NodeModel
         {
             Guid = System.Guid.NewGuid(),
             Title = Title,
             Name = Name,
             Description = Description,
             Location = new Avalonia.Point(Location.X, Location.Y),
-            IsBlueprint = IsBlueprint,
+            NodeHeaderBrushType = NodeHeaderBrushType,
         };
 
         foreach (var connector in Outputs)

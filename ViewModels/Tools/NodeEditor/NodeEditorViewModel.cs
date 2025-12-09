@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using Avalonia.Logging;
+using Avalonia.Threading;
 using warkbench.Infrastructure;
 using warkbench.Models;
 
@@ -40,7 +42,7 @@ public partial class NodeEditorViewModel : Tool
         { typeof(BoolNodeViewModel),     typeof(BoolNodeModel) },
         { typeof(ClassNodeViewModel),    typeof(ClassNodeModel) },
         { typeof(FloatNodeViewModel),    typeof(FloatNodeModel) },
-        { typeof(IntNodeViewModel),      typeof(IntNodeModel) },
+        { typeof(Int32NodeViewModel),      typeof(Int32NodeModel) },
         { typeof(PropertyNodeViewModel), typeof(PropertyNodeModel) },
         { typeof(RectNodeViewModel),     typeof(RectNodeModel) },
         { typeof(StringNodeViewModel),   typeof(StringNodeModel) },
@@ -93,30 +95,41 @@ public partial class NodeEditorViewModel : Tool
     /// </param>
     public void AddNodeViewModel(NodeViewModel vm)
     {
-        SubscribeConnectionEvents(vm);
-        Nodes.Add(vm);
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            SubscribeConnectionEvents(vm);
+            Nodes.Add(vm);
+        }
+        else
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                SubscribeConnectionEvents(vm);
+                Nodes.Add(vm);
+            });
+        }
     }
     
     /// <summary>
-    /// Creates and adds a new <see cref="IntNodeViewModel"/> at a position 
+    /// Creates and adds a new <see cref="Int32NodeViewModel"/> at a position 
     /// derived from the provided transform, using a fixed offset.
     /// Intended for toolbar or menu actions.
     /// </summary>
     [RelayCommand]
-    private Task OnAddIntNode(TransformGroup transform)
+    private Task OnAddInt32Node(TransformGroup transform)
     {
-        AddNodeAtLocation<IntNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<Int32NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
         return Task.CompletedTask;
     }
     
     /// <summary>
-    /// Creates and adds a new <see cref="IntNodeViewModel"/> at the current
+    /// Creates and adds a new <see cref="Int32NodeViewModel"/> at the current
     /// mouse position within the graph editor.
     /// </summary>
     [RelayCommand]
-    private Task OnAddIntNodeFromMouse(TransformGroup transform)
+    private Task OnAddInt32NodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<IntNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<Int32NodeViewModel>(GetLocation(transform, LastMousePosition));
         return Task.CompletedTask;
     }
     
@@ -354,7 +367,6 @@ public partial class NodeEditorViewModel : Tool
             ? NewBlueprintNodeViewModel<T>(location: location) 
             : NewNodeViewModel<T>(location: location);
         nodeViewModel.Name = name;
-        AddNodeViewModel(nodeViewModel);
     }
     
     /// <summary>
@@ -633,14 +645,15 @@ public partial class NodeEditorViewModel : Tool
             {
                 return;    
             }
-            
+
+            Console.WriteLine(value);
             _selectedNode = value;
             _selectionService.SelectedObject = value;
             OnPropertyChanged();
         }
     }
 
-    public IProjectManager ProjectManager { get; init; }
+    public IProjectManager ProjectManager { get; }
 
     private NodeEditorModel Model { get; }
     

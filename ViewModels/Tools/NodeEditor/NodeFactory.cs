@@ -12,7 +12,7 @@ public static class NodeFactory
             BoolNodeModel     m => new BoolNodeViewModel(m),
             ClassNodeModel    m => new ClassNodeViewModel(m),
             FloatNodeModel    m => new FloatNodeViewModel(m),
-            IntNodeModel      m => new IntNodeViewModel(m),
+            Int32NodeModel      m => new Int32NodeViewModel(m),
             PropertyNodeModel m => new PropertyNodeViewModel(m),
             RectNodeModel     m => new RectNodeViewModel(m),
             StringNodeModel   m => new StringNodeViewModel(m),

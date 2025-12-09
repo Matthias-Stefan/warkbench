@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using warkbench.Brushes;
 using warkbench.ViewModels;
 
 
@@ -29,7 +30,7 @@ public class NodeEditorModel
             Name = name,
             Description = description,
             Location = location,
-            IsBlueprint = false
+            NodeHeaderBrushType = NodeHeaderBrushType.None
         };
 
         _nodes.Add(node);
@@ -61,7 +62,7 @@ public class NodeEditorModel
             Name = name,
             Description = description,
             Location = location,
-            IsBlueprint = true
+            NodeHeaderBrushType = NodeHeaderBrushType.Blueprint
         };
 
         _nodes.Add(node);

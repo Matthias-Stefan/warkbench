@@ -18,7 +18,7 @@ public class FloatNodeModel : NodeModel
             Name = Name,
             Description = Description,
             Location = new Avalonia.Point(Location.X, Location.Y),
-            IsBlueprint = IsBlueprint,
+            NodeHeaderBrushType = NodeHeaderBrushType,
         };
 
         foreach (var connector in Outputs)

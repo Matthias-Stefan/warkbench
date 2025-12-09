@@ -5,14 +5,14 @@
                     xmlns:br="using:warkbench.Brushes"
                     xmlns:converter="using:warkbench.Converter">
 
-    <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
+    <converter:NodeHeaderBrushConverter x:Key="NodeHeaderBrushConverter"/>
     <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
     
     <DataTemplate x:Key="BoolNodeDataTemplate" 
                   x:DataType="vm:BoolNodeViewModel">
         <nodify:Node Output="{Binding Outputs}"
-                     HeaderBrush="{Binding IsBlueprint, Converter={StaticResource NodeIsBlueprintConverter}}">
+                     HeaderBrush="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushConverter}}">
             <!--  Header  -->
             <nodify:Node.Header>
                 <Grid ColumnDefinitions="Auto, Auto, Auto, *">
@@ -40,7 +40,7 @@
                                   HorizontalAlignment="Right"
                                   Background="Transparent"
                                   IsChecked="{Binding IsContentVisible}"
-                                  IsVisible="{Binding IsBlueprint, Converter={StaticResource BoolInvertConverter}}">
+                                  IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
                         <PathIcon Width="8"
                                   Height="8"
                                   Data="{Binding IsContentVisible, Converter={StaticResource NodeContentToggleButtonIconConverter}}" />

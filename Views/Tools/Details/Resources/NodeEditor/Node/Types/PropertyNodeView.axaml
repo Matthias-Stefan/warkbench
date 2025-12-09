@@ -74,7 +74,7 @@
                 </Border>
 
                 <!--  Value  -->
-                <Border Height="32" IsVisible="{Binding IsBlueprint, Converter={StaticResource BoolInvertConverter}}">
+                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"

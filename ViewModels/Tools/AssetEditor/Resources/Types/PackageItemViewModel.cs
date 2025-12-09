@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using warkbench.Brushes;
 using warkbench.Models;
 
 
@@ -13,7 +14,7 @@ public class PackageItemViewModel : AssetViewModel, IGraphContainer
         
         foreach (var nodeModel in Model.Nodes)
         {
-            nodeModel.IsBlueprint = false;
+            nodeModel.NodeHeaderBrushType = NodeHeaderBrushType.None;
             Nodes.Add(NodeFactory.CreateFromModel(nodeModel));
         }
 

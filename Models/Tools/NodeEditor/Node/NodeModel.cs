@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using warkbench.Brushes;
 using warkbench.ViewModels;
 
 
@@ -24,7 +25,7 @@ public abstract class NodeModel : IDeepCloneable<NodeModel>
     public Avalonia.Point Location { get; set; } = new(0, 0);
 
     [JsonProperty] 
-    public required bool IsBlueprint { get; set; } = false;
+    public required NodeHeaderBrushType NodeHeaderBrushType { get; set; } = NodeHeaderBrushType.None;
     
     [JsonProperty]
     public HashSet<ConnectorModel> Inputs { get; set; } = [];

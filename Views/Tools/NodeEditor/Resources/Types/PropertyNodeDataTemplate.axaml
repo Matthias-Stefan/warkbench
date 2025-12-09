@@ -6,14 +6,14 @@
                     x:CompileBindings="False"
                     xmlns:converter="using:warkbench.Converter">
 
-    <converter:NodeIsBlueprintConverter x:Key="NodeIsBlueprintConverter"/>
+    <converter:NodeHeaderBrushConverter x:Key="NodeHeaderBrushConverter"/>
     <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
     
     <DataTemplate x:Key="PropertyNodeDataTemplate"  
                   x:DataType="vm:PropertyNodeViewModel">
         <nodify:Node Output="{Binding Outputs}"
-                     HeaderBrush="{Binding IsBlueprint, Converter={StaticResource NodeIsBlueprintConverter}}">
+                     HeaderBrush="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushConverter}}">
             <!--  Header  -->
             <nodify:Node.Header>
                 <Grid ColumnDefinitions="Auto, Auto, *">

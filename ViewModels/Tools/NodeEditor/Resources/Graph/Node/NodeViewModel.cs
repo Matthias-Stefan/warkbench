@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using warkbench.Brushes;
 using warkbench.Models;
 
 
@@ -64,17 +65,17 @@ public abstract partial class NodeViewModel : ObservableObject
         }
     }
     
-    public bool IsBlueprint
+    public NodeHeaderBrushType NodeHeaderBrushType
     {
-        get => Model.IsBlueprint;
+        get => Model.NodeHeaderBrushType;
         set
         {
-            if (Model.IsBlueprint == value)
+            if (Model.NodeHeaderBrushType == value)
             {
                 return;
             }
 
-            Model.IsBlueprint = value;
+            Model.NodeHeaderBrushType = value;
             OnPropertyChanged();
         }
     }
@@ -88,7 +89,7 @@ public abstract partial class NodeViewModel : ObservableObject
 
     public bool IsContentVisible
     {
-        get => !IsBlueprint && _isContentVisible;
+        get => NodeHeaderBrushType == NodeHeaderBrushType.None && _isContentVisible;
         set => SetProperty(ref _isContentVisible, value);
     }
 
