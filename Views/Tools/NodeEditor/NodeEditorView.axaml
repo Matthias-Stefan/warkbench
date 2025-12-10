@@ -90,11 +90,13 @@
                     <Setter Property="BorderBrush"
                             Value="{Binding BorderColor}" />
                     <Setter Property="SelectedBrush"
-                            Value="{Binding SelectedColor}"/>
+                            Value="{Binding SelectedColor}" />
                     <Setter Property="SelectedBorderThickness"
-                            Value="4"/>
+                            Value="4" />
                     <Setter Property="Location"
-                            Value="{Binding Location}"/>
+                            Value="{Binding Location}" />
+                    <Setter Property="ActualSize"
+                            Value="{Binding Size, Mode=OneWayToSource}" />
                 </ControlTheme>
             </nodify:NodifyEditor.ItemContainerTheme>
             

@@ -64,6 +64,14 @@ public abstract partial class NodeViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
+
+    public Avalonia.Size Size
+    {
+        get => _size;
+        set =>  SetProperty(ref _size, value);
+    }
+
+    private Avalonia.Size _size;
     
     public NodeHeaderBrushType NodeHeaderBrushType
     {

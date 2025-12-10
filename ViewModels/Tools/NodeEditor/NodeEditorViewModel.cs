@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Logging;
 using Avalonia.Threading;
+using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
 
@@ -675,43 +676,107 @@ public partial class NodeEditorViewModel : Tool
         OnPropertyChanged(nameof(Connections));
     }
 
+
+    protected sealed class NodeRect
+    {
+        public void Add(NodeViewModel node)
+        {
+            _nodes.Add(node);
+            var minX = double.MaxValue;
+            var minY = double.MaxValue;
+            
+            var maxX = double.MinValue;
+            var maxY = double.MinValue;
+
+            foreach (var n in _nodes)
+            {
+                minX = Math.Min(minX, n.Location.X);
+                minY = Math.Min(minY, n.Location.Y);
+                maxX = Math.Max(maxX, n.Location.X + n.Size.Width);
+                maxY = Math.Max(maxY, n.Location.Y + n.Size.Height);
+            }
+
+            Rect = new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        public void Move(Avalonia.Vector delta)
+        {
+            
+        }
+
+        public TransformGroup Translate { get; private set; } = new TransformGroup();
+        public Avalonia.Rect Rect { get; private set; } = new(0, 0, 0, 0);
+        
+        private readonly HashSet<NodeViewModel> _nodes = [];
+    }
+
+    private void Sort(IEnumerable<IOutputNodeViewModel> sources, IInputNodeViewModel target)
+    {
+        // target must be NodeViewModel
+        if (target is not NodeViewModel targetNode)
+        {
+            return;
+        }
+
+        // all sources must be NodeViewModel
+        if (sources.Any(s => s is not NodeViewModel) || sources.Count() == 0)
+        {
+            return;
+        }
+
+        double y = 0;
+        const double xOffset = 100;
+        const double yOffset = 20;
+        var rect = new NodeRect();
+
+        var connections = Connections.Where(c => c.Target.Node == target);
+        foreach (var connection in connections)
+        {
+            var sourceNode = connection.Source.Node;
+            sourceNode.Location = new Point(0, y);
+            y += sourceNode.Size.Height + yOffset;
+        
+            rect.Add(connection.Source.Node); 
+        }
+
+        var debugNode1 = new BoolNodeViewModel(new BoolNodeModel
+            { Guid = System.Guid.NewGuid(), NodeHeaderBrushType = NodeHeaderBrushType.None })
+        {
+            Location = new Point(rect.Rect.X, rect.Rect.Y),
+        };
+        var debugNode2 = new BoolNodeViewModel(new BoolNodeModel
+            { Guid = System.Guid.NewGuid(), NodeHeaderBrushType = NodeHeaderBrushType.None })
+        {
+            Location = new Point(rect.Rect.X + rect.Rect.Width, rect.Rect.Y + rect.Rect.Height),
+        };
+
+        Nodes.Add(debugNode1);
+        Nodes.Add(debugNode2);
+
+        var center = rect.Rect.Center;
+        targetNode.Location = new Point(rect.Rect.Width + targetNode.Size.Width + xOffset, center.Y - targetNode.Size.Height / 2);
+    }
+
+
     [RelayCommand]
     private Task OnSortNodes()
     {
-        var nodesByLevel = new Dictionary<int, NodeViewModel>();
-        foreach (var node in Nodes)
-        {
-            if (node is IOutputNodeViewModel oNode)
-            {
-                if (oNode.Outputs.Count == 0)
-                {
-                    nodesByLevel.Add(0, node);
-                }
-                
-            }
-            else if (node is IInputNodeViewModel iNode)
-            {
-                if (iNode.Inputs.Count == 0)
-                {
-                    nodesByLevel.Add(0, node);
-                }
-            }
-            else if (node is IInputOutputNodeViewModel ioNode)
-            {
-                if (ioNode.Inputs.Count == 0 && ioNode.Outputs.Count == 0)
-                {
-                    nodesByLevel.Add(0, node);
-                }
-            }
-            else
-            {
-                throw  new NotImplementedException();
-            }
-        }
+        var nodes = Nodes.ToHashSet();
+
+        Sort(nodes.OfType<IOutputNodeViewModel>(), nodes.OfType<IInputNodeViewModel>().First());
+        
+
+
         
         
+
+
+
+
         return Task.CompletedTask;
     }
+
+
 
 
 
