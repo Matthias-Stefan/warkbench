@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia.Logging;
 using Avalonia.Threading;
+using Nodify;
 using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
@@ -675,113 +676,171 @@ public partial class NodeEditorViewModel : Tool
         OnPropertyChanged(nameof(Nodes));
         OnPropertyChanged(nameof(Connections));
     }
-
-
-    protected sealed class NodeRect
+    
+    /// <summary>
+    /// Performs a tree/forest layout on the current Nodes / Connections.
+    /// </summary>
+    private void Sort(Dictionary<NodeViewModel, NodeRect> nodeRectsMap)
     {
-        public void Add(NodeViewModel node)
-        {
-            _nodes.Add(node);
-            var minX = double.MaxValue;
-            var minY = double.MaxValue;
-            
-            var maxX = double.MinValue;
-            var maxY = double.MinValue;
+        // 1) Build parent/child maps in a pass
+        var allNodes = nodeRectsMap.Keys.ToList();
 
-            foreach (var n in _nodes)
+        var nodeChildrenMap = allNodes.ToDictionary(
+            n => n,
+            _ => new List<NodeViewModel>());
+
+        var nodeParentMap = new Dictionary<NodeViewModel, NodeViewModel>();
+
+        foreach (var connection in Connections)
+        {
+            var source = connection.Source.Node;
+            var target = connection.Target.Node;
+
+            if (source is null || target is null)
+                continue;
+
+            // child (source) => parent (target)
+            if (nodeChildrenMap.TryGetValue(target, out var children))
             {
-                minX = Math.Min(minX, n.Location.X);
-                minY = Math.Min(minY, n.Location.Y);
-                maxX = Math.Max(maxX, n.Location.X + n.Size.Width);
-                maxY = Math.Max(maxY, n.Location.Y + n.Size.Height);
+                children.Add(source);
             }
 
-            Rect = new Rect(minX, minY, maxX - minX, maxY - minY);
+            if (!nodeParentMap.ContainsKey(source))
+            {
+                nodeParentMap[source] = target;
+            }
         }
 
-        public void Move(Avalonia.Vector delta)
+        // 2) Identify leaves
+        var leaves = allNodes
+            .Where(n =>
+                n is IOutputNodeViewModel ||
+                n is IInputNodeViewModel { Inputs.Count: 0 })
+            .ToList();
+
+        var currentIt = leaves.ToHashSet();
+
+        const double xOffset = 100.0;
+        const double yOffset = 20.0;
+
+        // 3) Walk up from the leaves and layout subtrees
+        while (true)
         {
-            
+            var parentsCurrentIt = new HashSet<NodeViewModel>();
+
+            foreach (var node in currentIt)
+            {
+                if (nodeParentMap.TryGetValue(node, out var parent))
+                {
+                    parentsCurrentIt.Add(parent);
+                }
+            }
+
+            if (parentsCurrentIt.Count == 0)
+                break;
+
+            foreach (var parent in parentsCurrentIt)
+            {
+                if (!nodeChildrenMap.TryGetValue(parent, out var children) || children.Count == 0)
+                    continue;
+
+                // Sort children by current Y position
+                var orderedChildren = children
+                    .Where(child => nodeRectsMap.ContainsKey(child))
+                    .OrderBy(child => nodeRectsMap[child].Rect.Y)
+                    .ToList();
+
+                if (orderedChildren.Count == 0)
+                    continue;
+
+                double y = 0.0;
+                var groupRect = new NodeRect();
+
+                // 3a) Place child subtrees vertically below each other
+                foreach (var child in orderedChildren)
+                {
+                    var childRect = nodeRectsMap[child];
+                    var rect = childRect.Rect;
+
+                    // We move the subtree so that its upper left corner is at (0, y).
+                    var delta = new Vector(
+                        -rect.X,
+                        y - rect.Y);
+
+                    childRect.Move(delta);
+
+                    // Increase y for the next child
+                    y += childRect.Rect.Height + yOffset;
+
+                    groupRect.Merge(childRect);
+                }
+
+                // 3b) Place parent to the right of children, vertically centered
+                var center = groupRect.Rect.Center;
+                var parentRect = nodeRectsMap[parent];
+
+                var parentDelta = new Vector(
+                    groupRect.Rect.Width + xOffset - parent.Location.X,
+                    center.Y - parent.Size.Height / 2.0 - parent.Location.Y);
+
+                parentRect.Move(parentDelta);
+                groupRect.Merge(parentRect);
+
+                // 3c) Update subtree rect for parent
+                nodeRectsMap[parent] = groupRect;
+            }
+
+            currentIt.Clear();
+            currentIt.UnionWith(parentsCurrentIt);
         }
 
-        public TransformGroup Translate { get; private set; } = new TransformGroup();
-        public Avalonia.Rect Rect { get; private set; } = new(0, 0, 0, 0);
-        
-        private readonly HashSet<NodeViewModel> _nodes = [];
+        // 4) Arrange several trees (Forest) next to each other
+        var roots = allNodes
+            .Where(n => !nodeParentMap.ContainsKey(n))
+            .ToList();
+
+        // Optional: Sort roots, e.g. by Y (or by name)
+        roots = roots
+            .OrderBy(r => nodeRectsMap[r].Rect.Y)
+            .ToList();
+
+        const double treeSpacing = 200.0;
+        double currentX = 0.0;
+
+        foreach (var root in roots)
+        {
+            var treeRect = nodeRectsMap[root];
+
+            // Move the tree so that its upper left corner is at (currentX, 0)
+            var delta = new Vector(
+                currentX - treeRect.Rect.X,
+                0.0 - treeRect.Rect.Y);
+
+            treeRect.Move(delta);
+
+            currentX += treeRect.Rect.Width + treeSpacing;
+        }
     }
-
-    private void Sort(IEnumerable<IOutputNodeViewModel> sources, IInputNodeViewModel target)
-    {
-        // target must be NodeViewModel
-        if (target is not NodeViewModel targetNode)
-        {
-            return;
-        }
-
-        // all sources must be NodeViewModel
-        if (sources.Any(s => s is not NodeViewModel) || sources.Count() == 0)
-        {
-            return;
-        }
-
-        double y = 0;
-        const double xOffset = 100;
-        const double yOffset = 20;
-        var rect = new NodeRect();
-
-        var connections = Connections.Where(c => c.Target.Node == target);
-        foreach (var connection in connections)
-        {
-            var sourceNode = connection.Source.Node;
-            sourceNode.Location = new Point(0, y);
-            y += sourceNode.Size.Height + yOffset;
-        
-            rect.Add(connection.Source.Node); 
-        }
-
-        var debugNode1 = new BoolNodeViewModel(new BoolNodeModel
-            { Guid = System.Guid.NewGuid(), NodeHeaderBrushType = NodeHeaderBrushType.None })
-        {
-            Location = new Point(rect.Rect.X, rect.Rect.Y),
-        };
-        var debugNode2 = new BoolNodeViewModel(new BoolNodeModel
-            { Guid = System.Guid.NewGuid(), NodeHeaderBrushType = NodeHeaderBrushType.None })
-        {
-            Location = new Point(rect.Rect.X + rect.Rect.Width, rect.Rect.Y + rect.Rect.Height),
-        };
-
-        Nodes.Add(debugNode1);
-        Nodes.Add(debugNode2);
-
-        var center = rect.Rect.Center;
-        targetNode.Location = new Point(rect.Rect.Width + targetNode.Size.Width + xOffset, center.Y - targetNode.Size.Height / 2);
-    }
-
-
+    
+    /// <summary>
+    /// Recalculates the layout of all nodes by computing subtree bounding boxes
+    /// and arranging them into a structured forest layout. Existing node positions
+    /// are used as the initial base rectangles before performing a full bottom-up
+    /// layout pass.
+    /// </summary>
     [RelayCommand]
     private Task OnSortNodes()
     {
-        var nodes = Nodes.ToHashSet();
+        // Generate base rectangles from current node positions
+        var nodeRectsMap = Nodes
+            .ToHashSet()
+            .ToDictionary(node => node, node => new NodeRect(node));
 
-        Sort(nodes.OfType<IOutputNodeViewModel>(), nodes.OfType<IInputNodeViewModel>().First());
-        
-
-
-        
-        
-
-
-
+        Sort(nodeRectsMap);
 
         return Task.CompletedTask;
     }
-
-
-
-
-
-
-
+    
     public bool IsEnabled => _selectedNodeContainer is not null;
     public PendingConnectionViewModel PendingConnection { get; }
     public ObservableCollection<NodeViewModel> Nodes { get; set; } = [];
@@ -812,4 +871,124 @@ public partial class NodeEditorViewModel : Tool
     private readonly ISelectionService _selectionService;
     private NodeViewModel? _selectedNode = null;
     private IGraphContainer? _selectedNodeContainer = null;
+    
+   /// <summary>
+    /// Represents a bounding box for a logical subtree of nodes. A <see cref="NodeRect"/> 
+    /// tracks all nodes that belong to the same subtree and computes a unified rectangle 
+    /// that tightly encloses all of them. The rect automatically updates whenever nodes 
+    /// are added, merged, or moved.
+    /// 
+    /// <para>
+    /// This structure is used by the layout algorithm to treat entire subtrees as 
+    /// movable blocks. Calling <see cref="Move"/> shifts all contained nodes together, 
+    /// preserving their relative spatial configuration.
+    /// </para>
+    /// </summary>
+    private sealed class NodeRect
+    {
+        /// <summary>
+        /// Initializes a new <see cref="NodeRect"/> containing an optional initial node.
+        /// The bounding rectangle is computed immediately.
+        /// </summary>
+        public NodeRect(NodeViewModel? node = null)
+        {
+            if (node is not null)
+            {
+                _nodes.Add(node);
+            }
+
+            Update();
+        }
+
+        /// <summary>
+        /// Adds a single node to the subtree. If the node is newly added,
+        /// the bounding rectangle is recalculated.
+        /// </summary>
+        public void Add(NodeViewModel node)
+        {
+            if (_nodes.Add(node))
+            {
+                Update();
+            }
+        }
+
+        /// <summary>
+        /// Merges another <see cref="NodeRect"/> into this one by importing all nodes 
+        /// from the other subtree. The resulting bounding rectangle covers both sets.
+        /// </summary>
+        public void Merge(NodeRect other)
+        {
+            foreach (var node in other._nodes)
+            {
+                _nodes.Add(node);
+            }
+
+            Update();
+        }
+
+        /// <summary>
+        /// Moves all nodes contained in this subtree by the given vector. 
+        /// Node positions are updated directly, and the bounding rectangle 
+        /// is recalculated afterwards.
+        /// </summary>
+        public void Move(Avalonia.Vector delta)
+        {
+            if (delta == default)
+                return;
+
+            foreach (var node in _nodes)
+            {
+                node.Location += delta;
+            }
+
+            Update();
+        }
+
+        /// <summary>
+        /// Recomputes the bounding rectangle so that it tightly encloses
+        /// all nodes in the subtree. If the subtree is empty, a zero-sized rect is used.
+        /// </summary>
+        public void Update()
+        {
+            if (_nodes.Count == 0)
+            {
+                Rect = new Rect(0, 0, 0, 0);
+                return;
+            }
+
+            var minX = double.MaxValue;
+            var minY = double.MaxValue;
+            var maxX = double.MinValue;
+            var maxY = double.MinValue;
+
+            foreach (var n in _nodes)
+            {
+                minX = Math.Min(minX, n.Location.X);
+                minY = Math.Min(minY, n.Location.Y);
+                maxX = Math.Max(maxX, n.Location.X + n.Size.Width);
+                maxY = Math.Max(maxY, n.Location.Y + n.Size.Height);
+            }
+
+            Rect = new Avalonia.Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+        /// <summary>
+        /// Gets all nodes currently included in this subtree. 
+        /// </summary>
+        public IReadOnlyCollection<NodeViewModel> Nodes => _nodes;
+
+        /// <summary>
+        /// Gets the bounding rectangle that encloses all nodes in the subtree.
+        /// This value updates whenever the subtree contents or positions change.
+        /// </summary>
+        public Avalonia.Rect Rect { get; private set; } = new Avalonia.Rect(0, 0, 0, 0);
+
+        /// <summary>
+        /// An optional transform container for future extensions. 
+        /// Not used directly by the layout algorithm, but available for UI rendering layers.
+        /// </summary>
+        public TransformGroup Translate { get; private set; } = new TransformGroup();
+
+        private readonly HashSet<NodeViewModel> _nodes = [];
+    }
 }
