@@ -124,6 +124,13 @@
             </Grid>
         </DataTemplate>
         
+        <!--  Property Node  -->
+        <DataTemplate DataType="vm:PropertyNodeViewModel">
+            <Grid>
+                <views:PropertyNodeView />
+            </Grid>
+        </DataTemplate>
+        
         <!--  DEFAULT  -->
         <DataTemplate DataType="toolkit:ObservableObject">
             <Grid>

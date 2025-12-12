@@ -25,40 +25,53 @@ public partial class NodeEditorView : UserControl
         
         BuildMenus(vm);
     }
+
+
     
     private void BuildMenus(NodeEditorViewModel vm)
     {
-        var propertiesNodesMenuRootItem = CreateMainMenuItem("Properties", "icon_precision_manufacturing", NodeBrushes.Property, null);
-        if (vm.ProjectManager.CurrentProject is not null) 
+        MenuItem CreatePropertyMenu(ICommand command)
         {
+            var root = CreateMainMenuItem(
+                "Properties",
+                "icon_precision_manufacturing",
+                NodeBrushes.Property,
+                null);
+
+            if (vm.ProjectManager.CurrentProject is null)
+                return root;
+
             foreach (var property in vm.ProjectManager.CurrentProject.Properties)
             {
-                var propertyItem = new MenuItem
+                root.Items.Add(new MenuItem
                 {
                     Header = new TextBlock { Text = property.Name },
-                    Command = vm.AddPropertyNodeCommand,
+                    Command = command,
                     CommandParameter = new Tuple<TransformGroup, GraphModel>(Editor.ViewportTransform as TransformGroup, property),
                     Icon = new PathIcon
                     {
-                        Data = (Geometry)Application.Current!.FindResource("icon_property_node")!,
-                        Foreground = NodeBrushes.Property,
+                        Data = (Geometry)Application.Current!
+                            .FindResource("icon_property_node")!,
+                        Foreground = NodeBrushes.Property
                     }
-                };
-                propertiesNodesMenuRootItem.Items.Add(propertyItem);
+                });
             }
+
+            return root;
         }
-        NodesMenuRoot.Items.Add(propertiesNodesMenuRootItem);
         
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Int32", "icon_int32", NodeBrushes.Int32, vm.AddInt32NodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Int64", "icon_int64", NodeBrushes.Int64, vm.AddInt64NodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("String", "icon_string", NodeBrushes.String, vm.AddStringNodeCommand));
-        NodesMenuRoot.Items.Add(CreateMainMenuItem("Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeCommand));
-        
+        NodeMenuRoot.Items.Add(CreatePropertyMenu(vm.AddPropertyNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Float", "icon_float", NodeBrushes.Float, vm.AddFloatNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Int32", "icon_int32", NodeBrushes.Int32, vm.AddInt32NodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Int64", "icon_int64", NodeBrushes.Int64, vm.AddInt64NodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Rectangle", "icon_rect_node", NodeBrushes.Rectangle, vm.AddRectNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("String", "icon_string", NodeBrushes.String, vm.AddStringNodeCommand));
+        NodeMenuRoot.Items.Add(CreateMainMenuItem("Texture", "icon_texture_node", NodeBrushes.Texture, vm.AddTextureNodeCommand));
+       
+        NodePaletteMenu.Items.Add(CreatePropertyMenu(vm.AddPropertyNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeFromMouseCommand));
         NodePaletteMenu.Items.Add(CreateMainMenuItem("Class", "icon_class", NodeBrushes.Class, vm.AddClassNodeFromMouseCommand));

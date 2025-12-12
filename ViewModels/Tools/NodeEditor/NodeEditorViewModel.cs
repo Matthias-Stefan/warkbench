@@ -1,16 +1,13 @@
 ﻿using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Mvvm.Controls;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
-using System.Collections.Generic;
-using Avalonia.Logging;
-using Avalonia.Threading;
-using Nodify;
-using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
 
@@ -840,13 +837,62 @@ public partial class NodeEditorViewModel : Tool
 
         return Task.CompletedTask;
     }
-    
+
+    /// <summary>
+    /// Moves the viewport so that the graph content is brought into view.
+    /// If at least one node exists, the viewport is centered on the first node;
+    /// otherwise it falls back to the origin.
+    /// </summary>
+    [RelayCommand]
+    private Task OnBringIntoView()
+    {
+        // Use the location of the first node as a reference point,
+        // or fall back to the origin if the graph is empty.
+        ViewportLocation = Nodes.FirstOrDefault()?.Location ?? new Avalonia.Point(0, 0);
+        OnPropertyChanged(nameof(ViewportLocation));
+        
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Indicates whether the node editor is currently active.
+    /// The editor is enabled as soon as a graph container is selected.
+    /// </summary>
     public bool IsEnabled => _selectedNodeContainer is not null;
+
+    /// <summary>
+    /// Represents a connection that is currently being created by the user
+    /// but has not yet been finalized.
+    /// </summary>
     public PendingConnectionViewModel PendingConnection { get; }
+
+    /// <summary>
+    /// Collection of all node view models currently visible in the editor.
+    /// </summary>
     public ObservableCollection<NodeViewModel> Nodes { get; set; } = [];
+
+    /// <summary>
+    /// Collection of all connections between nodes in the current graph.
+    /// </summary>
     public ObservableCollection<ConnectionViewModel> Connections { get; set; } = [];
+
+    /// <summary>
+    /// Stores the last known mouse position in editor coordinates.
+    /// </summary>
     public Avalonia.Point LastMousePosition { get; set; } = new Point(0, 0);
     
+    /// <summary>
+    /// Gets or sets the current viewport location in graph-space coordinates.
+    /// This value defines the top-left origin of the visible editor area
+    /// and is used for panning and programmatic navigation.
+    /// </summary>
+    public Avalonia.Point ViewportLocation { get; set; } = new Point(0, 0);
+    
+    /// <summary>
+    /// Gets or sets the currently selected node.
+    /// Setting this property also propagates the selection
+    /// to the global selection service.
+    /// </summary>
     public NodeViewModel? SelectedNode
     {
         get => _selectedNode;
@@ -864,12 +910,31 @@ public partial class NodeEditorViewModel : Tool
         }
     }
 
+    /// <summary>
+    /// Provides access to the project manager that owns the current graph.
+    /// </summary>
     public IProjectManager ProjectManager { get; }
 
+    /// <summary>
+    /// Underlying model backing this node editor view model.
+    /// </summary>
     private NodeEditorModel Model { get; }
     
+    /// <summary>
+    /// Central selection service used to synchronize selections
+    /// across different editor components.
+    /// </summary>
     private readonly ISelectionService _selectionService;
+    
+    /// <summary>
+    /// Currently selected node instance, if any.
+    /// </summary>
     private NodeViewModel? _selectedNode = null;
+    
+    /// <summary>
+    /// Currently active graph container whose nodes and connections
+    /// are displayed and edited.
+    /// </summary>
     private IGraphContainer? _selectedNodeContainer = null;
     
    /// <summary>
