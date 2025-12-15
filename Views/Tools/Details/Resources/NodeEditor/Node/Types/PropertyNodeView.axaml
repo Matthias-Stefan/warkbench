@@ -75,34 +75,7 @@
 
                 <!--  Value  -->
                 <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"
-                                              MinWidth="100"
-                                              SharedSizeGroup="Left" />
-                            <ColumnDefinition Width="2" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Background="#191a1c">
-                            <TextBlock Margin="19,0,0,0"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       Text="Value" />
-                        </Border>
-
-                        <GridSplitter Grid.Column="1"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch"
-                                      Background="Transparent" />
-
-                        <Border Grid.Column="2" Background="#191a1c">
-                            <ToggleSwitch Margin="19,0,0,0"
-                                          HorizontalAlignment="Left"
-                                          VerticalAlignment="Center"
-                                          IsChecked="{Binding Value}" />
-                        </Border>
-                    </Grid>
+                    <!-- hier der inhalt --> 
                 </Border>
             </StackPanel>
         </Expander>

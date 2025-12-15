@@ -51,21 +51,36 @@ public partial class NodeEditorViewModel : Tool
     };
     
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="Name"></param>
+    /// <param name="Description"></param>
+    /// <param name="Location"></param>
+    /// <param name="InternalGraph"></param>
+    public record NewNodeArgs(
+        string Name = "",
+        string Description = "",
+        Avalonia.Point Location = default,
+        GraphModel? InternalGraph = null
+    );
+    
+    /// <summary>
     /// Creates a regular (non-blueprint) node of the specified <typeparamref name="T"/> type,
     /// initializes it within the editor model, constructs the corresponding view model,
     /// and adds it to the editor's visual collection.
     /// </summary>
-    /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
-    /// <param name="name">The display name assigned to the node.</param>
-    /// <param name="description">An optional description for the node.</param>
-    /// <param name="location">The initial graph-space position of the node.</param>
-    /// <returns>
-    /// A fully initialized instance of <typeparamref name="T"/>.
-    /// </returns>
-    public T NewNodeViewModel<T>(string name = "", string description = "", Avalonia.Point location = new())
+    /// <typeparam name="T">
+    /// The concrete <see cref="NodeViewModel"/> type to create.
+    /// </typeparam>
+    /// <param name="newNodeArgs">
+    /// Describes the creation context of the node.
+    /// </param>
+    public T NewNodeViewModel<T>(NewNodeArgs newNodeArgs)
         where T : NodeViewModel
     {
-        return NewNodeViewModelInternal<T>(nameof(NodeEditorModel.NewNode), name, description, location);
+        return NewNodeViewModelInternal<T>(
+            nameof(NodeEditorModel.NewNode), 
+            newNodeArgs);
     }
 
     /// <summary>
@@ -73,17 +88,18 @@ public partial class NodeEditorViewModel : Tool
     /// initializes it within the editor model, constructs the corresponding view model,
     /// and adds it to the editor's visual collection.
     /// </summary>
-    /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
-    /// <param name="name">The display name assigned to the blueprint node.</param>
-    /// <param name="description">An optional description for the blueprint node.</param>
-    /// <param name="location">The initial graph-space position of the node.</param>
-    /// <returns>
-    /// A fully initialized blueprint instance of <typeparamref name="T"/>.
-    /// </returns>
-    public T NewBlueprintNodeViewModel<T>(string name = "", string description = "", Avalonia.Point location = new())
+    /// <typeparam name="T">
+    /// The concrete <see cref="NodeViewModel"/> type to create.
+    /// </typeparam>
+    /// <param name="newNodeArgs">
+    /// Describes the creation context of the node.
+    /// </param>
+    public T NewBlueprintNodeViewModel<T>(NewNodeArgs newNodeArgs)
         where T : NodeViewModel
     {
-        return NewNodeViewModelInternal<T>(nameof(NodeEditorModel.NewBlueprintNode), name, description, location);
+        return NewNodeViewModelInternal<T>(
+            nameof(NodeEditorModel.NewBlueprintNode), 
+            newNodeArgs);
     }
     
     /// <summary>
@@ -91,17 +107,18 @@ public partial class NodeEditorViewModel : Tool
     /// initializes it within the editor model, constructs the corresponding view model,
     /// and adds it to the editor's visual collection.
     /// </summary>
-    /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
-    /// <param name="name">The display name assigned to the blueprint node.</param>
-    /// <param name="description">An optional description for the blueprint node.</param>
-    /// <param name="location">The initial graph-space position of the node.</param>
-    /// <returns>
-    /// A fully initialized blueprint instance of <typeparamref name="T"/>.
-    /// </returns>
-    public T NewPropertyNodeViewModel<T>(string name = "", string description = "", Avalonia.Point location = new())
+    /// <typeparam name="T">
+    /// The concrete <see cref="NodeViewModel"/> type to create.
+    /// </typeparam>
+    /// <param name="newNodeArgs">
+    /// Describes the creation context of the node.
+    /// </param>
+    public T NewPropertyNodeViewModel<T>(NewNodeArgs newNodeArgs)
         where T : NodeViewModel
     {
-        return NewNodeViewModelInternal<T>(nameof(NodeEditorModel.NewPropertyNode), name, description, location);
+        return NewNodeViewModelInternal<T>(
+            nameof(NodeEditorModel.NewPropertyNode), 
+            newNodeArgs);
     }
     
     /// <summary>
@@ -136,7 +153,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddInt32Node(TransformGroup transform)
     {
-        AddNodeAtLocation<Int32NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<Int32NodeViewModel>(
+            new NewNodeArgs(
+                "Int32", 
+                "", 
+                GetLocation(transform, new Vector(60, 60)), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -147,7 +170,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddInt32NodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<Int32NodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<Int32NodeViewModel>(
+            new NewNodeArgs(
+                "Int32", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -159,7 +188,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddInt64Node(TransformGroup transform)
     {
-        AddNodeAtLocation<Int64NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<Int64NodeViewModel>(
+            new NewNodeArgs(
+                "Int64",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -170,7 +205,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddInt64NodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<Int64NodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<Int64NodeViewModel>(
+            new NewNodeArgs(
+                "Int64", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -182,7 +223,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddFloatNode(TransformGroup transform)
     {
-        AddNodeAtLocation<FloatNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<FloatNodeViewModel>(
+            new NewNodeArgs(
+                "Float",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -193,7 +240,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddFloatNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<FloatNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<FloatNodeViewModel>(
+            new NewNodeArgs(
+                "Float", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -205,7 +258,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddStringNode(TransformGroup transform)
     {
-        AddNodeAtLocation<StringNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<StringNodeViewModel>(
+            new NewNodeArgs(
+                "String",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -216,7 +275,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddStringNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<StringNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<StringNodeViewModel>(
+            new NewNodeArgs(
+                "String", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -228,7 +293,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddClassNode(TransformGroup transform)
     {
-        AddNodeAtLocation<ClassNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<ClassNodeViewModel>(
+            new NewNodeArgs(
+                "Class",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -239,7 +310,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddClassNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<ClassNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<ClassNodeViewModel>(
+            new NewNodeArgs(
+                "Class", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -251,7 +328,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddTextureNode(TransformGroup transform)
     {
-        AddNodeAtLocation<TextureNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<TextureNodeViewModel>(
+            new NewNodeArgs(
+                "Texture",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -262,7 +345,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddTextureNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<TextureNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<TextureNodeViewModel>(
+            new NewNodeArgs(
+                "Texture", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -274,7 +363,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddBoolNode(TransformGroup transform)
     {
-        AddNodeAtLocation<BoolNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<BoolNodeViewModel>(
+            new NewNodeArgs(
+                "Bool",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -285,7 +380,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddBoolNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<BoolNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<BoolNodeViewModel>(
+            new NewNodeArgs(
+                "Bool", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -297,7 +398,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddRectNode(TransformGroup transform)
     {
-        AddNodeAtLocation<RectNodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<RectNodeViewModel>(
+            new NewNodeArgs(
+                "Rect",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -308,7 +415,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddRectNodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<RectNodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<RectNodeViewModel>(
+            new NewNodeArgs(
+                "Rect", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -320,7 +433,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddVec2Node(TransformGroup transform)
     {
-        AddNodeAtLocation<Vec2NodeViewModel>(GetLocation(transform, new Vector(60, 60)));
+        AddNodeAtLocation<Vec2NodeViewModel>(
+            new NewNodeArgs(
+                "Vec2",
+                "", 
+                GetLocation(transform, NodeOffset), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -331,7 +450,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddVec2NodeFromMouse(TransformGroup transform)
     {
-        AddNodeAtLocation<Vec2NodeViewModel>(GetLocation(transform, LastMousePosition));
+        AddNodeAtLocation<Vec2NodeViewModel>(
+            new NewNodeArgs(
+                "Vec2", 
+                "", 
+                GetLocation(transform, LastMousePosition), 
+                null));
+        
         return Task.CompletedTask;
     }
     
@@ -343,7 +468,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddPropertyNode(Tuple<TransformGroup, GraphModel> args)
     {
-        AddNodeAtLocation<PropertyNodeViewModel>(GetLocation(args.Item1, new Vector(60, 60)), args.Item2.Name);
+        AddNodeAtLocation<PropertyNodeViewModel>(
+            new NewNodeArgs(
+                "Property",
+                "", 
+                GetLocation(args.Item1, NodeOffset), 
+                args.Item2.DeepClone()));
+        
         return Task.CompletedTask;
     }
     
@@ -354,7 +485,13 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnAddPropertyNodeFromMouse(Tuple<TransformGroup, GraphModel> args)
     {
-        AddNodeAtLocation<PropertyNodeViewModel>(GetLocation(args.Item1, LastMousePosition));
+        AddNodeAtLocation<PropertyNodeViewModel>(
+            new NewNodeArgs(
+                "Property", 
+                "", 
+                GetLocation(args.Item1, LastMousePosition), 
+                args.Item2.DeepClone()));
+        
         return Task.CompletedTask;
     }
     
@@ -393,26 +530,29 @@ public partial class NodeEditorViewModel : Tool
     }
     
     /// <summary>
-    /// Creates a new node of the specified <typeparamref name="T"/> type at the given location.
-    /// If the current container represents a blueprint, a blueprint node is created;
-    /// otherwise a regular node is instantiated. The resulting node view model is then
+    /// Creates a new node of the specified <typeparamref name="T"/> type using the
+    /// information provided in <see cref="NewNodeArgs"/>. Depending on the current
+    /// container, either a blueprint node or a regular node is instantiated and
     /// added to the editor’s node collection.
     /// </summary>
-    /// <typeparam name="T">The concrete <see cref="NodeViewModel"/> type to create.</typeparam>
-    /// <param name="location">The graph-space position where the node should appear.</param>
-    /// <param name="name">The node name.</param>
-    private void AddNodeAtLocation<T>(Avalonia.Point location, string name = "")
+    /// <typeparam name="T">
+    /// The concrete <see cref="NodeViewModel"/> type to create.
+    /// </typeparam>
+    /// <param name="newNodeArgs">
+    /// Describes the creation context of the node.
+    /// </param>
+    private void AddNodeAtLocation<T>(NewNodeArgs newNodeArgs)
         where T : NodeViewModel
     {
         NodeViewModel nodeViewModel = _selectedNodeContainer switch
         {
-            IBlueprint _ => NewBlueprintNodeViewModel<T>(location: location),
-            IProperty _ => NewPropertyNodeViewModel<T>(location: location),
-            _ => NewNodeViewModel<T>(location: location)
+            IBlueprint _ => NewBlueprintNodeViewModel<T>(newNodeArgs),
+            IProperty _ => NewPropertyNodeViewModel<T>(newNodeArgs),
+            _ => NewNodeViewModel<T>(newNodeArgs)
         };
-        nodeViewModel.Name = name;
+        nodeViewModel.Name = newNodeArgs.Name;
     }
-    
+
     /// <summary>
     /// Internal helper used to construct a <see cref="NodeModel"/> and its corresponding
     /// <see cref="NodeViewModel"/> in a generic fashion. This method resolves the model type
@@ -427,9 +567,7 @@ public partial class NodeEditorViewModel : Tool
     /// The name of the <see cref="NodeEditorModel"/> method responsible for creating the
     /// underlying model instance (e.g. <c>"NewNode"</c> or <c>"NewBlueprintNode"</c>).
     /// </param>
-    /// <param name="name">The display name assigned to the created node.</param>
-    /// <param name="description">An optional description for the node.</param>
-    /// <param name="location">The initial graph-space position of the node.</param>
+    /// <param name="newNodeArgs"></param>
     /// <returns>
     /// A fully constructed instance of <typeparamref name="T"/>, bound to its newly created model.
     /// </returns>
@@ -438,9 +576,7 @@ public partial class NodeEditorViewModel : Tool
     /// </exception>
     private T NewNodeViewModelInternal<T>(
         string editorMethodName,
-        string name,
-        string description,
-        Avalonia.Point location)
+        NewNodeArgs newNodeArgs)
         where T : NodeViewModel
     {
         // Determine the underlying model type for this view model
@@ -454,7 +590,8 @@ public partial class NodeEditorViewModel : Tool
             .MakeGenericMethod(modelType);
 
         // Create the model instance via reflection
-        var model = (NodeModel)method.Invoke(Model, [name, description, location])!;
+        var model = (NodeModel)method.Invoke(Model, 
+            [newNodeArgs.Name, newNodeArgs.Description, newNodeArgs.Location, newNodeArgs.InternalGraph])!;
 
         // Create the corresponding view model
         var vm = (T)NodeFactory.CreateFromModel(model);
@@ -854,6 +991,10 @@ public partial class NodeEditorViewModel : Tool
         return Task.CompletedTask;
     }
 
+    // ==============================================
+    // ===============   PROPERTIES   ===============
+    // ==============================================
+    
     /// <summary>
     /// Indicates whether the node editor is currently active.
     /// The editor is enabled as soon as a graph container is selected.
@@ -936,6 +1077,16 @@ public partial class NodeEditorViewModel : Tool
     /// are displayed and edited.
     /// </summary>
     private IGraphContainer? _selectedNodeContainer = null;
+
+    
+    /// <summary>
+    /// Fixed offset applied to newly created nodes to prevent overlapping placement.
+    /// </summary>
+    private readonly Avalonia.Vector NodeOffset = new(60, 60);
+    
+    // ============================================
+    // ===============   NodeRect   ===============
+    // ============================================
     
    /// <summary>
     /// Represents a bounding box for a logical subtree of nodes. A <see cref="NodeRect"/> 

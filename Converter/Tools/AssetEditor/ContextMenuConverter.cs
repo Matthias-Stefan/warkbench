@@ -60,7 +60,7 @@ public class ContextMenuConverter : IMultiValueConverter
                     CommandParameter = packageViewModel
                 });
                 break;
-
+            
             case BlueprintViewModel packageBlueprintViewModel:
                 contextMenu.Items.Add(new MenuItem
                 {

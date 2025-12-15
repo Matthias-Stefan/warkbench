@@ -11,7 +11,7 @@ public class NodeEditorModel
     // ==================================================
     // ===============   NODE INTERFACE   ===============
     // ==================================================
-    
+
     /// <summary>
     /// Creates a new node of the specified type, initializes it with the provided metadata,
     /// adds it to the graph, and notifies listeners that the set of nodes has changed.
@@ -20,8 +20,13 @@ public class NodeEditorModel
     /// <param name="name">An optional display name for the node.</param>
     /// <param name="description">An optional description associated with the node.</param>
     /// <param name="location">The initial position of the node within the graph.</param>
+    /// <param name="internalGraph"></param>
     /// <returns>The newly created node instance.</returns>
-    public T NewNode<T>(string name = "", string description = "", Avalonia.Point location = new()) 
+    public T NewNode<T>(
+        string name = "", 
+        string description = "", 
+        Avalonia.Point location = new(),
+        GraphModel? internalGraph = null) 
         where T : NodeModel, new()
     {
         var node = new T
@@ -30,7 +35,8 @@ public class NodeEditorModel
             Name = name,
             Description = description,
             Location = location,
-            NodeHeaderBrushType = NodeHeaderBrushType.None
+            NodeHeaderBrushType = NodeHeaderBrushType.None,
+            InternalGraph = internalGraph
         };
 
         _nodes.Add(node);
@@ -42,7 +48,7 @@ public class NodeEditorModel
         
         return node;
     }
-    
+
     /// <summary>
     /// Creates a new blueprint node of the specified type, initializes it with the
     /// provided metadata, adds it to the graph, and notifies listeners that the 
@@ -52,8 +58,13 @@ public class NodeEditorModel
     /// <param name="name">An optional display name for the blueprint node.</param>
     /// <param name="description">An optional description associated with the node.</param>
     /// <param name="location">The initial position of the node within the graph.</param>
+    /// <param name="internalGraph"></param>
     /// <returns>The newly created blueprint node instance.</returns>
-    public T NewBlueprintNode<T>(string name = "", string description = "", Avalonia.Point location = new()) 
+    public T NewBlueprintNode<T>(
+        string name = "", 
+        string description = "", 
+        Avalonia.Point location = new(),
+        GraphModel? internalGraph = null) 
         where T : NodeModel, new()
     {
         var node = new T
@@ -62,7 +73,8 @@ public class NodeEditorModel
             Name = name,
             Description = description,
             Location = location,
-            NodeHeaderBrushType = NodeHeaderBrushType.Blueprint
+            NodeHeaderBrushType = NodeHeaderBrushType.Blueprint,
+            InternalGraph = internalGraph
         };
 
         _nodes.Add(node);
@@ -74,7 +86,7 @@ public class NodeEditorModel
         
         return node;
     }
-    
+
     /// <summary>
     /// Creates a new property node of the specified type, initializes it with the
     /// provided metadata, adds it to the graph, and notifies listeners that the 
@@ -84,8 +96,13 @@ public class NodeEditorModel
     /// <param name="name">An optional display name for the blueprint node.</param>
     /// <param name="description">An optional description associated with the node.</param>
     /// <param name="location">The initial position of the node within the graph.</param>
+    /// <param name="internalGraph"></param>
     /// <returns>The newly created blueprint node instance.</returns>
-    public T NewPropertyNode<T>(string name = "", string description = "", Avalonia.Point location = new()) 
+    public T NewPropertyNode<T>(
+        string name = "", 
+        string description = "", 
+        Avalonia.Point location = new(),
+        GraphModel? internalGraph = null) 
         where T : NodeModel, new()
     {
         var node = new T
@@ -94,7 +111,8 @@ public class NodeEditorModel
             Name = name,
             Description = description,
             Location = location,
-            NodeHeaderBrushType = NodeHeaderBrushType.Property
+            NodeHeaderBrushType = NodeHeaderBrushType.Property,
+            InternalGraph = internalGraph
         };
 
         _nodes.Add(node);

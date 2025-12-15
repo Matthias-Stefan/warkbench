@@ -32,4 +32,7 @@ public abstract class NodeModel : IDeepCloneable<NodeModel>
     
     [JsonProperty]
     public HashSet<ConnectorModel> Outputs { get; set; } = [];
+
+    [JsonProperty] 
+    public GraphModel? InternalGraph { get; set; } = null;
 }

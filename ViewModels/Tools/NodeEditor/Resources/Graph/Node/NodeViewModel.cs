@@ -93,7 +93,6 @@ public abstract partial class NodeViewModel : ObservableObject
     
     [ObservableProperty] 
     private SolidColorBrush _selectedColor = new SolidColorBrush(Colors.White);
-    
 
     public bool IsContentVisible
     {

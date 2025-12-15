@@ -25,8 +25,6 @@ public partial class NodeEditorView : UserControl
         
         BuildMenus(vm);
     }
-
-
     
     private void BuildMenus(NodeEditorViewModel vm)
     {
