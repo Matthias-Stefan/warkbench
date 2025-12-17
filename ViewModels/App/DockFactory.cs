@@ -4,9 +4,7 @@ using Dock.Model.Core;
 using Dock.Model.Mvvm.Controls;
 using Dock.Model.Mvvm.Core;
 using System;
-using warkbench.Infrastructure;
-using warkbench.Models;
-using warkbench.Views;
+
 
 namespace warkbench.ViewModels
 {
@@ -60,8 +58,8 @@ namespace warkbench.ViewModels
             // Content Browser
             // Details
             // Outliner
-
-            var document1 = new DocumentViewModel { Id = "Document1", Title = "Document1" };
+            
+            var document1 = new WorldDocumentViewModel { Id = "Camera1", Title = "Camera1" };
             var document2 = new DocumentViewModel { Id = "Document2", Title = "Document2" };
             var document3 = new DocumentViewModel { Id = "Document3", Title = "Document3", CanClose = true };
 

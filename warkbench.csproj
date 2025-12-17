@@ -134,6 +134,10 @@
       <DependentUpon>DetailsHeaderView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Tools\World\WorldDocumentView.axaml.cs">
+      <DependentUpon>BoolNodeView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

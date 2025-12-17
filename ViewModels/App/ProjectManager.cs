@@ -9,7 +9,8 @@ public interface IProjectManager
 {
     void Save();
     bool Load(string? path);
-
+    
+    event EventHandler<Project>? ProjectChanging;
     event EventHandler<Project>? ProjectChanged;
     Project? CurrentProject { get; }
 }
@@ -46,11 +47,13 @@ public partial class ProjectManager : ObservableObject, IProjectManager
             return true;
         }
 
+        ProjectChanging?.Invoke(this, projectSession);
         CurrentProject = projectSession;
         ProjectChanged?.Invoke(this, projectSession);
         return true;
     }
 
+    public event EventHandler<Project>? ProjectChanging;
     public event EventHandler<Project>? ProjectChanged;
     public Project? CurrentProject { get; private set; } = null;
 
