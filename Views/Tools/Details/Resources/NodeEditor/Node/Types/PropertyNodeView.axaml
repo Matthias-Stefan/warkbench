@@ -14,24 +14,10 @@
              x:DataType="vm:PropertyNodeViewModel"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <converter:BoolInvertConverter x:Key="BoolInvertConverter" />
+        <converter:NodeHeaderBrushTypeToBoolConverter x:Key="NodeHeaderBrushTypeToBoolConverter" />
     </UserControl.Resources>
     
     <Grid RowDefinitions="Auto,*">
-        <!--  Header  -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Center">
-            <PathIcon Grid.Column="0" 
-                      Width="24" Height="24"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center"
-                      Data="{StaticResource icon_property_node}" />
-            <TextBlock Grid.Column="1" 
-                       Text="Property Node"
-                       FontSize="24"
-                       Margin="12 0 0 0"/>
-        </Grid>
-        
-        <!--  Content  -->
         <Expander Grid.Row="1" 
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Top"
@@ -72,11 +58,19 @@
                         </Border>
                     </Grid>
                 </Border>
-
-                <!--  Value  -->
-                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
-                    <!-- hier der inhalt --> 
-                </Border>
+                
+                <!--  Values  -->
+                <ItemsControl ItemsSource="{Binding InternalGraph.Nodes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Grid.Column="2" Background="#191a1c">
+                                <ContentControl Margin="19,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Content="{Binding}" />
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </StackPanel>
         </Expander>
     </Grid>

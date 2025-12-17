@@ -5,7 +5,6 @@ using warkbench.Models;
 namespace warkbench.ViewModels;
 public partial class ConnectionViewModel : ObservableObject
 {
-    // TODO:
     public ConnectionViewModel(ConnectionModel model, ConnectorViewModel source, ConnectorViewModel target)
     {
         Model = model;

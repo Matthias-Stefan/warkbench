@@ -130,6 +130,10 @@
       <DependentUpon>Int64NodeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Tools\Details\DetailsHeaderView.axaml.cs">
+      <DependentUpon>DetailsHeaderView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

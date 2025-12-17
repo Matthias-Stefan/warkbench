@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Avalonia.Controls;
+using Avalonia;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System;
 using warkbench.Brushes;
 using warkbench.Models;
 
@@ -35,6 +37,9 @@ public partial class Int64NodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
+    
+    public override string DetailsHeader => "Int64 Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_int64") ?? null;
     
     public Int64 Value
     {

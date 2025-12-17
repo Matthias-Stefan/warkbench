@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 
@@ -67,8 +68,8 @@ public class GraphModel : IDeepCloneable<GraphModel>
     public string Name { get; set; } = string.Empty;
     
     [JsonProperty]
-    public HashSet<NodeModel> Nodes { get; set; } = [];
+    public ObservableCollection<NodeModel> Nodes { get; set; } = [];
     
     [JsonProperty]
-    public HashSet<ConnectionModel> Connections { get; set; } = [];
+    public ObservableCollection<ConnectionModel> Connections { get; set; } = [];
 }

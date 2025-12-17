@@ -14,30 +14,17 @@
              x:DataType="vm:Vec2NodeViewModel"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <converter:BoolInvertConverter x:Key="BoolInvertConverter" />
+        <converter:NodeHeaderBrushTypeToBoolConverter x:Key="NodeHeaderBrushTypeToBoolConverter" />
     </UserControl.Resources>
     
     <Grid RowDefinitions="Auto,*">
-        <!--  Header  -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Center">
-            <PathIcon Grid.Column="0" 
-                      Width="24" Height="24"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center"
-                      Data="{StaticResource icon_vec2}" />
-            <TextBlock Grid.Column="1" 
-                       Text="2D Vector Node"
-                       FontSize="24"
-                       Margin="12 0 0 0"/>
-        </Grid>
-        
         <!--  Content  -->
         <Expander Grid.Row="1" 
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Top"
                   Classes="grid"
                   ExpandDirection="Down"
-                  Header="Common"
+                  Header="Vec2"
                   IsExpanded="True">
             <StackPanel Grid.IsSharedSizeScope="True" Spacing="2">
                 
@@ -74,7 +61,7 @@
                 </Border>
                 
                 <!--  X  -->
-                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
+                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushTypeToBoolConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"
@@ -106,7 +93,7 @@
                 </Border>
                 
                 <!--  Y  -->
-                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
+                <Border Height="32" IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushTypeToBoolConverter}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"

@@ -1,3 +1,5 @@
+using Avalonia.Controls;
+using Avalonia;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -67,8 +69,9 @@ public partial class ClassNodeViewModel : NodeViewModel, IInputNodeViewModel
         Inputs.Remove(args.TargetConnector);
     }
 
-
-
+    public override string DetailsHeader => "Class Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_class") ?? null;
+    
     private void OnSourceNodePropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (sender is not NodeViewModel node || e.PropertyName != nameof(NodeViewModel.Name))

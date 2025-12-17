@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using warkbench.Brushes;
@@ -36,6 +37,9 @@ public partial class TextureNodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
 
+    public override string DetailsHeader => "Texture Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_texture_node") ?? null;
+    
     public string Value
     {
         get => TextureModel.Value;

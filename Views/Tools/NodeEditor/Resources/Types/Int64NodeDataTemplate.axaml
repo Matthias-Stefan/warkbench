@@ -6,7 +6,7 @@
                     xmlns:converter="using:warkbench.Converter">
 
     <converter:NodeHeaderBrushConverter x:Key="NodeHeaderBrushConverter"/>
-    <converter:BoolInvertConverter x:Key="BoolInvertConverter"/>
+    <converter:NodeHeaderBrushTypeToBoolConverter x:Key="NodeHeaderBrushTypeToBoolConverter"/>
     <converter:NodeContentToggleButtonIconConverter x:Key="NodeContentToggleButtonIconConverter"/>
     
     <DataTemplate x:Key="Int64NodeDataTemplate" 
@@ -40,7 +40,7 @@
                                   HorizontalAlignment="Right"
                                   Background="Transparent"
                                   IsChecked="{Binding IsContentVisible}"
-                                  IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource BoolInvertConverter}}">
+                                  IsVisible="{Binding NodeHeaderBrushType, Converter={StaticResource NodeHeaderBrushTypeToBoolConverter}}">
                         <PathIcon Width="8"
                                   Height="8"
                                   Data="{Binding IsContentVisible, Converter={StaticResource NodeContentToggleButtonIconConverter}}" />

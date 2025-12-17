@@ -1,4 +1,7 @@
-﻿namespace warkbench.ViewModels;
+﻿using Avalonia;
+using Avalonia.Controls;
+
+namespace warkbench.ViewModels;
 public class RootPackageBlueprintViewModel : AssetViewModel
 {
     public RootPackageBlueprintViewModel(string rootVirtualPath)
@@ -22,4 +25,7 @@ public class RootPackageBlueprintViewModel : AssetViewModel
     protected override void SetVirtualPath(string value)
     {
     }
+    
+    public override string DetailsHeader => GetName();
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_blueprint_package") ?? null;
 }

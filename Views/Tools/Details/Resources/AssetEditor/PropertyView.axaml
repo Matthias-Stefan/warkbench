@@ -14,19 +14,6 @@
              x:DataType="vm:PropertyViewModel"
              mc:Ignorable="d">
     <Grid RowDefinitions="Auto,*">
-        <!--  Header  -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Center">
-            <PathIcon Grid.Column="0" 
-                      Width="24" Height="24"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center"
-                      Data="{StaticResource icon_precision_manufacturing}" />
-            <TextBlock Grid.Column="1" 
-                       Text="Property"
-                       FontSize="24"
-                       Margin="12 0 0 0"/>
-        </Grid>
-    
         <Expander Grid.Row="1" 
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Top"

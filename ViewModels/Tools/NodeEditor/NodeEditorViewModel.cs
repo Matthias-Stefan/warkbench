@@ -8,6 +8,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using Avalonia.Controls;
+using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
 
@@ -470,10 +472,10 @@ public partial class NodeEditorViewModel : Tool
     {
         AddNodeAtLocation<PropertyNodeViewModel>(
             new NewNodeArgs(
-                "Property",
+                args.Item2.Name,
                 "", 
                 GetLocation(args.Item1, NodeOffset), 
-                args.Item2.DeepClone()));
+                args.Item2));
         
         return Task.CompletedTask;
     }
@@ -487,10 +489,10 @@ public partial class NodeEditorViewModel : Tool
     {
         AddNodeAtLocation<PropertyNodeViewModel>(
             new NewNodeArgs(
-                "Property", 
+                args.Item2.Name, 
                 "", 
                 GetLocation(args.Item1, LastMousePosition), 
-                args.Item2.DeepClone()));
+                args.Item2));
         
         return Task.CompletedTask;
     }
@@ -595,6 +597,19 @@ public partial class NodeEditorViewModel : Tool
 
         // Create the corresponding view model
         var vm = (T)NodeFactory.CreateFromModel(model);
+        if (vm.InternalGraph is not null)
+        {
+            foreach (var n in vm.InternalGraph.Nodes)
+            {
+                n.NodeHeaderBrushType = _selectedNodeContainer switch
+                {
+                    IBlueprint _ => NodeHeaderBrushType.Blueprint,
+                    IProperty _ => NodeHeaderBrushType.Property,
+                    _          => NodeHeaderBrushType.None
+                };
+            }
+        }
+        
 
         // Register the new VM inside the editor context
         AddNodeViewModel(vm);
@@ -983,11 +998,21 @@ public partial class NodeEditorViewModel : Tool
     [RelayCommand]
     private Task OnBringIntoView()
     {
-        // Use the location of the first node as a reference point,
-        // or fall back to the origin if the graph is empty.
-        ViewportLocation = Nodes.FirstOrDefault()?.Location ?? new Avalonia.Point(0, 0);
+        if (Nodes.Count == 0)
+        {
+            ViewportLocation = new Avalonia.Point(0, 0);
+            OnPropertyChanged(nameof(ViewportLocation));
+            return Task.CompletedTask;
+        }
+
+        var rect = new NodeRect();
+        foreach (var node in Nodes)
+        {
+            rect.Add(node);
+        }
+
+        ViewportLocation = rect.Rect.TopLeft;
         OnPropertyChanged(nameof(ViewportLocation));
-        
         return Task.CompletedTask;
     }
 
@@ -1050,7 +1075,7 @@ public partial class NodeEditorViewModel : Tool
             OnPropertyChanged();
         }
     }
-
+ 
     /// <summary>
     /// Provides access to the project manager that owns the current graph.
     /// </summary>

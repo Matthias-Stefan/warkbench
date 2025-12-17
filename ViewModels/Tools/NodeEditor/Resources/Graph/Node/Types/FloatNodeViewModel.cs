@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System;
@@ -37,6 +38,9 @@ public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
     {
     }
 
+    public override string DetailsHeader => "Float Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_float") ?? null;
+    
     public float Value
     {
         get => FloatModel.Value;

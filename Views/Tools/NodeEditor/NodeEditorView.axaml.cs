@@ -58,6 +58,8 @@ public partial class NodeEditorView : UserControl
             return root;
         }
         
+        // LAST: We need a mechanism to dynamically add new properties.
+        
         NodeMenuRoot.Items.Add(CreatePropertyMenu(vm.AddPropertyNodeCommand));
         NodeMenuRoot.Items.Add(CreateMainMenuItem("2D-Vector", "icon_vec2", NodeBrushes.Vector2D, vm.AddVec2NodeCommand));
         NodeMenuRoot.Items.Add(CreateMainMenuItem("Bool", "icon_bool_node", NodeBrushes.Bool, vm.AddBoolNodeCommand));

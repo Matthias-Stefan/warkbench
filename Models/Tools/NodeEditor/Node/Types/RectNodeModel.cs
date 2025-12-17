@@ -21,9 +21,9 @@ public class RectNodeModel : NodeModel
             NodeHeaderBrushType = NodeHeaderBrushType,
         };
 
-        foreach (var connector in Inputs)
+        foreach (var connector in Outputs)
         {
-            model.Inputs.Add(new ConnectorModel
+            model.Outputs.Add(new ConnectorModel
             {
                 Guid = System.Guid.NewGuid(),
                 Title = connector.Title,

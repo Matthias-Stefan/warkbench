@@ -3,6 +3,7 @@ using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System;
+using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
 
@@ -39,8 +40,8 @@ public partial class AssetEditorViewModel : Tool
     {
         if (obj is not AssetViewModel)
         {
-            //_selectedAsset = null;
-            //OnPropertyChanged(nameof(SelectedAsset));
+            _selectedAsset = null;
+            OnPropertyChanged(nameof(SelectedAsset));
         }
     }
     
@@ -55,27 +56,27 @@ public partial class AssetEditorViewModel : Tool
         }
         
         foreach (var package in project.Packages)
-        {
+        { 
             var blueprint = project.Blueprints.FirstOrDefault(blueprint => blueprint.Guid == package.BlueprintGuid);
             if (blueprint is null)
             {
                 continue;
             }
 
-            var packageViewModel = new PackageViewModel(package, blueprint); 
+            var packageViewModel = new PackageViewModel(package, blueprint);
             AddPackageNode(packageViewModel);
+            
             foreach (var packageItemModel in packageViewModel.Model.PackageItems)
             {
+                
                 var packageNode = Packages.Children.FirstOrDefault(node => node.Data == packageViewModel);
                 if (packageNode is null)
                 {
                     return;
                 }
-        
-                var item = new PackageItemViewModel(packageViewModel.Blueprint);
-                packageViewModel.Model.PackageItems.Add(packageItemModel);
+
+                var item = new PackageItemViewModel(packageItemModel, packageViewModel.Blueprint);
                 packageNode.AddChild(new TreeNodeViewModel(item));
-        
                 OnPropertyChanged(nameof(Assets));
             }
         }
@@ -215,7 +216,19 @@ public partial class AssetEditorViewModel : Tool
             return;
         }
         
-        var item = new PackageItemViewModel(packageViewModel.Blueprint);
+        var packageItemGraph = packageViewModel.Blueprint.DeepClone();
+        foreach (var nodeModel in packageItemGraph.Nodes)
+        {
+            nodeModel.NodeHeaderBrushType = NodeHeaderBrushType.None;
+            if (nodeModel.InternalGraph is not null)
+            {
+                foreach (var internalGraphNode in nodeModel.InternalGraph.Nodes)
+                {
+                    internalGraphNode.NodeHeaderBrushType = NodeHeaderBrushType.None;
+                }
+            }
+        }
+        var item = new PackageItemViewModel(packageItemGraph, packageViewModel.Blueprint);
         packageViewModel.Model.PackageItems.Add(item.Model);
         packageNode.AddChild(new TreeNodeViewModel(item));
         

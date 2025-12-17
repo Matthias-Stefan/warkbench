@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using Avalonia.Controls;
+using Avalonia;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using warkbench.Brushes;
 using warkbench.Models;
@@ -34,6 +36,9 @@ public partial class RectNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
+    
+    public override string DetailsHeader => "Rect Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_rect_node") ?? null;
     
     public int X
     {

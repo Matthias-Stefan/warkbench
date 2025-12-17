@@ -36,7 +36,7 @@ public class NodeEditorModel
             Description = description,
             Location = location,
             NodeHeaderBrushType = NodeHeaderBrushType.None,
-            InternalGraph = internalGraph
+            InternalGraph = internalGraph?.DeepClone() ?? null
         };
 
         _nodes.Add(node);
@@ -64,7 +64,7 @@ public class NodeEditorModel
         string name = "", 
         string description = "", 
         Avalonia.Point location = new(),
-        GraphModel? internalGraph = null) 
+        GraphModel? internalGraph = null)
         where T : NodeModel, new()
     {
         var node = new T
@@ -74,7 +74,7 @@ public class NodeEditorModel
             Description = description,
             Location = location,
             NodeHeaderBrushType = NodeHeaderBrushType.Blueprint,
-            InternalGraph = internalGraph
+            InternalGraph = internalGraph?.DeepClone() ?? null
         };
 
         _nodes.Add(node);
@@ -112,7 +112,7 @@ public class NodeEditorModel
             Description = description,
             Location = location,
             NodeHeaderBrushType = NodeHeaderBrushType.Property,
-            InternalGraph = internalGraph
+            InternalGraph = internalGraph?.DeepClone() ?? null
         };
 
         _nodes.Add(node);

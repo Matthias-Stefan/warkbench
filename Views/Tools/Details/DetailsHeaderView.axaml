@@ -1,0 +1,25 @@
+<UserControl x:Class="warkbench.Views.DetailsHeaderView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converter="using:warkbench.Converter"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dataTemplates="using:warkbench.DataTemplates"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:toolkit="clr-namespace:CommunityToolkit.Mvvm.ComponentModel;assembly=CommunityToolkit.Mvvm"
+             xmlns:views="using:warkbench.Views"
+             xmlns:vm="using:warkbench.ViewModels"
+             x:Name="Root"
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="True"
+             x:DataType="vm:IDetailsHeader"
+             mc:Ignorable="d">
+    <StackPanel Orientation="Horizontal" Spacing="12" Margin="12">
+        <PathIcon Width="24" Height="24"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Data="{Binding DetailsIcon}" />
+        <TextBlock Text="{Binding DetailsHeader}"
+                   FontSize="24"/>
+    </StackPanel>
+</UserControl>

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace warkbench.ViewModels;
-public abstract partial class AssetViewModel : ObservableObject, INameable
+public abstract partial class AssetViewModel : ObservableObject, INameable, IDetailsHeader
 {
     protected abstract string GetName();
     protected abstract void SetName(string value);
@@ -36,4 +36,7 @@ public abstract partial class AssetViewModel : ObservableObject, INameable
             OnPropertyChanged(nameof(VirtualPath));
         }
     }
+
+    public abstract string DetailsHeader { get; }
+    public abstract object? DetailsIcon { get; }
 }

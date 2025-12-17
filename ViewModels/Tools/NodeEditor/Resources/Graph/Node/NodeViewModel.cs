@@ -1,11 +1,13 @@
-﻿using Avalonia.Media;
+﻿using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using warkbench.Brushes;
 using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
-public abstract partial class NodeViewModel : ObservableObject
+public abstract partial class NodeViewModel : ObservableObject, IDetailsHeader
 {
     protected NodeViewModel(NodeModel model)
     {
@@ -14,6 +16,8 @@ public abstract partial class NodeViewModel : ObservableObject
 
     public abstract void HandleConnected(object? sender, ConnectionChangedEventArgs? args);
     public abstract void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args);
+    public abstract string DetailsHeader { get; }
+    public abstract object? DetailsIcon { get; }
     
     [ObservableProperty] 
     private NodeModel _model;
@@ -84,7 +88,7 @@ public abstract partial class NodeViewModel : ObservableObject
             }
 
             Model.NodeHeaderBrushType = value;
-            OnPropertyChanged();
+            OnPropertyChanged(nameof(NodeHeaderBrushType));
         }
     }
     
@@ -93,6 +97,8 @@ public abstract partial class NodeViewModel : ObservableObject
     
     [ObservableProperty] 
     private SolidColorBrush _selectedColor = new SolidColorBrush(Colors.White);
+
+    public GraphViewModel? InternalGraph { get; set; } = null;
 
     public bool IsContentVisible
     {

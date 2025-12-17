@@ -20,7 +20,6 @@
         <converter:ResourceIconConverter x:Key="ResourceIconConverter" />
     </UserControl.Resources>
     
-    
     <UserControl.DataTemplates>
         <!--  ASSET EDITOR  -->
         <!--  Package  -->
@@ -41,22 +40,6 @@
         <DataTemplate DataType="vm:PropertyViewModel">
             <Grid>
                 <views:PropertyView />
-            </Grid>
-        </DataTemplate>
-        
-        <!--  INameable  -->
-        <DataTemplate DataType="vm:INameable">
-            <!--  Header  -->
-            <Grid ColumnDefinitions="Auto, Auto, *" Margin="12, 12, 12, 12" VerticalAlignment="Top">
-                <PathIcon Grid.Column="0" 
-                          Width="24" Height="24"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"
-                          Data="{Binding DataType=Binding, Converter={StaticResource ResourceIconConverter}}" />
-                <TextBlock Grid.Column="1" 
-                           Text="{Binding Name}"
-                           FontSize="24"
-                           Margin="12 0 0 0"/>
             </Grid>
         </DataTemplate>
         
@@ -131,7 +114,7 @@
             </Grid>
         </DataTemplate>
         
-        <!--  DEFAULT  -->
+        <!--  FALLBACK  -->
         <DataTemplate DataType="toolkit:ObservableObject">
             <Grid>
                 <TextBlock Margin="10"
@@ -144,7 +127,12 @@
     </UserControl.DataTemplates>
 
     <!--  ==============================  -->
+    
     <ScrollViewer>
-        <ContentControl Content="{Binding SelectedObject}" />
+        <StackPanel Orientation="Vertical" Spacing="12">
+            <views:DetailsHeaderView DataContext="{Binding SelectedObject}"/>
+            
+            <ContentControl Content="{Binding SelectedObject}" />
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

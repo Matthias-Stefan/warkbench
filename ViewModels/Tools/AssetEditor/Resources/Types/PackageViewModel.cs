@@ -1,4 +1,6 @@
 ﻿using System.Collections.Specialized;
+using Avalonia;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using warkbench.Models;
 
@@ -30,6 +32,9 @@ public sealed partial class PackageViewModel : AssetViewModel
     protected override void SetVirtualPath(string value)
     {
     }
+
+    public override string DetailsHeader => "Package";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_package") ?? null;
 
     public PackageModel Model { get; }
     public GraphModel Blueprint { get; }

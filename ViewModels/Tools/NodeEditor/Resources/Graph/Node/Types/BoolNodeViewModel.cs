@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Avalonia;
+using Avalonia.Controls;
 using warkbench.Brushes;
 using warkbench.Models;
 
@@ -34,6 +36,9 @@ public partial class BoolNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
+
+    public override string DetailsHeader => "Bool Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_bool_node") ?? null;
 
     public bool Value
     {

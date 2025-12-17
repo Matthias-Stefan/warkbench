@@ -1,3 +1,7 @@
+using Avalonia;
+using Avalonia.Controls;
+
+
 namespace warkbench.ViewModels;
 public class RootPropertiesViewModel : AssetViewModel
 {
@@ -22,4 +26,7 @@ public class RootPropertiesViewModel : AssetViewModel
     protected override void SetVirtualPath(string value)
     {
     }
+    
+    public override string DetailsHeader => GetName();
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_precision_manufacturing") ?? null;
 }

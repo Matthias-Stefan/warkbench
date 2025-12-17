@@ -1,4 +1,5 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using warkbench.Brushes;
@@ -35,6 +36,9 @@ public partial class StringNodeViewModel : NodeViewModel, IOutputNodeViewModel
     public override void HandleDisconnected(object? sender, ConnectionChangedEventArgs? args)
     {
     }
+    
+    public override string DetailsHeader => "String Node";
+    public override object? DetailsIcon => Application.Current?.FindResource("icon_string") ?? null;
 
     public string Value
     {

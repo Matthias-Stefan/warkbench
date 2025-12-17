@@ -11,7 +11,16 @@ public class PropertyNodeModel : NodeModel
     
     public override NodeModel DeepClone()
     {
-        var model = new PropertyNodeModel
+        var internalGraph = InternalGraph?.DeepClone() ?? null;
+        if (internalGraph is not null)
+        {
+            foreach (var internalGraphNode in internalGraph.Nodes)
+            {
+                internalGraphNode.NodeHeaderBrushType = NodeHeaderBrushType;
+            }
+        }
+
+        var model = new PropertyNodeModel()
         {
             Guid = System.Guid.NewGuid(),
             Title = Title,
@@ -19,11 +28,12 @@ public class PropertyNodeModel : NodeModel
             Description = Description,
             Location = new Avalonia.Point(Location.X, Location.Y),
             NodeHeaderBrushType = NodeHeaderBrushType,
+            InternalGraph = InternalGraph?.DeepClone() ?? null,
         };
 
-        foreach (var connector in Inputs)
+        foreach (var connector in Outputs)
         {
-            model.Inputs.Add(new ConnectorModel
+            model.Outputs.Add(new ConnectorModel
             {
                 Guid = System.Guid.NewGuid(),
                 Title = connector.Title,
@@ -34,7 +44,4 @@ public class PropertyNodeModel : NodeModel
 
         return model;
     }
-
-    [JsonProperty] 
-    public object Value { get; set; } = new();
 }
