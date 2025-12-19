@@ -1,5 +1,5 @@
 namespace warkbench.viewport;
-public class ViewportCamera
+internal class ViewportCamera
 {
     public Avalonia.Point ScreenToWorld(Avalonia.Point screen, Avalonia.Size viewportSize)
     {

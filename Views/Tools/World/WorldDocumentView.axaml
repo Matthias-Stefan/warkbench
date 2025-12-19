@@ -11,5 +11,35 @@
              x:CompileBindings="True"
              x:DataType="vm:WorldDocumentViewModel"
              mc:Ignorable="d">
-    <wvp:WorldViewport />
+    <Grid Background="#191a1c">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" VerticalAlignment="Center" Spacing="8">
+            <!--  Select  -->
+            <ToggleButton IsPressed="{Binding IsSelectToolEnabled}">
+                <ToolTip.Tip>
+                    <StackPanel>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Select Tool" FontWeight="DemiBold"/>
+                            <TextBlock Grid.Column="1" Text="[Q]" Opacity="0.8"/>
+                        </Grid>
+
+                        <TextBlock Text="Select and modify objects" Opacity="0.75"/>
+                    </StackPanel>
+                </ToolTip.Tip>
+                <StackPanel Orientation="Horizontal">
+                    <PathIcon Width="16"
+                              Height="16" 
+                              Data="{StaticResource icon_arrow_selector_tool}"/>
+                </StackPanel>
+            </ToggleButton>
+        </StackPanel>
+        
+        <wvp:WorldViewport Grid.Row="1" ActiveTool="{Binding ActiveTool}"/>
+    </Grid>
+    
+    
 </UserControl>
