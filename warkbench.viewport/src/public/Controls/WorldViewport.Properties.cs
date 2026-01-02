@@ -69,7 +69,6 @@ public partial class WorldViewport : Control
         InvalidateVisual();
     }
     
-    
     public static readonly StyledProperty<object?> SelectedItemProperty =
         AvaloniaProperty.Register<WorldViewport, object?>(nameof(SelectedItem));
     

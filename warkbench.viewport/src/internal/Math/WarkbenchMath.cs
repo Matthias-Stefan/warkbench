@@ -1,3 +1,7 @@
+using Avalonia;
+using Avalonia.Media;
+
+
 namespace warkbench.viewport;
 public static class WarkbenchMath
 {
@@ -10,6 +14,17 @@ public static class WarkbenchMath
     /// Represents the point at the origin (0, 0).
     /// </summary>
     public static readonly Avalonia.Point ZeroPoint = new(0, 0);
+    
+    /// <summary>
+    /// Represents an empty size (0 × 0).
+    /// </summary>
+    public static readonly Avalonia.Size EmptySize = new(0, 0);
+    
+    /// <summary>
+    /// Represents an empty geometry (zero-size, non-rendering).
+    /// </summary>
+    public static readonly Geometry EmptyGeometry =
+        new RectangleGeometry(new Rect(ZeroPoint, EmptySize));
     
     /// <summary>
     /// Clamps the given value to the range [0, 1].
