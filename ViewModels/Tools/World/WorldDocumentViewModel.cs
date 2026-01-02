@@ -6,8 +6,10 @@ using warkbench.viewport;
 namespace warkbench.ViewModels;
 public class WorldDocumentViewModel : Document
 {
-
-
+    public WorldDocumentViewModel()
+    {
+        ActiveTool = ViewportTool.Selection;
+    }
 
     public viewport.ViewportTool ActiveTool
     {
@@ -17,14 +19,29 @@ public class WorldDocumentViewModel : Document
             OnPropertyChanging(nameof(ActiveTool));
             _activeTool = value;
             OnPropertyChanged(nameof(ActiveTool));
+
+            if (ActiveTool == ViewportTool.Selection)
+            {
+                IsSelectToolEnabled = true;
+            }
         }
     }
 
     public bool IsSelectToolEnabled
     {
-        get => ActiveTool == ViewportTool.Selection;
-        set => ActiveTool = value ? ViewportTool.Selection : ViewportTool.None;
+        get => _isSelectToolEnabled;
+        set
+        {
+            if (value == _isSelectToolEnabled)
+            {
+                return;    
+            }
+            
+            _isSelectToolEnabled = value;
+            ActiveTool = _isSelectToolEnabled ? ViewportTool.Selection : ViewportTool.None;
+        }
     }
-    
+
     private viewport.ViewportTool _activeTool = ViewportTool.Selection;
+    private bool _isSelectToolEnabled = true;
 }

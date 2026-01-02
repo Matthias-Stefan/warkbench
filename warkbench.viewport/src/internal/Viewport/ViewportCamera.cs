@@ -1,16 +1,19 @@
+using System;
+using Avalonia;
+
 namespace warkbench.viewport;
 internal class ViewportCamera
 {
     public Avalonia.Point ScreenToWorld(Avalonia.Point screen, Avalonia.Size viewportSize)
     {
-        var center = new Avalonia.Vector(viewportSize.Width * 0.5,  viewportSize.Height * 0.5);
+        var center = PixelCenter(viewportSize);
         var v = (Avalonia.Vector)screen - center - Pan;
         return (Avalonia.Point)(v / Zoom);
     }
 
     public Avalonia.Point WorldToScreen(Avalonia.Point world, Avalonia.Size viewportSize)
     {
-        var center = new Avalonia.Vector(viewportSize.Width * 0.5, viewportSize.Height * 0.5);
+        var center = PixelCenter(viewportSize);
         var v = ((Avalonia.Vector)world * Zoom) + center + Pan;
         return (Avalonia.Point)v;
     }
@@ -33,6 +36,11 @@ internal class ViewportCamera
         var post = pre * (newZoom / oldZoom);
         Pan += pre - post;
     }
+
+    private Avalonia.Vector PixelCenter(Avalonia.Size viewportSize) 
+        => new Vector(
+            Math.Floor(viewportSize.Width * 0.5) + 0.5, 
+            Math.Floor(viewportSize.Height * 0.5) + 0.5);
 
     public double Zoom { get; private set; } = 1.0;
     

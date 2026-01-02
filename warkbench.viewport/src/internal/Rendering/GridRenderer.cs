@@ -61,7 +61,7 @@ internal class GridRenderer
         }
     }
     
-    public void RenderOriginGizmo(DrawingContext ctx, Rect viewportBounds, ViewportCamera cam)
+    public void RenderOrigin(DrawingContext ctx, ViewportCamera cam, Rect viewportBounds)
     {
         var size = viewportBounds.Size;
         var origin = cam.WorldToScreen(new Point(0, 0), size);

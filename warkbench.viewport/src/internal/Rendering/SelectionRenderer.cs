@@ -15,23 +15,9 @@ internal class SelectionRenderer
         var y = Math.Floor(selectionBounds.Y) + 0.5;
         var w = Math.Max(0, Math.Round(selectionBounds.Width) - 1.0);
         var h = Math.Max(0, Math.Round(selectionBounds.Height) - 1.0);
-
-        
-        
-        
         
         var snapped = new Rect(x, y, w, h);
         ctx.DrawRectangle(_background, _border, snapped, 20f);
-        
-        var text = new FormattedText(
-            $"Selection: {x}, {y}",
-            CultureInfo.InvariantCulture,
-            FlowDirection.LeftToRight,
-            new Typeface("Segoe UI"),
-            12,
-            new SolidColorBrush(Colors.White)
-        );
-        ctx.DrawText(text, new Point(x, y));
     }
     
     private readonly IPen _border = new Pen(new SolidColorBrush(Colors.DodgerBlue), 1);
