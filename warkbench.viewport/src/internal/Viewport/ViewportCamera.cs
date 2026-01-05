@@ -18,6 +18,22 @@ internal class ViewportCamera
         return (Avalonia.Point)v;
     }
     
+    public Matrix WorldToScreenMatrix(Size viewportSize)
+    {
+        var center = PixelCenter(viewportSize);
+        return new Matrix(
+            Zoom, 0,
+            0, Zoom,
+            center.X + Pan.X,
+            center.Y + Pan.Y
+        );
+    }
+
+    public Matrix ScreenToWorldMatrix(Size viewportSize)
+    {
+        return WorldToScreenMatrix(viewportSize).Invert();
+    }
+    
     public void PanByPixels(Avalonia.Vector deltaPixels)
     {
         Pan += deltaPixels;

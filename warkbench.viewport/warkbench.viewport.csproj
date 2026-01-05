@@ -20,8 +20,4 @@
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="src\public\Rendering\" />
-    </ItemGroup>
 </Project>

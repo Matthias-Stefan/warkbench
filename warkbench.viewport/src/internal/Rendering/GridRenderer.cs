@@ -68,8 +68,8 @@ internal class GridRenderer
 
         const double axisLength = 20;
 
-        var xPen = new Pen(new SolidColorBrush(Color.FromArgb(220, 220, 60, 60)), 2);
-        var yPen = new Pen(new SolidColorBrush(Color.FromArgb(220, 60, 220, 60)), 2);
+        var xPen = new Pen(ViewportStyle.XBrush, 2);
+        var yPen = new Pen(ViewportStyle.YBrush, 2);
 
         ctx.DrawLine(xPen, origin, origin + new Vector(axisLength, 0));
         ctx.DrawLine(yPen, origin, origin + new Vector(0, -axisLength));

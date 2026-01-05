@@ -1,10 +1,8 @@
 using System;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 
 namespace warkbench.viewport;
@@ -21,19 +19,19 @@ public partial class WorldViewport : Control
 
         var bounds = Bounds;
         context.FillRectangle(_background, bounds);
-
+        
         if (ShowGrid)
         {
             _gridRenderer.Render(context, _viewportCamera, bounds);
         }
-
-        if (ActiveTool == ViewportTool.Selection && _viewportInputState.IsDragging && !_gizmoActive)
+        
+        if (ActiveTool == ViewportTool.Selection && _viewportInputState.IsDragging && !_gizmo2D.IsActive)
         {
-            var minX = Math.Min(_viewportInputState.LeftButtonPressedPos.X, _viewportInputState.PointerPos.X);
-            var maxX = Math.Max(_viewportInputState.LeftButtonPressedPos.X, _viewportInputState.PointerPos.X);
+            var minX = Math.Min(_viewportInputState.LeftButtonPressedPos.X, _viewportInputState.MousePos.X);
+            var maxX = Math.Max(_viewportInputState.LeftButtonPressedPos.X, _viewportInputState.MousePos.X);
             
-            var minY = Math.Min(_viewportInputState.LeftButtonPressedPos.Y, _viewportInputState.PointerPos.Y);
-            var maxY = Math.Max(_viewportInputState.LeftButtonPressedPos.Y, _viewportInputState.PointerPos.Y);
+            var minY = Math.Min(_viewportInputState.LeftButtonPressedPos.Y, _viewportInputState.MousePos.Y);
+            var maxY = Math.Max(_viewportInputState.LeftButtonPressedPos.Y, _viewportInputState.MousePos.Y);
             
             _selectionRenderer.Render(context, _viewportCamera, bounds, new Rect(new Point(minX, minY), new Size(maxX - minX, maxY - minY)));
         }
@@ -41,11 +39,14 @@ public partial class WorldViewport : Control
         _gridRenderer.RenderOrigin(context, _viewportCamera, bounds);
         
 #if DEBUG
-        _debugRenderer.Render(context, _viewportCamera, bounds, _viewportInputState.PointerPos);        
+        _debugRenderer.Render(context, _viewportCamera, bounds, _viewportInputState.MousePos);        
 #endif
-        var gizmoOrigin = _viewportCamera.WorldToScreen(_gizmoOrigin, Bounds.Size);
-        _gizmo2D.UpdateHover(gizmoOrigin, _viewportInputState.PointerPos);
-        _gizmo2D.Render(context, gizmoOrigin);
+        
+        // Update Gizmo
+        var worldToScreenMatrix = _viewportCamera.WorldToScreenMatrix(bounds.Size);
+        var gizmoOrigin = worldToScreenMatrix.Transform(_gizmo2D.Origin);
+        _gizmo2D.UpdateHover(gizmoOrigin, _viewportInputState.MousePos);
+        _gizmo2D.Render(context, worldToScreenMatrix);
     }
 
     protected override void OnPointerPressed(Avalonia.Input.PointerPressedEventArgs e)
@@ -54,26 +55,20 @@ public partial class WorldViewport : Control
         Focus();
         
         var p = e.GetCurrentPoint(this).Position;
-
+        
         if (e.Properties.IsLeftButtonPressed)
         {
-            var gizmoScreenPos = _viewportCamera.WorldToScreen(_gizmoOrigin, Bounds.Size);
-            if (_gizmo2D.OnPointerPressed(gizmoScreenPos, p))
+            var gizmoScreenPos = _viewportCamera.WorldToScreen(_gizmo2D.Origin, Bounds.Size);
+            var consumed = _gizmo2D.OnPointerPressed(gizmoScreenPos, p);
+            if (consumed)
             {
-                _gizmoActive = true;
-                _gizmoOriginPointerOffset = gizmoScreenPos - p;
-                
+                _viewportInputState.LeftButtonPressedPos = p;
                 e.Pointer.Capture(this);
                 e.Handled = true;
                 return;
             }
-        }
-
-        _gizmoActive = false;
-        
-        if (e.Properties.IsLeftButtonPressed)
-        {
-            _viewportInputState.LeftButtonPressedPos = p;
+            
+            _viewportInputState.LeftButtonPressedPos = p;    
             e.Pointer.Capture(this);
             e.Handled = true;
         }
@@ -96,14 +91,14 @@ public partial class WorldViewport : Control
         base.OnPointerMoved(e);
 
         var p = e.GetCurrentPoint(this).Position;
-        _viewportInputState.PointerPos = p;
+        _viewportInputState.MousePos = p;
         
         if (e.Properties.IsLeftButtonPressed)
         {
             if (!_viewportInputState.IsDragging)
             {
-                var dx = _viewportInputState.PointerPos.X - _viewportInputState.LeftButtonPressedPos.X;
-                var dy = _viewportInputState.PointerPos.Y - _viewportInputState.LeftButtonPressedPos.Y;
+                var dx = _viewportInputState.MousePos.X - _viewportInputState.LeftButtonPressedPos.X;
+                var dy = _viewportInputState.MousePos.Y - _viewportInputState.LeftButtonPressedPos.Y;
 
                 const double th = 12;
                 if (dx * dx + dy * dy >= th * th)
@@ -112,43 +107,14 @@ public partial class WorldViewport : Control
                 }
             }
         }
-
-        if (_gizmoActive)
+        
+        if (_gizmo2D.IsActive)
         {
-            var dx = _viewportInputState.PointerPos.X - _viewportInputState.LeftButtonPressedPos.X + _gizmoOriginPointerOffset.X;
-            var dy = _viewportInputState.PointerPos.Y - _viewportInputState.LeftButtonPressedPos.Y + _gizmoOriginPointerOffset.Y;
-            
-            var startScreen = _viewportInputState.LeftButtonPressedPos;
-
-            switch (_gizmo2D.ActivePart)
-            {
-                case Gizmo2D.Part.Center:
-                    var currentScreen = startScreen + new Vector(dx, dy);
-                    var currentWorld = _viewportCamera.ScreenToWorld(currentScreen, Bounds.Size);
-                    _gizmoOrigin = new Point(currentWorld.X, currentWorld.Y);
-                    break;
-                case Gizmo2D.Part.TranslateX:
-                    currentScreen = startScreen + new Vector(dx, 0);
-                    currentWorld = _viewportCamera.ScreenToWorld(currentScreen, Bounds.Size);
-                    _gizmoOrigin = new Point(currentWorld.X, _gizmoOrigin.Y);
-                    break;
-                case Gizmo2D.Part.TranslateY:
-                    currentScreen = startScreen + new Vector(0, dy);
-                    currentWorld = _viewportCamera.ScreenToWorld(currentScreen, Bounds.Size);
-                    _gizmoOrigin = new Point(_gizmoOrigin.X, currentWorld.Y);
-                    break;
-                
-                case Gizmo2D.Part.ScaleX:
-                    break;
-                case Gizmo2D.Part.ScaleY:
-                    break;
-                case Gizmo2D.Part.Rotate:
-                    break;
-            }
-            
-
-
-            
+            _gizmo2D.OnPointerMoved(
+                _viewportInputState.LeftButtonPressedPos,
+                _viewportInputState.MousePos,
+                _viewportCamera.ScreenToWorldMatrix(Bounds.Size),
+                _viewportCamera.WorldToScreenMatrix(Bounds.Size));
         }
         
         if (e.Properties.IsMiddleButtonPressed)
@@ -178,7 +144,6 @@ public partial class WorldViewport : Control
             case MouseButton.Left:
                 _viewportInputState.IsDragging = false;
                 _viewportInputState.LeftButtonPressedPos = WarkbenchMath.ZeroPoint;
-                _gizmoActive = false;
                 break;
 
             case MouseButton.Middle:
@@ -189,6 +154,8 @@ public partial class WorldViewport : Control
                 _viewportInputState.RightButtonPressedPos = WarkbenchMath.ZeroPoint;
                 break;
         }
+
+        _gizmo2D.OnPointerReleased();
 
         var stillPressed = e.GetCurrentPoint(this).Properties;
         if (stillPressed is { IsLeftButtonPressed: false, IsMiddleButtonPressed: false, IsRightButtonPressed: false })
@@ -235,9 +202,6 @@ public partial class WorldViewport : Control
     private readonly ViewportCamera _viewportCamera = new(); 
     private readonly ViewportInputState _viewportInputState = new();
 
-    private bool _gizmoActive = false;
-    private Point _gizmoOrigin = WarkbenchMath.ZeroPoint;
-    private Point _gizmoOriginPointerOffset = WarkbenchMath.ZeroPoint;
     private readonly Gizmo2D _gizmo2D = new();
     
     private readonly GridRenderer _gridRenderer = new();
