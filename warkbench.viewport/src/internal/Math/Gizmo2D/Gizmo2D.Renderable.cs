@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Avalonia;
+﻿using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia;
+using System.Collections.Generic;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using warkbench.core;
+
 
 namespace warkbench.viewport;
-
 internal partial class Gizmo2D
 {
     /// <summary>Renders the gizmo using the current world-to-screen transform.</summary>
@@ -23,6 +26,7 @@ internal partial class Gizmo2D
         RenderTranslationHandle(ctx, handlePen, handlePenFocused);
         RenderRotationHandle(ctx, handlePen, handlePenFocused);
         RenderScaleHandle(ctx);
+        RenderMenu(ctx);
     }
 
     /// <summary>Renders center handle and translation axes including modifier bands.</summary>
@@ -123,6 +127,79 @@ internal partial class Gizmo2D
 
         DrawScaleAxis(ctx, scaleXStart, scaleXEnd, ViewportStyle.XColor, IsFocused(Part.ScaleX));
         DrawScaleAxis(ctx, scaleYStart, scaleYEnd, ViewportStyle.YColor, IsFocused(Part.ScaleY));
+    }
+
+    /// <summary></summary>
+    private void RenderMenu(DrawingContext ctx)
+    {
+        var origin = Origin * _worldToScreenMatrix;
+
+        if ( (!GetStreamGeometry("icon_menu", 270, 0.02, out var iconMenu) || iconMenu is null) ||
+             (!GetStreamGeometry("icon_menu_open", 300, 0.02, out var iconMenuOpen) || iconMenuOpen is null) ||
+             (!GetStreamGeometry("icon_rotate_90_degrees_cw", 180, 0.02, out var iconRotateCw) || iconRotateCw is null) ||
+             (!GetStreamGeometry("icon_rotate_90_degrees_ccw", 210, 0.02, out var iconRotateCcw) || iconRotateCcw is null) ||
+             (!GetStreamGeometry("icon_global_coordinate_system", 150, 0.03, out var iconGlobalCoordinateSystem) || iconGlobalCoordinateSystem is null) ||
+             (!GetStreamGeometry("icon_local_coordinate_system", 120, 0.035, out var iconLocalCoordinateSystem) || iconLocalCoordinateSystem is null)
+           )
+            return;
+        
+        ctx.DrawGeometry(Brushes.White, null, iconMenu);
+        ctx.DrawGeometry(Brushes.White, null, iconMenuOpen);
+        ctx.DrawGeometry(Brushes.White, null, iconRotateCw);
+        ctx.DrawGeometry(Brushes.White, null, iconRotateCcw);
+        ctx.DrawGeometry(Brushes.White, null, iconGlobalCoordinateSystem);
+        ctx.DrawGeometry(Brushes.White, null, iconLocalCoordinateSystem);
+    }
+
+    private bool GetStreamGeometry(string name, double degrees, double scale, [MaybeNullWhen(false)] out Geometry? geometry)
+    {
+        geometry = null;
+
+        // Try to resolve the StreamGeometry from application resources
+        if (Application.Current?.FindResource(name) is not StreamGeometry streamGeometry)
+            return false;
+
+        // Transform origin from world space to screen space
+        var origin = Origin * _worldToScreenMatrix;
+        var bounds = streamGeometry.Bounds;
+
+        // Ring radius in screen space
+        var r = MenuOffset + RotateRadius + IndicatorLength;
+
+        // Angle in radians:
+        // 0° = right, 90° = down, 180° = left, 270° = up
+        var theta = degrees * Math.PI / 180.0;
+
+        // Compute icon position on the ring
+        var targetX = origin.X + Math.Cos(theta) * r;
+        var targetY = origin.Y + Math.Sin(theta) * r;
+
+        var g = streamGeometry.Clone();
+
+        g.Transform = new TransformGroup
+        {
+            Children =
+            {
+                // 1) Move geometry center to (0,0) so scaling/rotation happens around its center
+                new TranslateTransform(
+                    -(bounds.X + bounds.Width  * 0.5),
+                    -(bounds.Y + bounds.Height * 0.5)),
+
+                // 2) Scale the icon to the desired size
+                new ScaleTransform(scale, scale),
+
+                // 3) Optional: rotate the icon itself
+                //    - radial alignment:   RotateTransform(degrees)
+                //    - tangential alignment: RotateTransform(degrees + 90)
+                // new RotateTransform(degrees),
+
+                // 4) Translate the icon to its final position on the ring
+                new TranslateTransform(targetX, targetY),
+            }
+        };
+
+        geometry = g;
+        return true;
     }
 
     private bool IsFocused(Part part)

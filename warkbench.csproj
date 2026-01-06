@@ -3,32 +3,32 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
+
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
     <PackageIcon></PackageIcon>
     <ApplicationIcon>Assets\Icons\App\warkbench.ico</ApplicationIcon>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
 
+  <!-- App-owned resources only -->
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+
+    <!-- Prevent accidentally including resources from sub-project folders -->
+    <AvaloniaResource Remove="warkbench.core\**" />
+    <AvaloniaResource Remove="warkbench.viewport\**" />
+    <AvaloniaResource Remove="Assets\Icons\App\warkbench.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Bold.ttf" />
-    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-BoldItalic.ttf" />
-    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Italic.ttf" />
-    <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Regular.ttf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Remove="Assets\IconResources.axaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\Icons\App\warkbench.ico" />
+    <AvaloniaXaml Remove="warkbench.core\Assets\IconResources.axaml" />
+    <AvaloniaXaml Remove="warkbench.core\**" />
+    <AvaloniaXaml Remove="warkbench.viewport\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,11 +38,13 @@
     <PackageReference Include="Avalonia.Skia" Version="11.3.9" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+
+    <!-- Remove Avalonia.Diagnostics from Release output -->
     <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9">
       <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
+
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Dock.Avalonia" Version="11.3.8" />
     <PackageReference Include="Dock.Avalonia.Themes.Fluent" Version="11.3.8" />
@@ -138,6 +140,9 @@
       <DependentUpon>BoolNodeView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+
+    <Compile Remove="warkbench.core\**" />
+    <Compile Remove="warkbench.viewport\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -151,6 +156,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+
+    <None Remove="warkbench.core\**" />
+    <None Remove="warkbench.viewport\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -158,16 +166,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>tiny_obj_loader.dll</Link>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="3rdParty\tiny_obj_loader.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>tiny_obj_loader.pdb</Link>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="3rdParty\tiny_obj_loader.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>tiny_obj_loader.so</Link>
@@ -179,16 +181,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>stb_image.dll</Link>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="3rdParty\stb_image.pdb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>stb_image.pdb</Link>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="3rdParty\stb_image.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>stb_image.so</Link>
@@ -197,5 +193,20 @@
 
   <ItemGroup>
     <Folder Include="Views\Tools\Details\Resources\NodeEditor\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="warkbench.core\**" />
+    <EmbeddedResource Remove="warkbench.viewport\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="warkbench.core\**" />
+    <AdditionalFiles Remove="warkbench.viewport\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="warkbench.core\warkbench.core.csproj" />
+    <ProjectReference Include="warkbench.viewport\warkbench.viewport.csproj" />
   </ItemGroup>
 </Project>

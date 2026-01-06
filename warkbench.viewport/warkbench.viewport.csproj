@@ -19,5 +19,6 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+        <ProjectReference Include="..\warkbench.core\warkbench.core.csproj" />
     </ItemGroup>
 </Project>
