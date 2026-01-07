@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Avalonia;
 using warkbench.core;
 
@@ -18,10 +19,24 @@ internal partial class Gizmo2D
     }
 
     public void UpdateHover(Point origin, Point mousePos)
-        => HoveredPart = HitTest(origin, mousePos);
+    {
+        HoveredPart = HitTest(origin, mousePos);
+        
+        var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
+        foreach (var menuButton in _menuButtons)
+        {
+            menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, 12);
+        }
+    }
 
     public bool OnPointerPressed(Point origin, Point mousePos)
     {
+        var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
+        foreach (var menuButton in _menuButtons)
+        {
+            menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, 12);
+        }
+        
         var hit = HitTest(origin, mousePos);
         if (hit == Part.None)
             return false;
@@ -84,6 +99,11 @@ internal partial class Gizmo2D
 
     public void OnPointerReleased()
     {
+        foreach (var menuButton in _menuButtons)
+        {
+            menuButton.IsPressed = false;
+        }
+        
         ActivePart = Part.None;
 
         ScaleXVisualLen = 0d;
@@ -306,4 +326,14 @@ internal partial class Gizmo2D
     }
 
     private Matrix _worldToScreenMatrix;
+    
+    private IEnumerable<Gizmo2DMenuButton> _menuButtons = new List<Gizmo2DMenuButton>
+    {
+        new Gizmo2DMenuButton("icon_menu", 270, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_menu_open", 300, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_cw", 180, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_ccw", 210, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_global_coordinate_system", 150, 0.0d, 0.033),
+        new Gizmo2DMenuButton("icon_local_coordinate_system", 120, 0.0d, 0.041),
+    };
 }

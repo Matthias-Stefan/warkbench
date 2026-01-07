@@ -68,23 +68,20 @@ public partial class WorldViewport : Control
                 e.Handled = true;
                 return;
             }
-            
-            _viewportInputState.LeftButtonPressedPos = p;    
-            e.Pointer.Capture(this);
-            e.Handled = true;
+            _viewportInputState.LeftButtonPressedPos = p;
         }
         if (e.Properties.IsMiddleButtonPressed)
         {
             _viewportInputState.MiddleButtonPressedPos = p;
-            e.Pointer.Capture(this);
-            e.Handled = true;
         }
         if (e.Properties.IsRightButtonPressed)
         {
             _viewportInputState.RightButtonPressedPos = p;
-            e.Pointer.Capture(this);
-            e.Handled = true;
         }
+        
+        InvalidateVisual();
+        e.Pointer.Capture(this);
+        e.Handled = true;
     }
 
     protected override void OnPointerMoved(Avalonia.Input.PointerEventArgs e)

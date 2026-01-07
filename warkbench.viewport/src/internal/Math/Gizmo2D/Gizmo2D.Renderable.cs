@@ -8,6 +8,7 @@ using warkbench.core;
 
 
 namespace warkbench.viewport;
+
 internal partial class Gizmo2D
 {
     /// <summary>Renders the gizmo using the current world-to-screen transform.</summary>
@@ -18,7 +19,7 @@ internal partial class Gizmo2D
 
         var handleBrush = new SolidColorBrush(ViewportStyle.HandleColor);
 
-        var handlePen        = new Pen(handleBrush, StrokeThickness);
+        var handlePen = new Pen(handleBrush, StrokeThickness);
         var handlePenFocused = new Pen(handleBrush, HoverThickness);
 
         _worldToScreenMatrix = worldToScreenMatrix;
@@ -34,7 +35,7 @@ internal partial class Gizmo2D
     {
         var origin = Origin * _worldToScreenMatrix;
 
-        var centerRect      = GetCenterRect(origin);
+        var centerRect = GetCenterRect(origin);
         var centerIsFocused = IsFocused(Part.Center);
 
         ctx.DrawRectangle(
@@ -45,10 +46,10 @@ internal partial class Gizmo2D
         var translateStartOffset = RotateRadius + OuterTranslateOffset;
 
         var translateXStart = new Point(origin.X + translateStartOffset, origin.Y);
-        var translateXEnd   = new Point(origin.X + translateStartOffset + OuterTranslateLength, origin.Y);
+        var translateXEnd = new Point(origin.X + translateStartOffset + OuterTranslateLength, origin.Y);
 
         var translateYStart = new Point(origin.X, origin.Y + translateStartOffset);
-        var translateYEnd   = new Point(origin.X, origin.Y + translateStartOffset + OuterTranslateLength);
+        var translateYEnd = new Point(origin.X, origin.Y + translateStartOffset + OuterTranslateLength);
 
         DrawTranslateAxis(ctx, translateXStart, translateXEnd, ViewportStyle.XColor, IsFocused(Part.TranslateX));
         DrawTranslateAxis(ctx, translateYStart, translateYEnd, ViewportStyle.YColor, IsFocused(Part.TranslateY));
@@ -63,7 +64,7 @@ internal partial class Gizmo2D
         {
             var x0 = Math.Min(translateXStart.X, translateXEnd.X);
             var x1 = Math.Max(translateXStart.X, translateXEnd.X);
-            var w  = Math.Max(1.0, x1 - x0);
+            var w = Math.Max(1.0, x1 - x0);
 
             DrawModifierBandsVertical(
                 ctx,
@@ -78,7 +79,7 @@ internal partial class Gizmo2D
         {
             var y0 = Math.Min(translateYStart.Y, translateYEnd.Y);
             var y1 = Math.Max(translateYStart.Y, translateYEnd.Y);
-            var h  = Math.Max(1.0, y1 - y0);
+            var h = Math.Max(1.0, y1 - y0);
 
             DrawModifierBandsHorizontal(
                 ctx,
@@ -94,7 +95,7 @@ internal partial class Gizmo2D
     /// <summary>Renders the rotation ring and facing-direction indicator.</summary>
     private void RenderRotationHandle(DrawingContext ctx, Pen handlePen, Pen handlePenFocused)
     {
-        var origin        = Origin * _worldToScreenMatrix;
+        var origin = Origin * _worldToScreenMatrix;
         var ringIsFocused = IsFocused(Part.Rotate);
 
         ctx.DrawEllipse(
@@ -104,7 +105,7 @@ internal partial class Gizmo2D
             RotateRadius,
             RotateRadius);
 
-        var dir            = new Vector(Math.Cos(Angle), Math.Sin(Angle));
+        var dir = new Vector(Math.Cos(Angle), Math.Sin(Angle));
         var ringInnerPoint = origin + dir * RotateRadius;
         var ringOuterPoint = origin + dir * (RotateRadius + IndicatorLength);
 
@@ -120,86 +121,28 @@ internal partial class Gizmo2D
         var origin = Origin * _worldToScreenMatrix;
 
         var scaleXStart = new Point(origin.X + InnerScaleOffset, origin.Y);
-        var scaleXEnd   = new Point(origin.X + InnerScaleOffset + InnerScaleLength + ScaleXVisualLen, origin.Y);
+        var scaleXEnd = new Point(origin.X + InnerScaleOffset + InnerScaleLength + ScaleXVisualLen, origin.Y);
 
         var scaleYStart = new Point(origin.X, origin.Y + InnerScaleOffset);
-        var scaleYEnd   = new Point(origin.X, origin.Y + InnerScaleOffset + InnerScaleLength + ScaleYVisualLen);
+        var scaleYEnd = new Point(origin.X, origin.Y + InnerScaleOffset + InnerScaleLength + ScaleYVisualLen);
 
         DrawScaleAxis(ctx, scaleXStart, scaleXEnd, ViewportStyle.XColor, IsFocused(Part.ScaleX));
         DrawScaleAxis(ctx, scaleYStart, scaleYEnd, ViewportStyle.YColor, IsFocused(Part.ScaleY));
     }
-
+    
     /// <summary></summary>
     private void RenderMenu(DrawingContext ctx)
     {
-        var origin = Origin * _worldToScreenMatrix;
-
-        if ( (!GetStreamGeometry("icon_menu", 270, 0.02, out var iconMenu) || iconMenu is null) ||
-             (!GetStreamGeometry("icon_menu_open", 300, 0.02, out var iconMenuOpen) || iconMenuOpen is null) ||
-             (!GetStreamGeometry("icon_rotate_90_degrees_cw", 180, 0.02, out var iconRotateCw) || iconRotateCw is null) ||
-             (!GetStreamGeometry("icon_rotate_90_degrees_ccw", 210, 0.02, out var iconRotateCcw) || iconRotateCcw is null) ||
-             (!GetStreamGeometry("icon_global_coordinate_system", 150, 0.03, out var iconGlobalCoordinateSystem) || iconGlobalCoordinateSystem is null) ||
-             (!GetStreamGeometry("icon_local_coordinate_system", 120, 0.035, out var iconLocalCoordinateSystem) || iconLocalCoordinateSystem is null)
-           )
-            return;
-        
-        ctx.DrawGeometry(Brushes.White, null, iconMenu);
-        ctx.DrawGeometry(Brushes.White, null, iconMenuOpen);
-        ctx.DrawGeometry(Brushes.White, null, iconRotateCw);
-        ctx.DrawGeometry(Brushes.White, null, iconRotateCcw);
-        ctx.DrawGeometry(Brushes.White, null, iconGlobalCoordinateSystem);
-        ctx.DrawGeometry(Brushes.White, null, iconLocalCoordinateSystem);
-    }
-
-    private bool GetStreamGeometry(string name, double degrees, double scale, [MaybeNullWhen(false)] out Geometry? geometry)
-    {
-        geometry = null;
-
-        // Try to resolve the StreamGeometry from application resources
-        if (Application.Current?.FindResource(name) is not StreamGeometry streamGeometry)
-            return false;
-
         // Transform origin from world space to screen space
         var origin = Origin * _worldToScreenMatrix;
-        var bounds = streamGeometry.Bounds;
 
         // Ring radius in screen space
-        var r = MenuOffset + RotateRadius + IndicatorLength;
-
-        // Angle in radians:
-        // 0° = right, 90° = down, 180° = left, 270° = up
-        var theta = degrees * Math.PI / 180.0;
-
-        // Compute icon position on the ring
-        var targetX = origin.X + Math.Cos(theta) * r;
-        var targetY = origin.Y + Math.Sin(theta) * r;
-
-        var g = streamGeometry.Clone();
-
-        g.Transform = new TransformGroup
+        var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
+        
+        foreach (var menuButton in _menuButtons)
         {
-            Children =
-            {
-                // 1) Move geometry center to (0,0) so scaling/rotation happens around its center
-                new TranslateTransform(
-                    -(bounds.X + bounds.Width  * 0.5),
-                    -(bounds.Y + bounds.Height * 0.5)),
-
-                // 2) Scale the icon to the desired size
-                new ScaleTransform(scale, scale),
-
-                // 3) Optional: rotate the icon itself
-                //    - radial alignment:   RotateTransform(degrees)
-                //    - tangential alignment: RotateTransform(degrees + 90)
-                // new RotateTransform(degrees),
-
-                // 4) Translate the icon to its final position on the ring
-                new TranslateTransform(targetX, targetY),
-            }
-        };
-
-        geometry = g;
-        return true;
+            menuButton.Render(ctx, origin, ringRadiusScreenSpace);
+        }
     }
 
     private bool IsFocused(Part part)
