@@ -12,6 +12,8 @@ public partial class WorldViewport : Control
     public WorldViewport()
     {
         Focusable = true;
+        _gizmo2D = new();
+        _gizmo2D.RequestInvalidateVisual += (() => InvalidateVisual());
     }
     
     public override void Render(DrawingContext context)
@@ -200,7 +202,7 @@ public partial class WorldViewport : Control
     private readonly ViewportCamera _viewportCamera = new(); 
     private readonly ViewportInputState _viewportInputState = new();
 
-    private readonly Gizmo2D _gizmo2D = new();
+    private readonly Gizmo2D _gizmo2D;
     
     private readonly GridRenderer _gridRenderer = new();
     private readonly SelectionRenderer _selectionRenderer = new();

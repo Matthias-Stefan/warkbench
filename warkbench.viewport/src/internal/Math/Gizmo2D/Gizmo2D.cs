@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
+using Avalonia.Threading;
 using warkbench.core;
 
 
 namespace warkbench.viewport;
-internal partial class Gizmo2D
+internal partial class Gizmo2D : IDisposable
 {
     internal enum Part
     {
@@ -18,6 +20,16 @@ internal partial class Gizmo2D
         Rotate
     }
 
+    public Gizmo2D()
+    {
+        _toolTipTimer.Tick += OnTooltipTimerTick;
+    }
+    
+    public void Dispose()
+    {
+        _toolTipTimer.Tick -= OnTooltipTimerTick;
+    }
+    
     public void UpdateHover(Point origin, Point mousePos)
     {
         HoveredPart = HitTest(origin, mousePos);
@@ -25,7 +37,25 @@ internal partial class Gizmo2D
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
         foreach (var menuButton in _menuButtons)
         {
-            menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, 12);
+            menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, _menuButtonHitRadius);
+            if (menuButton is { IsHovered: true, ShouldShowTooltip: false })
+            {
+                _toolTipTimer.Start();
+            }
+        }
+
+        bool found = false;
+        foreach (var menuButton in _menuButtons)
+        {
+            if (menuButton.IsHovered)
+            {
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            _toolTipTimer.Stop();
         }
     }
 
@@ -34,7 +64,7 @@ internal partial class Gizmo2D
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
         foreach (var menuButton in _menuButtons)
         {
-            menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, 12);
+            menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, _menuButtonHitRadius);
         }
         
         var hit = HitTest(origin, mousePos);
@@ -203,9 +233,18 @@ internal partial class Gizmo2D
     public double ScaleXVisualLen { get; set; } = 0d;
     public double ScaleYVisualLen { get; set; } = 0d;
 
+    public event Action? RequestInvalidateVisual;
+    private void RaiseRequestInvalidateVisual() => RequestInvalidateVisual?.Invoke();
+    
     private Point _lastDragMousePosScreen = WarkbenchMath.ZeroPoint;
     private Point _dragAccumulatedScreenOffset = WarkbenchMath.ZeroPoint;
 
+    private DispatcherTimer _toolTipTimer = new DispatcherTimer()
+    {
+        Interval = TimeSpan.FromMilliseconds(250),
+    };
+    private const double _menuButtonHitRadius = 12d;
+    
     private Part HitTest(Point origin, Point mousePos)
     {
         if (GetCenterRect(origin).Contains(mousePos))
@@ -324,6 +363,16 @@ internal partial class Gizmo2D
         var off = RotateRadius + OuterTranslateOffset;
         return new Point(o.X, o.Y + off + OuterTranslateLength);
     }
+    
+    private void OnTooltipTimerTick(object? sender, EventArgs e)
+    {
+        foreach (var button in _menuButtons)
+        {
+            button.ShouldShowTooltip = button.IsHovered;
+            RaiseRequestInvalidateVisual();
+        }
+    }
+    
 
     private Matrix _worldToScreenMatrix;
     

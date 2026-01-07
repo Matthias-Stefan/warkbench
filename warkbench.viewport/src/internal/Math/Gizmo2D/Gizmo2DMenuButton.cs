@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia;
+using System;
+using System.Globalization;
 
 
 namespace warkbench.viewport;
@@ -83,6 +83,21 @@ internal sealed class Gizmo2DMenuButton
         }
 
         ctx.DrawGeometry(brush, null, geometry);
+
+        if (ShouldShowTooltip)
+        {
+            var ft = new FormattedText(
+                "Schmalz",
+                System.Globalization.CultureInfo.InvariantCulture,
+                FlowDirection.LeftToRight,
+                Typeface.Default,
+                10,
+                new SolidColorBrush(Colors.White));
+
+            ctx.DrawText(ft, new Point(
+                200, 
+                200));
+        }
     }
     
     /// <summary>
@@ -131,8 +146,23 @@ internal sealed class Gizmo2DMenuButton
     public double Scale { get; set; }
 
     // True if the pointer is currently inside the button hit area
-    public bool IsHovered { get; set; }
+    public bool IsHovered
+    {
+        get => _isHovered;
+        set
+        {
+            _isHovered = value;
+            if (!value)
+            {
+                ShouldShowTooltip = false;
+            }
+        }
+    }
 
     // True while the pointer is pressed and captured by this button
     public bool IsPressed { get; set; }
+
+    public bool ShouldShowTooltip { get; set; } = false;
+
+    private bool _isHovered = false;
 }
