@@ -11,6 +11,9 @@ internal static class ViewportStyle
     internal static Color Gizmo2DMenuColor = Color.FromArgb(244, 128, 128, 128);
     internal static Color Gizmo2DMenuHoverColor = Color.FromArgb(224, 255, 255, 255);
     internal static Color Gizmo2DMenuPressedColor = Color.FromArgb(255, 255, 255, 0);
+    internal static Color TooltipBorderColor = Color.FromArgb(255, 0, 0, 0);
+    internal static Color TooltipBackgroundColor = Color.FromArgb(255, 43, 43, 43);
+    //internal static Color TooltipBackgroundColor = Color.FromArgb(255, 38, 40, 43);
     
     internal static readonly IBrush XBrush = new SolidColorBrush(XColor); 
     internal static readonly IBrush YBrush = new SolidColorBrush(YColor);
@@ -19,4 +22,6 @@ internal static class ViewportStyle
     internal static readonly IBrush Gizmo2DMenuBrush = new SolidColorBrush(Gizmo2DMenuColor);
     internal static readonly IBrush Gizmo2DMenuHoverBrush = new SolidColorBrush(Gizmo2DMenuHoverColor);
     internal static readonly IBrush Gizmo2DMenuPressedBrush = new SolidColorBrush(Gizmo2DMenuPressedColor);
+    internal static readonly IBrush TooltipBorderBrush = new SolidColorBrush(TooltipBorderColor);
+    internal static readonly IBrush TooltipBackgroundBrush = new SolidColorBrush(TooltipBackgroundColor);
 }

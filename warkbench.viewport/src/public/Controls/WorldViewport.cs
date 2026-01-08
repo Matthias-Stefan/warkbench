@@ -49,7 +49,7 @@ public partial class WorldViewport : Control
         var worldToScreenMatrix = _viewportCamera.WorldToScreenMatrix(bounds.Size);
         var gizmoOrigin = worldToScreenMatrix.Transform(_gizmo2D.Origin);
         _gizmo2D.UpdateHover(gizmoOrigin, _viewportInputState.MousePos);
-        _gizmo2D.Render(context, worldToScreenMatrix);
+        _gizmo2D.Render(context, worldToScreenMatrix, _viewportInputState.MousePos);
     }
 
     protected override void OnPointerPressed(Avalonia.Input.PointerPressedEventArgs e)

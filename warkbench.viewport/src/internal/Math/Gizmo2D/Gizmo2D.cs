@@ -27,6 +27,7 @@ internal partial class Gizmo2D : IDisposable
     
     public void Dispose()
     {
+        _toolTipTimer.Stop();
         _toolTipTimer.Tick -= OnTooltipTimerTick;
     }
     
@@ -37,23 +38,14 @@ internal partial class Gizmo2D : IDisposable
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
         foreach (var menuButton in _menuButtons)
         {
-            menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, _menuButtonHitRadius);
+            menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, MenuButtonHitRadius);
             if (menuButton is { IsHovered: true, ShouldShowTooltip: false })
             {
                 _toolTipTimer.Start();
             }
         }
 
-        bool found = false;
-        foreach (var menuButton in _menuButtons)
-        {
-            if (menuButton.IsHovered)
-            {
-                found = true;
-            }
-        }
-
-        if (!found)
+        if (!_menuButtons.Any(b => b.IsHovered))
         {
             _toolTipTimer.Stop();
         }
@@ -64,7 +56,7 @@ internal partial class Gizmo2D : IDisposable
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
         foreach (var menuButton in _menuButtons)
         {
-            menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, _menuButtonHitRadius);
+            menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, MenuButtonHitRadius);
         }
         
         var hit = HitTest(origin, mousePos);
@@ -243,7 +235,6 @@ internal partial class Gizmo2D : IDisposable
     {
         Interval = TimeSpan.FromMilliseconds(250),
     };
-    private const double _menuButtonHitRadius = 12d;
     
     private Part HitTest(Point origin, Point mousePos)
     {
@@ -374,15 +365,13 @@ internal partial class Gizmo2D : IDisposable
     }
     
 
-    private Matrix _worldToScreenMatrix;
-    
     private IEnumerable<Gizmo2DMenuButton> _menuButtons = new List<Gizmo2DMenuButton>
     {
-        new Gizmo2DMenuButton("icon_menu", 270, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_menu_open", 300, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_rotate_90_degrees_cw", 180, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_rotate_90_degrees_ccw", 210, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_global_coordinate_system", 150, 0.0d, 0.033),
-        new Gizmo2DMenuButton("icon_local_coordinate_system", 120, 0.0d, 0.041),
+        new Gizmo2DMenuButton("icon_menu", "Menu", 270, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_menu_open", "Open Menu", 300, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_cw", "Rotate 90° Clockwise", 180, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_ccw", "Rotate 90° Counterclockwise", 210, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_global_coordinate_system", "Global Space", 150, 0.0d, 0.033),
+        new Gizmo2DMenuButton("icon_local_coordinate_system", "Local Space", 120, 0.0d, 0.041),
     };
 }

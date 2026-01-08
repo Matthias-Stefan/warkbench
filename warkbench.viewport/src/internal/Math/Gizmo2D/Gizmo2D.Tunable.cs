@@ -26,4 +26,5 @@ internal partial class Gizmo2D
     public static double RotateRadius { get; set; } = 52d;
     
     public static double MenuOffset { get; set; } = 12d;
+    public static double MenuButtonHitRadius { get; set; } = 12d;
 }

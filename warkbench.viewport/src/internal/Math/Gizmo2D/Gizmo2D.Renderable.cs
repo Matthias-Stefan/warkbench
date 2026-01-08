@@ -12,7 +12,7 @@ namespace warkbench.viewport;
 internal partial class Gizmo2D
 {
     /// <summary>Renders the gizmo using the current world-to-screen transform.</summary>
-    public void Render(DrawingContext ctx, Matrix worldToScreenMatrix)
+    public void Render(DrawingContext ctx, Matrix worldToScreenMatrix, Point mousePos)
     {
         if (!IsVisible)
             return;
@@ -22,18 +22,16 @@ internal partial class Gizmo2D
         var handlePen = new Pen(handleBrush, StrokeThickness);
         var handlePenFocused = new Pen(handleBrush, HoverThickness);
 
-        _worldToScreenMatrix = worldToScreenMatrix;
-
-        RenderTranslationHandle(ctx, handlePen, handlePenFocused);
-        RenderRotationHandle(ctx, handlePen, handlePenFocused);
-        RenderScaleHandle(ctx);
-        RenderMenu(ctx);
+        RenderTranslationHandle(ctx, worldToScreenMatrix, handlePen, handlePenFocused);
+        RenderRotationHandle(ctx, worldToScreenMatrix, handlePen, handlePenFocused);
+        RenderScaleHandle(ctx, worldToScreenMatrix);
+        RenderMenu(ctx, worldToScreenMatrix, mousePos);
     }
 
     /// <summary>Renders center handle and translation axes including modifier bands.</summary>
-    private void RenderTranslationHandle(DrawingContext ctx, Pen handlePen, Pen handlePenFocused)
+    private void RenderTranslationHandle(DrawingContext ctx, Matrix worldToScreenMatrix, Pen handlePen, Pen handlePenFocused)
     {
-        var origin = Origin * _worldToScreenMatrix;
+        var origin = Origin * worldToScreenMatrix;
 
         var centerRect = GetCenterRect(origin);
         var centerIsFocused = IsFocused(Part.Center);
@@ -93,9 +91,9 @@ internal partial class Gizmo2D
     }
 
     /// <summary>Renders the rotation ring and facing-direction indicator.</summary>
-    private void RenderRotationHandle(DrawingContext ctx, Pen handlePen, Pen handlePenFocused)
+    private void RenderRotationHandle(DrawingContext ctx, Matrix worldToScreenMatrix, Pen handlePen, Pen handlePenFocused)
     {
-        var origin = Origin * _worldToScreenMatrix;
+        var origin = Origin * worldToScreenMatrix;
         var ringIsFocused = IsFocused(Part.Rotate);
 
         ctx.DrawEllipse(
@@ -116,9 +114,9 @@ internal partial class Gizmo2D
     }
 
     /// <summary>Renders scale axes with line and square handle.</summary>
-    private void RenderScaleHandle(DrawingContext ctx)
+    private void RenderScaleHandle(DrawingContext ctx, Matrix worldToScreenMatrix)
     {
-        var origin = Origin * _worldToScreenMatrix;
+        var origin = Origin * worldToScreenMatrix;
 
         var scaleXStart = new Point(origin.X + InnerScaleOffset, origin.Y);
         var scaleXEnd = new Point(origin.X + InnerScaleOffset + InnerScaleLength + ScaleXVisualLen, origin.Y);
@@ -131,17 +129,17 @@ internal partial class Gizmo2D
     }
     
     /// <summary></summary>
-    private void RenderMenu(DrawingContext ctx)
+    private void RenderMenu(DrawingContext ctx, Matrix worldToScreenMatrix, Point mousePos)
     {
         // Transform origin from world space to screen space
-        var origin = Origin * _worldToScreenMatrix;
+        var origin = Origin * worldToScreenMatrix;
 
         // Ring radius in screen space
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
         
         foreach (var menuButton in _menuButtons)
         {
-            menuButton.Render(ctx, origin, ringRadiusScreenSpace);
+            menuButton.Render(ctx, origin, mousePos, ringRadiusScreenSpace);
         }
     }
 

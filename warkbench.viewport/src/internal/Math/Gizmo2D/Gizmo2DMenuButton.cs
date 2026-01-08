@@ -19,9 +19,10 @@ internal sealed class Gizmo2DMenuButton
     /// <param name="degrees">Angular position on the menu ring (degrees).</param>
     /// <param name="rotation">Local icon rotation (degrees).</param>
     /// <param name="scale">Uniform icon scale factor.</param>
-    public Gizmo2DMenuButton(string iconName, double degrees, double rotation, double scale)
+    public Gizmo2DMenuButton(string iconName, string tooltip, double degrees, double rotation, double scale)
     {
         IconName = iconName;
+        Tooltip = tooltip;
         Degrees = degrees;
         Rotation = rotation;
         Scale = scale;
@@ -33,7 +34,7 @@ internal sealed class Gizmo2DMenuButton
     /// <param name="ctx">Target drawing context.</param>
     /// <param name="originScreenSpace">Center of the radial menu in screen space.</param>
     /// <param name="ringRadiusScreenSpace">Radius of the menu ring in screen space.</param>
-    public void Render(DrawingContext ctx, Point originScreenSpace, double ringRadiusScreenSpace)
+    public void Render(DrawingContext ctx, Point originScreenSpace, Point mousePos, double ringRadiusScreenSpace)
     {
         // Resolve icon geometry from application resources
         if (Application.Current?.FindResource(IconName) is not StreamGeometry streamGeometry)
@@ -87,16 +88,22 @@ internal sealed class Gizmo2DMenuButton
         if (ShouldShowTooltip)
         {
             var ft = new FormattedText(
-                "Schmalz",
+                Tooltip,
                 System.Globalization.CultureInfo.InvariantCulture,
                 FlowDirection.LeftToRight,
                 Typeface.Default,
-                10,
+                12,
                 new SolidColorBrush(Colors.White));
 
+            const double padding = 8d;
+            const double mouseOffset = 18d;
+            
+            ctx.DrawRectangle(ViewportStyle.TooltipBackgroundBrush, new Pen(ViewportStyle.TooltipBorderBrush, 0.5d), new Rect(new Point(mousePos.X, mousePos.Y + mouseOffset), new Size(ft.Width + 2 * padding, ft.Height + 2 * padding)), 4, 4);
+            
+            
             ctx.DrawText(ft, new Point(
-                200, 
-                200));
+                mousePos.X + padding, 
+                mousePos.Y + padding + mouseOffset));
         }
     }
     
@@ -135,6 +142,8 @@ internal sealed class Gizmo2DMenuButton
     
     // Resource key of the icon geometry
     public string IconName { get; set; }
+
+    public string Tooltip { get; set; }
 
     // Angular position on the radial menu (degrees)
     public double Degrees { get; set; } = 0.0d;
