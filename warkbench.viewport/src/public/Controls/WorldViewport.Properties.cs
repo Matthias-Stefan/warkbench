@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Avalonia;
 using Avalonia.Controls;
 
@@ -12,6 +13,7 @@ public partial class WorldViewport : Control
         SelectedItemsProperty.Changed.AddClassHandler<WorldViewport>((vp, _) => vp.SyncFromSelectedItems());
         SelectedItemProperty.Changed.AddClassHandler<WorldViewport>((vp, _) => vp.SyncFromSelectedItem());
         ActiveToolProperty.Changed.AddClassHandler<WorldViewport>((vp, _) => vp.OnActiveToolChanged());
+        RenderablesProperty.Changed.AddClassHandler<WorldViewport>((vp, _) => vp.InvalidateVisual());
     }
     
     private void SyncFromSelectedItems()
@@ -75,8 +77,12 @@ public partial class WorldViewport : Control
     public static readonly StyledProperty<IReadOnlyList<object>> SelectedItemsProperty =
         AvaloniaProperty.Register<WorldViewport, IReadOnlyList<object>>(nameof(SelectedItems), Array.Empty<object>());
 
-    public static readonly  StyledProperty<ViewportTool> ActiveToolProperty =
+    public static readonly StyledProperty<ViewportTool> ActiveToolProperty =
         AvaloniaProperty.Register<WorldViewport, ViewportTool>(nameof(ActiveTool), ViewportTool.None);
+    
+    public static readonly StyledProperty<IReadOnlyList<IRenderable>> RenderablesProperty =
+        AvaloniaProperty.Register<WorldViewport, IReadOnlyList<IRenderable>>(nameof(Renderables), Array.Empty<IRenderable>());
+    
     
     public object? SelectedItem
     {
@@ -94,6 +100,12 @@ public partial class WorldViewport : Control
     {
         get => GetValue(ActiveToolProperty);
         set => SetValue(ActiveToolProperty, value);
+    }
+    
+    public IReadOnlyList<IRenderable> Renderables
+    {
+        get => GetValue(RenderablesProperty);
+        set => SetValue(RenderablesProperty, value ?? []);
     }
     
     private bool _syncingSelection;

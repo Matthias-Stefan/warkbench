@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Avalonia.Threading;
+using Avalonia;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia;
-using Avalonia.Threading;
+using System;
 using warkbench.core;
 
 
@@ -24,41 +24,38 @@ internal partial class Gizmo2D : IDisposable
     {
         _toolTipTimer.Tick += OnTooltipTimerTick;
     }
-    
+
     public void Dispose()
     {
         _toolTipTimer.Stop();
         _toolTipTimer.Tick -= OnTooltipTimerTick;
     }
-    
+
     public void UpdateHover(Point origin, Point mousePos)
     {
         HoveredPart = HitTest(origin, mousePos);
-        
+
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
+
         foreach (var menuButton in _menuButtons)
         {
             menuButton.UpdateHover(mousePos, origin, ringRadiusScreenSpace, MenuButtonHitRadius);
+
             if (menuButton is { IsHovered: true, ShouldShowTooltip: false })
-            {
                 _toolTipTimer.Start();
-            }
         }
 
         if (!_menuButtons.Any(b => b.IsHovered))
-        {
             _toolTipTimer.Stop();
-        }
     }
 
     public bool OnPointerPressed(Point origin, Point mousePos)
     {
         var ringRadiusScreenSpace = MenuOffset + RotateRadius + IndicatorLength;
+
         foreach (var menuButton in _menuButtons)
-        {
             menuButton.IsPressed = menuButton.HitTest(mousePos, origin, ringRadiusScreenSpace, MenuButtonHitRadius);
-        }
-        
+
         var hit = HitTest(origin, mousePos);
         if (hit == Part.None)
             return false;
@@ -122,10 +119,8 @@ internal partial class Gizmo2D : IDisposable
     public void OnPointerReleased()
     {
         foreach (var menuButton in _menuButtons)
-        {
             menuButton.IsPressed = false;
-        }
-        
+
         ActivePart = Part.None;
 
         ScaleXVisualLen = 0d;
@@ -209,33 +204,6 @@ internal partial class Gizmo2D : IDisposable
         Angle = RotateStartGizmoAngle + delta;
     }
 
-    public Part ActivePart { get; private set; } = Part.None;
-    public Part HoveredPart { get; private set; } = Part.None;
-
-    public Point Origin { get; set; } = WarkbenchMath.ZeroPoint;
-    public Point OriginPointerOffset { get; set; } = WarkbenchMath.ZeroPoint;
-
-    public bool IsActive => ActivePart != Part.None;
-    public bool IsVisible { get; set; } = true;
-
-    public double Angle { get; set; } = 0d;
-    public double RotateStartGizmoAngle { get; set; }
-    public double RotateStartPointerAngle { get; set; }
-
-    public double ScaleXVisualLen { get; set; } = 0d;
-    public double ScaleYVisualLen { get; set; } = 0d;
-
-    public event Action? RequestInvalidateVisual;
-    private void RaiseRequestInvalidateVisual() => RequestInvalidateVisual?.Invoke();
-    
-    private Point _lastDragMousePosScreen = WarkbenchMath.ZeroPoint;
-    private Point _dragAccumulatedScreenOffset = WarkbenchMath.ZeroPoint;
-
-    private DispatcherTimer _toolTipTimer = new DispatcherTimer()
-    {
-        Interval = TimeSpan.FromMilliseconds(250),
-    };
-    
     private Part HitTest(Point origin, Point mousePos)
     {
         if (GetCenterRect(origin).Contains(mousePos))
@@ -264,17 +232,18 @@ internal partial class Gizmo2D : IDisposable
         var dx = mousePos.X - origin.X;
         var dy = mousePos.Y - origin.Y;
         var dist = Math.Sqrt(dx * dx + dy * dy);
+
         if (Math.Abs(dist - RotateRadius) <= RotateHitBand)
             return Part.Rotate;
 
         return Part.None;
     }
 
-    private static double ClampIndex(int i, int count)
+    private static int ClampIndex(int i, int count)
     {
-        if (i < 0) 
+        if (i < 0)
             return 0;
-        if (i >= count) 
+        if (i >= count)
             return count - 1;
         return i;
     }
@@ -288,7 +257,7 @@ internal partial class Gizmo2D : IDisposable
         var mid = (count - 1) * 0.5;
 
         var idx = (int)Math.Floor(((axisPos - pivotAxisPos) + (ModifierStep * 0.5)) / ModifierStep + mid);
-        idx = (int)ClampIndex(idx, count);
+        idx = ClampIndex(idx, count);
 
         return ModifierValues[idx];
     }
@@ -354,24 +323,55 @@ internal partial class Gizmo2D : IDisposable
         var off = RotateRadius + OuterTranslateOffset;
         return new Point(o.X, o.Y + off + OuterTranslateLength);
     }
-    
+
     private void OnTooltipTimerTick(object? sender, EventArgs e)
     {
         foreach (var button in _menuButtons)
-        {
             button.ShouldShowTooltip = button.IsHovered;
-            RaiseRequestInvalidateVisual();
-        }
+
+        RaiseRequestInvalidateVisual();
     }
-    
+
+    private void RaiseRequestInvalidateVisual() => RequestInvalidateVisual?.Invoke();
+
+    public Part ActivePart  { get; private set; } = Part.None;
+    public Part HoveredPart { get; private set; } = Part.None;
+
+    public Point Origin { get; set; } = WarkbenchMath.ZeroPoint;
+    public Point OriginPointerOffset { get; set; } = WarkbenchMath.ZeroPoint;
+
+    public bool IsActive  => ActivePart != Part.None;
+    public bool IsVisible { get; set; } = true;
+
+    public double Angle { get; set; } = 0d;
+    public double RotateStartGizmoAngle { get; set; }
+    public double RotateStartPointerAngle { get; set; }
+
+    public double ScaleXVisualLen { get; set; } = 0d;
+    public double ScaleYVisualLen { get; set; } = 0d;
+
+    public event Action? RequestInvalidateVisual;
+
+    private Point _lastDragMousePosScreen = WarkbenchMath.ZeroPoint;
+    private Point _dragAccumulatedScreenOffset = WarkbenchMath.ZeroPoint;
+
+    private readonly DispatcherTimer _toolTipTimer = new()
+    {
+        Interval = TimeSpan.FromMilliseconds(250),
+    };
 
     private IEnumerable<Gizmo2DMenuButton> _menuButtons = new List<Gizmo2DMenuButton>
     {
-        new Gizmo2DMenuButton("icon_menu", "Menu", 270, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_menu_open", "Open Menu", 300, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_rotate_90_degrees_cw", "Rotate 90° Clockwise", 180, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_rotate_90_degrees_ccw", "Rotate 90° Counterclockwise", 210, 0.0d, 0.02),
-        new Gizmo2DMenuButton("icon_global_coordinate_system", "Global Space", 150, 0.0d, 0.033),
-        new Gizmo2DMenuButton("icon_local_coordinate_system", "Local Space", 120, 0.0d, 0.041),
+        new Gizmo2DMenuToggleButton(270, 0.0d, [
+            new MultiStateToggleCreateInfo("menu_closed", "icon_menu", "Menu", 0.02, true),
+            new MultiStateToggleCreateInfo("menu_closed", "icon_menu_open", "Menu", 0.02)
+        ]),
+        new Gizmo2DMenuToggleButton(330, 0.0d, [
+            new MultiStateToggleCreateInfo("menu_global_coordinate_system", "icon_global_coordinate_system", "Global Space", 0.033, true),
+            new MultiStateToggleCreateInfo("menu_local_coordinate_system", "icon_local_coordinate_system", "Local Space", 0.041)
+        ]),
+        
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_cw", "Rotate 90° Clockwise", 30, 0.0d, 0.02),
+        new Gizmo2DMenuButton("icon_rotate_90_degrees_ccw", "Rotate 90° Counterclockwise", 60, 0.0d, 0.02),
     };
 }

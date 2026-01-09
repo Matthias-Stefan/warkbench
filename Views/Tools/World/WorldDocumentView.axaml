@@ -94,6 +94,9 @@
         </StackPanel>
         
         <!--  World viewport  -->
-        <wvp:WorldViewport Grid.Row="1" ActiveTool="{Binding ActiveTool}"/>
+        <wvp:WorldViewport 
+            Grid.Row="1" 
+            ActiveTool="{Binding ActiveTool}"
+            Renderables="{Binding Renderables}"/>
     </Grid>
 </UserControl>

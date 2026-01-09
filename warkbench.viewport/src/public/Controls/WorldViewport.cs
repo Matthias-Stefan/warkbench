@@ -41,6 +41,7 @@ public partial class WorldViewport : Control
 
         _gridRenderer.RenderOrigin(context, _viewportCamera, bounds);
         
+        _assetRenderer.Render(context, _viewportCamera, bounds, Renderables);
 #if DEBUG
         _debugRenderer.Render(context, _viewportCamera, bounds, _viewportInputState.MousePos);        
 #endif
@@ -206,6 +207,7 @@ public partial class WorldViewport : Control
     
     private readonly GridRenderer _gridRenderer = new();
     private readonly SelectionRenderer _selectionRenderer = new();
+    private readonly AssetRenderer _assetRenderer = new();
 #if DEBUG
     private readonly DebugRenderer _debugRenderer = new();
 #endif
