@@ -13,6 +13,9 @@ public class ResourceIconConverter : IValueConverter
     {
         var resourceKey = value switch
         {
+            RootWorldViewModel => "icon_globe",
+            WorldViewModel => "icon_globe",
+            
             RootPackageViewModel => "icon_package",
             PackageViewModel => "icon_package",
             

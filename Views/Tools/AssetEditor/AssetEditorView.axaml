@@ -44,6 +44,16 @@
                 <Menu>
                     <!--  Assets  -->
                     <MenuItem Header="Assets">
+                        <!--  Add World  -->
+                        <MenuItem Header="Add World"
+                                  Command="{Binding AddWorld}">
+                            <MenuItem.Icon>
+                                <PathIcon Width="16"
+                                          Height="16"
+                                          Foreground="Orange"
+                                          Data="{StaticResource icon_globe}" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                         
                         <!--  Add Package  -->
                         <MenuItem Header="Add Package"

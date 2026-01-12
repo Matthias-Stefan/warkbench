@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using warkbench.Infrastructure;
-using warkbench.ViewModels;
+using warkbench.core;
 
 
 namespace warkbench.Models;
@@ -10,6 +10,7 @@ public sealed class Project
     public Project(PathService pathService)
     {
         _pathService = pathService;
+        Worlds.CollectionChanged += (_, _) => IsDirty = true;
         Packages.CollectionChanged += (_, _) => IsDirty = true;
         Blueprints.CollectionChanged += (_, _) => IsDirty = true;
     }
@@ -18,6 +19,12 @@ public sealed class Project
     public string Name { get; set; }
 
     [JsonProperty]
+    public ObservableCollection<World> Worlds { get; } = [];
+    
+    [JsonIgnore]
+    public World? ActiveWorld { get; set; }
+    
+    [JsonProperty]
     public ObservableCollection<PackageModel> Packages { get; } = [];
     
     [JsonProperty]
@@ -25,7 +32,7 @@ public sealed class Project
     
     [JsonProperty]
     public ObservableCollection<GraphModel> Properties { get; } = [];
-
+    
     [JsonIgnore] 
     public bool IsDirty { get; set; } = false;
     

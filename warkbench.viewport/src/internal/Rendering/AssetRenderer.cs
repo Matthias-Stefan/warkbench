@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Avalonia.Media;
 using Avalonia;
-using Avalonia.Media;
+using System.Collections.Generic;
 
 
 namespace warkbench.viewport;
@@ -84,16 +83,11 @@ internal class AssetRenderer
                 case SpriteRenderable sprite:
                 {
                     var opacity = sprite.Opacity;
-                    if (opacity <= 0.0f)
+                    if (opacity <= 0.0f) 
                         break;
 
                     var bmp = sprite.Content;
-
-                    var src = sprite.SourceRect ?? new Rect(
-                        0,
-                        0,
-                        bmp.Size.Width,
-                        bmp.Size.Height);
+                    var src = sprite.SourceRect ?? new Rect(0, 0, bmp.Size.Width, bmp.Size.Height);
 
                     if (src.Width <= 0 || src.Height <= 0 || sprite.Bounds.Width <= 0 || sprite.Bounds.Height <= 0)
                         break;
@@ -102,16 +96,20 @@ internal class AssetRenderer
                     {
                         ctx.DrawImage(bmp, src, sprite.Bounds);
 
-                        if (sprite.Tint is { } tint)
+                        if (sprite.Tint is { } tint && tint.A > 0)
                         {
-                            if (tint.A > 0)
+                            var maskBrush = new ImageBrush(bmp)
                             {
-                                var tintBrush = new SolidColorBrush(tint);
-                                ctx.FillRectangle(tintBrush, sprite.Bounds);
+                                SourceRect = new RelativeRect(src, RelativeUnit.Absolute),
+                                Stretch = Stretch.Fill
+                            };
+
+                            using (ctx.PushOpacityMask(maskBrush, sprite.Bounds))
+                            {
+                                ctx.FillRectangle(new SolidColorBrush(tint), sprite.Bounds);
                             }
                         }
                     }
-
                     break;
                 }
 

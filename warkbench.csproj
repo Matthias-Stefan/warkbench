@@ -76,10 +76,6 @@
     <Compile Update="Views\Tools\Details\DetailsView.axaml.cs">
       <DependentUpon>NodeEditorView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Tools\AssetEditor\Resources\Types\Package\PackageToolbarView.axaml.cs">
-      <DependentUpon>PackageToolbarView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\Tools\NodeEditor\Resources\Graph\Node\Types\IntNodeView.axaml.cs">
       <DependentUpon>PackageView.axaml</DependentUpon>
       <SubType>Code</SubType>
@@ -143,6 +139,18 @@
 
     <Compile Remove="warkbench.core\**" />
     <Compile Remove="warkbench.viewport\**" />
+    <Compile Update="Views\Tools\Details\Resources\AssetEditor\WorldView.axaml.cs">
+      <DependentUpon>WorldView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\AssetEditor\Resources\Types\PackageToolbarView.axaml.cs">
+      <DependentUpon>PackageToolbarView.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tools\AssetEditor\Resources\Types\CreateWorldWindow.axaml.cs">
+      <DependentUpon>CreateWorldWindow.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

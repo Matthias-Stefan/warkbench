@@ -22,6 +22,13 @@
     
     <UserControl.DataTemplates>
         <!--  ASSET EDITOR  -->
+        <!--  World  -->
+        <DataTemplate DataType="vm:WorldViewModel">
+            <Grid>
+                <views:WorldView />
+            </Grid>
+        </DataTemplate>
+        
         <!--  Package  -->
         <DataTemplate DataType="vm:PackageViewModel">
             <Grid>
@@ -42,6 +49,7 @@
                 <views:PropertyView />
             </Grid>
         </DataTemplate>
+        
         
         <!--  NODE EDITOR  -->
         <!--  Bool Node  -->

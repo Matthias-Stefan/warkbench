@@ -3,9 +3,11 @@ using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System;
+using System.Threading.Tasks;
 using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
+using warkbench.core;
 
 
 namespace warkbench.ViewModels;
@@ -22,11 +24,12 @@ public partial class AssetEditorViewModel : Tool
         selectionService.WhenSelectionChanged.Subscribe(OnSelectionChanged);
         
         var rootVirtualPath = string.Empty;
+        Worlds = new TreeNodeViewModel(new RootWorldViewModel(rootVirtualPath));
         Packages = new TreeNodeViewModel(new RootPackageViewModel(rootVirtualPath));
         Blueprints = new TreeNodeViewModel(new RootPackageBlueprintViewModel(rootVirtualPath));
         Properties = new TreeNodeViewModel(new RootPropertiesViewModel(rootVirtualPath));
         
-        Assets = [ Packages, Blueprints, Properties ];
+        Assets = [ Worlds, Packages, Blueprints, Properties ];
 
         if (_projectManager.CurrentProject is not null)
         {
@@ -47,8 +50,14 @@ public partial class AssetEditorViewModel : Tool
     
     private void OnProjectChanged(object? sender, Project project)
     {
+        Worlds.Children.Clear();
         Packages.Children.Clear();
         Blueprints.Children.Clear();
+
+        foreach (var world in project.Worlds)
+        {
+            AddWorldNode(new WorldViewModel(world));
+        }
 
         foreach (var packageBlueprint in project.Blueprints)
         {
@@ -87,13 +96,55 @@ public partial class AssetEditorViewModel : Tool
             AddPropertyNode(propertyViewModel);
         }
     }
+
+    [RelayCommand]
+    public async Task AddWorld()
+    {
+        var desktop = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+        
+        var owner = desktop?.MainWindow;
+        if (owner is null)
+            return;
+        
+        var dialog = new warkbench.Views.CreateWorldWindow();
+
+        var result = await dialog.ShowDialog<NewWorldSettings>(owner);
+        if (result is null)
+            return;
+        
+        var model = new World(result.TileSize, result.ChunkResolution)
+        {
+            Guid = Guid.NewGuid(),
+            Name = result.Name
+        };
     
+        AddWorld(model);
+    }
+
+    public void AddWorld(World model)
+    {
+        AddWorld(new WorldViewModel(model));
+    }
+
+    public void AddWorld(WorldViewModel vm)
+    {
+        if (_projectManager.CurrentProject is null)
+            return;
+        
+        _projectManager.CurrentProject.Worlds.Add(vm.Model);
+        AddWorldNode(vm);
+    }
+
+    public void AddWorldNode(WorldViewModel vm)
+    {
+        Worlds.AddChild(new TreeNodeViewModel(vm));
+        OnPropertyChanged(nameof(Assets));
+    }
+
     public void AddPackage(PackageViewModel vm)
     {
         if (_projectManager.CurrentProject is null)
-        {
             return;
-        }
 
         var graphModel = Blueprints.Children
             .Select(t => t.Data)
@@ -101,10 +152,9 @@ public partial class AssetEditorViewModel : Tool
             .Where(pbvm => pbvm.Model.Guid == vm.Model.BlueprintGuid)
             .Select(pbvm => pbvm.Model)
             .FirstOrDefault();
+
         if (graphModel is null)
-        {
             return;
-        }
         
         _projectManager.CurrentProject.Packages.Add(vm.Model);
         AddPackageNode(vm);
@@ -122,9 +172,7 @@ public partial class AssetEditorViewModel : Tool
     public void RemovePackage(PackageViewModel vm)
     {
         if (_projectManager.CurrentProject is null)
-        {
             return;
-        }
 
         _projectManager.CurrentProject.Packages.Remove(vm.Model);
         RemovePackageNode(vm);
@@ -134,9 +182,7 @@ public partial class AssetEditorViewModel : Tool
     {
         var node = Packages.Children.FirstOrDefault(node => node.Data == vm);
         if (node is null)
-        {
             return;
-        }
 
         Packages.RemoveChild(node);
         OnPropertyChanged(nameof(Assets));
@@ -160,9 +206,7 @@ public partial class AssetEditorViewModel : Tool
     public void AddBlueprint(BlueprintViewModel vm)
     {
         if (_projectManager.CurrentProject is null)
-        {
             return;
-        }
 
         _projectManager.CurrentProject.Blueprints.Add(vm.Model);
         AddBlueprintNode(vm);
@@ -180,15 +224,11 @@ public partial class AssetEditorViewModel : Tool
     public void RemoveBlueprint(BlueprintViewModel packageBlueprintViewModel)
     {
         if (_projectManager.CurrentProject is null)
-        {
             return;
-        }
 
         var node = Blueprints.Children.Where(tree => tree.Data == packageBlueprintViewModel)?.First();
         if (node is null)
-        {
             return;
-        }
 
         _projectManager.CurrentProject.Blueprints.Remove(packageBlueprintViewModel.Model);
         packageBlueprintViewModel.Nodes.Clear();
@@ -292,6 +332,7 @@ public partial class AssetEditorViewModel : Tool
 
     private AssetEditorModel Model { get; }
 
+    public TreeNodeViewModel Worlds { get; }
     public ObservableCollection<TreeNodeViewModel> Assets { get; }
     public TreeNodeViewModel Packages { get; }
     public TreeNodeViewModel Blueprints { get; }
