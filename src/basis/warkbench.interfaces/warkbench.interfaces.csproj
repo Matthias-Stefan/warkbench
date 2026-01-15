@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>warkbench.interface</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Blueprints\" />
+      <Folder Include="Packages\" />
+    </ItemGroup>
+
+</Project>

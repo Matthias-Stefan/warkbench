@@ -1,0 +1,28 @@
+﻿using System.ComponentModel;
+using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Scenes;
+
+namespace warkbench.src.basis.interfaces.Worlds;
+
+/// <summary> Represents the persistent physical universe of a project, managing spatial chunks and associated content scenes. </summary>
+public interface IWorld : IIdentifiable, INotifyPropertyChanged
+{
+    /// <summary> Textual summary providing world context or metadata. </summary>
+    string Description { get; }
+    
+    /// <summary> The relative folder name or path within the workspace. </summary>
+    string LocalPath { get; }
+    
+    // TODO: IChunk
+    /// <summary> Gets the collection of spatial segments containing terrain and static data. </summary>
+    IEnumerable<object> Chunks { get; }
+
+    /// <summary> Gets the collection of all content scenes (layers) associated with this world. </summary>
+    IEnumerable<IScene> Scenes { get; }
+
+    /// <summary> Gets or sets the currently active scene layer for editing. </summary>
+    IScene? ActiveScene { get; set; }
+
+    /// <summary> Gets a list of currently loaded or visible scenes in the editor. </summary>
+    IEnumerable<IScene> LoadedScenes { get; }
+}

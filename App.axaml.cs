@@ -4,16 +4,16 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
 using Avalonia.Input;
 using Nodify;
 using Nodify.Compatibility;
 using warkbench.Infrastructure;
 using warkbench.Interop;
 using warkbench.Models;
+using warkbench.src.basis.core.Common;
 using warkbench.ViewModels;
 using warkbench.Views;
+using UnixPath = warkbench.src.basis.core.Common.UnixPath;
 
 namespace warkbench
 {
@@ -61,9 +61,35 @@ namespace warkbench
 
         private void ConfigureServices(IServiceCollection services)
         {
+            // NEW NEW NEW
+            #if true
+            var logger_NEW = new ConsoleLogger();
+            var pathService_NEW = new warkbench.src.basis.core.Common.PathService(logger_NEW);
+            var projectIoService_NEW = new warkbench.src.basis.core.Common.ProjectIoService(pathService_NEW, logger_NEW);
+            var projectService_NEW = new warkbench.src.basis.core.Projects.ProjectService(projectIoService_NEW, pathService_NEW, logger_NEW);
+
+            var projects = projectIoService_NEW.DiscoverProjects(pathService_NEW.ProjectPath, false);
+
+            var enumerable = projects as string[] ?? projects.ToArray();
+            if (enumerable.Length == 0)
+            {
+                logger_NEW.Info("Project file not found. Creating a new default project...");
+                
+                var defaultProject = projectService_NEW.CreateProject("warpunk_emberfall.wbproj");
+                projectIoService_NEW.Save(defaultProject, warkbench.src.basis.core.Common.UnixPath.Combine(pathService_NEW.ProjectPath, defaultProject.Name));
+            }
+            else
+            {
+                projectService_NEW.LoadProject(enumerable[0]);    
+            }
+            #endif
+            
+            
+            
+            
             // Platform
             services.AddSingleton<IPlatformLibrary>(PlatformLibraryFactory.GetPlatformLibrary());
-            var pathService = new PathService();
+            var pathService = new warkbench.Infrastructure.PathService();
             services.AddSingleton(pathService);
 
             // Services
@@ -84,7 +110,7 @@ namespace warkbench
             // Project Manager
             var projectManager = new ProjectManager(ioService, pathService);
             services.AddSingleton<IProjectManager>(projectManager);
-            projectManager.Load(UnixPath.Combine(pathService.DataPath, "warpunk.emberfall.json"));
+            projectManager.Load(warkbench.Infrastructure.UnixPath.Combine(pathService.DataPath, "warpunk.emberfall.json"));
             
             // Dock layout factory: creates and connects editor components
             services.AddSingleton<DockFactory>();
@@ -97,7 +123,7 @@ namespace warkbench
             {
                 return () => new ContentBrowserViewModel(
                     sp.GetRequiredService<ContentBrowserModel>(),
-                    sp.GetRequiredService<PathService>(),
+                    sp.GetRequiredService<warkbench.Infrastructure.PathService>(),
                     sp.GetRequiredService<ISelectionService>());
             });
             services.AddTransient<Func<DetailsViewModel>>(sp =>

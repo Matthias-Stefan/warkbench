@@ -151,6 +151,12 @@
       <DependentUpon>CreateWorldWindow.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="src\basis\warkbench.interfaces\Projects\IProject.cs">
+      <Link>src\basis\warkbench.interface\Projects\IProject.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.interfaces\Projects\IProjectService.cs">
+      <Link>src\basis\warkbench.interface\Projects\IProjectService.cs</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -214,6 +220,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="src\basis\warkbench.core\warkbench.core.csproj" />
+    <ProjectReference Include="src\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
     <ProjectReference Include="warkbench.core\warkbench.core.csproj" />
     <ProjectReference Include="warkbench.viewport\warkbench.viewport.csproj" />
   </ItemGroup>
