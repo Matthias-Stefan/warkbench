@@ -33,6 +33,37 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         logger?.Info($"[ProjectService] Project '{ActiveProject.Name}' loaded and activated.");
     }
 
+    public Task LoadProjectAsync(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("[ProjectService] Project path cannot be null or empty.", nameof(path));
+
+        try
+        {
+            // TODO: make Load awaitable 
+            var loaded = projectIo.Load<Project>(path);
+
+            if (loaded is null)
+            {
+                var errorMsg = $"[ProjectService] Failed to load project. File is invalid or empty: {path}";
+                logger.Error(errorMsg);
+                throw new InvalidDataException(errorMsg);
+            }
+
+            ActiveProject = loaded;
+            logger.Info($"[ProjectService] Project '{ActiveProject.Name}' loaded and activated from {path}");
+            
+            ActiveProjectChanged?.Invoke(ActiveProject);
+        }
+        catch (Exception ex)
+        {
+            logger.Error($"[ProjectService] Critical error loading project at {path}: {ex.Message}");
+            throw;
+        }
+
+        return Task.CompletedTask;
+    }
+
     public void SaveProject()
     {
         if (ActiveProject == null) 

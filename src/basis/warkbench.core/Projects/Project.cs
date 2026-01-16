@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using warkbench.core.Worlds;
 using warkbench.src.basis.core.Worlds;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;

@@ -23,13 +23,14 @@ public class PathService : IPathService
         // --- CURRENT: Static structure where engine and game are siblings ---
         // In the future, these paths can be overridden dynamically by the 'ProjectService' 
         // when a specific project is loaded or created.
-        const string projectFolderName = "warpunk.emberfall";
+        const string gameFolderName = "warpunk.emberfall";
+        DataPath = UnixPath.Combine(BasePath, gameFolderName, "data");
+        AssetsPath = UnixPath.Combine(BasePath, gameFolderName, "assets");
         
-        DataPath = UnixPath.Combine(BasePath, projectFolderName, "data");
-        AssetsPath = UnixPath.Combine(BasePath, projectFolderName, "assets");
-        ProjectPath = UnixPath.Combine(BasePath, projectFolderName, "data");
+        const string projectFolderName = "projects";
+        ProjectPath = UnixPath.Combine(ToolsPath, projectFolderName);
         
-        logger.Info($"PathService initialized. Base: {BasePath}");
+        logger.Info($"[PathService] Initialized. Base: {BasePath}");
     }
 
     public string GetRelativeLocalPath(string absolutePath, string relativeTo)

@@ -1,19 +1,21 @@
-using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using Avalonia;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Avalonia.Input;
-using Nodify;
 using Nodify.Compatibility;
-using warkbench.Infrastructure;
+using Nodify;
 using warkbench.Interop;
-using warkbench.Models;
-using warkbench.src.basis.core.Common;
 using warkbench.ViewModels;
 using warkbench.Views;
-using UnixPath = warkbench.src.basis.core.Common.UnixPath;
+using warkbench.src.basis.core.Common;
+using warkbench.src.basis.core.Projects;
+using warkbench.src.basis.core.Worlds;
+using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench
 {
@@ -41,6 +43,8 @@ namespace warkbench
                 {
                     DataContext = mainWindowViewModel
                 };
+                
+                InitializeProjectAsync();
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -59,49 +63,68 @@ namespace warkbench
             }
         }
 
+        private async void InitializeProjectAsync()
+        {
+            if (_host is null) 
+                return;
+
+            var pathService = _host.Services.GetRequiredService<IPathService>();
+            var projectIoService = _host.Services.GetRequiredService<IProjectIoService>();
+            var projectService = _host.Services.GetRequiredService<IProjectService>();
+            var logger = _host.Services.GetRequiredService<ILogger>();
+            
+            try 
+            {
+                var projects = projectIoService.DiscoverProjects(pathService.ProjectPath).ToList();
+        
+                if (projects.Count == 0)
+                {
+                    logger.Warn("[App] No projects found in project path.");
+                    return;
+                }
+
+                var projectPath = projects.First();
+                logger.Info($"[App] Auto-loading project: {projectPath}");
+
+                await projectService.LoadProjectAsync(projectPath);
+            }
+            catch (Exception ex)
+            {
+                logger.Error($"[App] Critical error during startup initialization: {ex.Message}");
+            }
+        }
+        
         private void ConfigureServices(IServiceCollection services)
         {
-            // NEW NEW NEW
-            #if true
-            var logger_NEW = new ConsoleLogger();
-            var pathService_NEW = new warkbench.src.basis.core.Common.PathService(logger_NEW);
-            var projectIoService_NEW = new warkbench.src.basis.core.Common.ProjectIoService(pathService_NEW, logger_NEW);
-            var projectService_NEW = new warkbench.src.basis.core.Projects.ProjectService(projectIoService_NEW, pathService_NEW, logger_NEW);
+            // --- init core lib ---
+            services.AddSingleton<ILogger, ConsoleLogger>();
+            services.AddSingleton<IPathService, PathService>();
 
-            var projects = projectIoService_NEW.DiscoverProjects(pathService_NEW.ProjectPath, false);
-
-            var enumerable = projects as string[] ?? projects.ToArray();
-            if (enumerable.Length == 0)
-            {
-                logger_NEW.Info("Project file not found. Creating a new default project...");
-                
-                var defaultProject = projectService_NEW.CreateProject("warpunk_emberfall.wbproj");
-                projectIoService_NEW.Save(defaultProject, warkbench.src.basis.core.Common.UnixPath.Combine(pathService_NEW.ProjectPath, defaultProject.Name));
-            }
-            else
-            {
-                projectService_NEW.LoadProject(enumerable[0]);    
-            }
-            #endif
+            // project
+            services.AddSingleton<IProjectIoService, ProjectIoService>();
+            services.AddSingleton<IProjectService, ProjectService>();
+            
+            // world
+            services.AddSingleton<IWorldIoService, WorldIoService>();
+            services.AddSingleton<IWorldService, WorldService>();
             
             
-            
-            
+#if true
             // Platform
             services.AddSingleton<IPlatformLibrary>(PlatformLibraryFactory.GetPlatformLibrary());
             var pathService = new warkbench.Infrastructure.PathService();
             services.AddSingleton(pathService);
 
             // Services
-            services.AddSingleton<ISelectionService, SelectionService>();
-            var ioService = new IOService(pathService);
+            services.AddSingleton<Infrastructure.ISelectionService, Infrastructure.SelectionService>();
+            var ioService = new Infrastructure.IOService(pathService);
             services.AddSingleton(ioService);
 
             // Editor/Browser data models (non-visual state holders)
-            services.AddTransient<AssetEditorModel>();
-            services.AddTransient<ContentBrowserModel>();
-            services.AddTransient<DetailsModel>();
-            services.AddTransient<NodeEditorModel>();
+            services.AddTransient<Models.AssetEditorModel>();
+            services.AddTransient<Models.ContentBrowserModel>();
+            services.AddTransient<Models.DetailsModel>();
+            services.AddTransient<Models.NodeEditorModel>();
 
             // File loader
             services.AddSingleton<ObjLoader>();
@@ -122,31 +145,35 @@ namespace warkbench
             services.AddTransient<Func<ContentBrowserViewModel>>(sp =>
             {
                 return () => new ContentBrowserViewModel(
-                    sp.GetRequiredService<ContentBrowserModel>(),
+                    sp.GetRequiredService<Models.ContentBrowserModel>(),
                     sp.GetRequiredService<warkbench.Infrastructure.PathService>(),
-                    sp.GetRequiredService<ISelectionService>());
+                    sp.GetRequiredService<Infrastructure.ISelectionService>());
             });
             services.AddTransient<Func<DetailsViewModel>>(sp =>
             {
                 return () => new DetailsViewModel(
-                    sp.GetRequiredService<DetailsModel>(),
-                    sp.GetRequiredService<ISelectionService>());
+                    sp.GetRequiredService<Models.DetailsModel>(),
+                    sp.GetRequiredService<Infrastructure.ISelectionService>());
             });
             services.AddTransient<Func<AssetEditorViewModel>>(sp =>
             {
                 return () => new AssetEditorViewModel(
                     sp.GetRequiredService<IProjectManager>(),
-                    sp.GetRequiredService<AssetEditorModel>(),
-                    sp.GetRequiredService<ISelectionService>());
+                    sp.GetRequiredService<Models.AssetEditorModel>(),
+                    sp.GetRequiredService<Infrastructure.ISelectionService>(),
+                    // NEW
+                    sp.GetRequiredService<IProjectService>(),
+                    sp.GetRequiredService<IWorldService>());
             });
             services.AddTransient<Func<NodeEditorViewModel>>(sp =>
             {
                 return () => new NodeEditorViewModel(
                     sp.GetRequiredService<IProjectManager>(),
-                    sp.GetRequiredService<NodeEditorModel>(),
-                    sp.GetRequiredService<ISelectionService>()
+                    sp.GetRequiredService<Models.NodeEditorModel>(),
+                    sp.GetRequiredService<Infrastructure.ISelectionService>()
                     );
             });
+#endif
         }
 
         private static void ConfigureNodify()

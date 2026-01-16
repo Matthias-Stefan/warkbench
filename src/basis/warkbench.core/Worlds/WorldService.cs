@@ -4,27 +4,41 @@ using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.core.Worlds;
 
-public class WorldService(IProjectService projectService, IPathService pathService, ILogger logger) : IWorldService
+public class WorldService : IWorldService, IDisposable
 {
+    public WorldService(IProjectService projectService, IPathService pathService, ILogger logger)
+    {
+        _projectService = projectService;
+        _pathService = pathService;
+        _logger = logger;
+
+        _projectService.ActiveProjectChanged += OnProjectChanged;
+    }
+    
+    public void Dispose()
+    {
+        _projectService.ActiveProjectChanged -= OnProjectChanged;
+    }
+
     public void CreateWorld(string name)
     {
-        var currentProject = projectService.ActiveProject;
+        var currentProject = _projectService.ActiveProject;
         
         if (currentProject is null)
         {
-            const string errorMsg = "Cannot create world: No project is currently active.";
-            logger.Error(errorMsg);
+            const string errorMsg = "[WorldService] Cannot create world: No project is currently active.";
+            _logger.Error(errorMsg);
             throw new InvalidOperationException(errorMsg);
         }
         
         if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("World name cannot be empty.", nameof(name));
+            throw new ArgumentException("[WorldService] World name cannot be empty.", nameof(name));
         
         IWorld newWorld = new World
         {
             Id = Guid.NewGuid(),
             Name = name,
-            LocalPath = pathService.GetRelativeLocalPath(pathService.ProjectPath, pathService.BasePath),
+            LocalPath = _pathService.GetRelativeLocalPath(_pathService.ProjectPath, _pathService.BasePath),
         };
         
         currentProject.AddWorld(newWorld);
@@ -47,12 +61,12 @@ public class WorldService(IProjectService projectService, IPathService pathServi
 
     public void DeleteWorld(Guid worldId)
     {
-        var currentProject = projectService.ActiveProject;
+        var currentProject = _projectService.ActiveProject;
         
         if (currentProject is null)
         {
-            const string errorMsg = "Cannot delete world: No project is currently active.";
-            logger.Error(errorMsg);
+            const string errorMsg = "[WorldService] Cannot delete world: No project is currently active.";
+            _logger.Error(errorMsg);
             throw new InvalidOperationException(errorMsg);
         }
 
@@ -60,7 +74,7 @@ public class WorldService(IProjectService projectService, IPathService pathServi
         
         if (worldToDelete is null)
         {
-            logger.Warn($"DeleteWorld failed: World with ID '{worldId}' was not found in project '{currentProject.Name}'.");
+            _logger.Warn($"[WorldService] DeleteWorld failed: World with ID '{worldId}' was not found in project '{currentProject.Name}'.");
             return;
         }
         
@@ -71,9 +85,7 @@ public class WorldService(IProjectService projectService, IPathService pathServi
         
         currentProject.RemoveWorld(worldToDelete);
         
-        
-        
-        logger.Info($"Successfully removed world '{worldToDelete.Name}' from project.");
+        _logger.Info($"[WorldService] Successfully removed world '{worldToDelete.Name}' from project.");
     }
 
     public IWorld? ActiveWorld
@@ -88,8 +100,29 @@ public class WorldService(IProjectService projectService, IPathService pathServi
             ActiveWorldChanged?.Invoke(_activeWorld);
         }
     }
-    
+
+    private void OnProjectChanged(IProject? project)
+    {
+        if (project is null)
+        {
+            _logger.Info("[WorldService] Project closed. Clearing active world...");
+            ActiveWorld = null;
+            ActiveWorldChanged?.Invoke(null);
+            return;
+        }
+        
+        _logger.Info($"[WorldService] Project '{project.Name}' opened. Syncing world list...");
+
+
+
+    }
+
+
     public event Action<IWorld?>? ActiveWorldChanged;
     
     private IWorld? _activeWorld;
+    
+    private IProjectService _projectService;
+    private IPathService _pathService;
+    private ILogger _logger;
 }

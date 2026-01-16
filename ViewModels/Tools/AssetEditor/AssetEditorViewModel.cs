@@ -1,13 +1,12 @@
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System;
-using System.Threading.Tasks;
 using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
 using warkbench.core;
+using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Worlds;
 
 
 namespace warkbench.ViewModels;
@@ -16,7 +15,10 @@ public partial class AssetEditorViewModel : Tool
     public AssetEditorViewModel(
         IProjectManager projectManager,
         AssetEditorModel model,
-        ISelectionService selectionService)
+        ISelectionService selectionService,
+        // NEW        
+        IProjectService projectService,
+        IWorldService worldService)
     {
         Model = model;
         _projectManager = projectManager;

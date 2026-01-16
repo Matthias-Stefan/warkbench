@@ -11,6 +11,9 @@ public interface IProjectService
     /// <summary> Deserializes a project file and sets it as the active session instance. </summary>
     void LoadProject(string path);
 
+    /// <summary> Deserializes a project file asynchronously and sets it as the active session instance. </summary> 
+    Task LoadProjectAsync(string path);
+    
     /// <summary> Persists the state of the active project to the underlying storage. </summary>
     void SaveProject();
 

@@ -1,24 +1,27 @@
-﻿using System.Reflection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.basis.core.Common;
 
-public class ProjectIoService(PathService pathService, ILogger logger) : IProjectIoService
+public class ProjectIoService(ILogger logger) : BaseIoService, IProjectIoService
 {
     public void Save<T>(T value, string path) where T : class
     {
         if (value is not IProject project)
         {
             var errorMsg = $"[ProjectIoService] Save failed. Expected IProject, but received {typeof(T).Name}.";
+            logger.Error(errorMsg);
             throw new ArgumentException(errorMsg);
         }
         
         var directory = Path.GetDirectoryName(path);
         if (string.IsNullOrEmpty(directory))
-            throw new IOException($"[ProjectIoService] Invalid save path: {path}");
+        {
+            var errorMsg = $"[ProjectIoService] Invalid save path: {path}";
+            logger.Error(errorMsg);
+            throw new IOException(errorMsg);    
+        }
         
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
@@ -56,29 +59,5 @@ public class ProjectIoService(PathService pathService, ILogger logger) : IProjec
 
         return Directory.EnumerateFiles(normalizedSearchPath, $"*{IProjectIoService.Extension}", option)
             .Select(path => UnixPath.GetFullPath(path)!);
-    }
-
-    private static readonly JsonSerializerSettings JsonSettings = new()
-    {
-        TypeNameHandling = TypeNameHandling.Auto,
-        TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
-        PreserveReferencesHandling = PreserveReferencesHandling.All,
-        Formatting = Formatting.Indented,
-        ContractResolver = new ProjectIoContractResolver()
-    };
-
-    private class ProjectIoContractResolver : DefaultContractResolver
-    {
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
-        {
-            var prop = base.CreateProperty(member, memberSerialization);
-            if (prop.Writable) 
-                return prop;
-            
-            var property = member as PropertyInfo;
-            var hasPrivateSetter = property?.GetSetMethod(true) != null;
-            prop.Writable = hasPrivateSetter;
-            return prop;
-        }
     }
 }
