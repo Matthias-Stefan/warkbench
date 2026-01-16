@@ -1,0 +1,19 @@
+{
+  "$id": "1",
+  "Id": "e29a543e-395a-4a91-9bee-76f6456d1ad1",
+  "Name": "warpunk_emberfall.wbproj",
+  "LocalPath": "warkbench/projects",
+  "Version": "1.0.0",
+  "Worlds": {
+    "$type": "System.Collections.Generic.List`1[[warkbench.src.basis.core.Worlds.World, warkbench]], System.Private.CoreLib",
+    "$values": []
+  },
+  "Packages": [],
+  "Blueprints": [],
+  "Properties": [],
+  "Description": "",
+  "CreatedAt": "2026-01-16T19:57:23.7874759+01:00",
+  "LastModifiedAt": "2026-01-16T19:57:23.7874773+01:00",
+  "IsDirty": false,
+  "ActiveWorld": null
+}
