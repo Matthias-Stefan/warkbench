@@ -2,7 +2,7 @@
 using warkbench.src.basis.interfaces.Scenes;
 using warkbench.src.basis.interfaces.Worlds;
 
-namespace warkbench.core.Worlds;
+namespace warkbench.src.basis.core.Worlds;
 
 internal partial class World : ObservableObject, IWorld
 {

@@ -1,4 +1,4 @@
-﻿namespace warkbench.core.Scenes;
+﻿namespace warkbench.src.basis.core.Scenes;
 
 public class SceneService
 {

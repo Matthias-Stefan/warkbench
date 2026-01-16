@@ -9,6 +9,12 @@ namespace warkbench.src.basis.interfaces.Projects;
 /// </summary>
 public interface IProject : IIdentifiable, INotifyPropertyChanged
 {
+    /// <summary> Registers a new world instance within the project's collection. </summary>
+    void AddWorld(IWorld world);
+    
+    /// <summary> Removes an existing world instance from the project's collection. </summary>
+    void RemoveWorld(IWorld world);
+    
     /// <summary> Textual summary providing project context or metadata. </summary>
     string Description { get; }
     

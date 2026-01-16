@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using warkbench.core.Worlds;
+using warkbench.src.basis.core.Worlds;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 
@@ -7,6 +8,16 @@ namespace warkbench.src.basis.core.Projects;
 
 internal partial class Project : ObservableObject, IProject
 {
+    public void AddWorld(IWorld world)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveWorld(IWorld world)
+    {
+        throw new NotImplementedException();
+    }
+    
     public required Guid Id
     {
         get => _id;
