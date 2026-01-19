@@ -3,6 +3,7 @@ using Avalonia.Media;
 
 
 namespace warkbench.Brushes;
+
 public static class BlueprintBackgroundBrush
 {
     public static IBrush Get()

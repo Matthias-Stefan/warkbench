@@ -6,7 +6,7 @@
 public interface IWorldService
 {
     /// <summary> Creates a new world and registers it within the active project. </summary>
-    void CreateWorld(string name);
+    IWorld CreateWorld(string name, int tileSize, int chunkResolution);
     
     /// <summary> Loads a specific world by its ID from the active project. </summary>
     void LoadWorld(Guid worldId);

@@ -8,6 +8,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class Vec2NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public Vec2NodeViewModel(Vec2NodeModel model)

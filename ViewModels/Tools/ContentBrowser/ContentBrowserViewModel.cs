@@ -10,6 +10,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class ContentBrowserViewModel : Tool
 {
     private readonly ISelectionService _selectionService;

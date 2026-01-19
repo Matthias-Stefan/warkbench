@@ -4,6 +4,7 @@ using System;
 
 
 namespace warkbench.Infrastructure;
+
 public partial class SelectionService : ObservableObject, ISelectionService, IDisposable
 {
     public SelectionService()

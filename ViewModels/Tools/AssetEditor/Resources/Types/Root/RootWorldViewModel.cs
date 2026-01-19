@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 
 namespace warkbench.ViewModels;
+
 public class RootWorldViewModel : AssetViewModel
 {
     public RootWorldViewModel(string rootVirtualPath)

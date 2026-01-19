@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Brushes;
+
 public static class NodeBrushes
 {
     public static SolidColorBrush Bool        { get; } = new SolidColorBrush(Color.Parse("#7ED321"));
@@ -20,4 +21,3 @@ public static class NodeBrushes
     
     public static IBrush PropertyBackground   { get; } = PropertyBackgroundBrush.Get();
 }
-

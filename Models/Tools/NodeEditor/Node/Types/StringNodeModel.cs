@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class StringNodeModel : NodeModel
 {
     public StringNodeModel()

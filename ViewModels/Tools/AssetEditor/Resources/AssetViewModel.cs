@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace warkbench.ViewModels;
+
 public abstract partial class AssetViewModel : ObservableObject, INameable, IDetailsHeader
 {
     protected abstract string GetName();

@@ -5,6 +5,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class DetailsViewModel : Tool
 {
     public DetailsViewModel(DetailsModel model, ISelectionService selectionService)

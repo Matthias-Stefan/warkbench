@@ -5,6 +5,7 @@ using System.Linq;
 
 
 namespace warkbench.Models;
+
 public class GraphModel : IDeepCloneable<GraphModel>
 {
     public GraphModel DeepClone()

@@ -6,6 +6,7 @@ using warkbench.ViewModels;
 
 
 namespace warkbench.Converter;
+
 public class ResourceIconColorConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

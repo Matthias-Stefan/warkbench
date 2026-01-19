@@ -11,6 +11,7 @@ using warkbench.ViewModels;
 
 
 namespace warkbench.Converter;
+
 public class ContextMenuConverter : IMultiValueConverter
 {
     public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)

@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class FloatNodeModel : NodeModel
 {
     public FloatNodeModel()

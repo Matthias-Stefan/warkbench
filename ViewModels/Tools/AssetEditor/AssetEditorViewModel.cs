@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;
-using warkbench.core;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 
 
 namespace warkbench.ViewModels;
+
 public partial class AssetEditorViewModel : Tool
 {
     public AssetEditorViewModel(
@@ -20,6 +20,10 @@ public partial class AssetEditorViewModel : Tool
         IProjectService projectService,
         IWorldService worldService)
     {
+        _projectService = projectService;
+        _worldService = worldService;
+        
+        
         Model = model;
         _projectManager = projectManager;
         _selectionService = selectionService;
@@ -110,22 +114,17 @@ public partial class AssetEditorViewModel : Tool
         
         var dialog = new warkbench.Views.CreateWorldWindow();
 
-        var result = await dialog.ShowDialog<NewWorldSettings>(owner);
-        if (result is null)
+        var worldCreateInfo = await dialog.ShowDialog<NewWorldSettings>(owner);
+        if (worldCreateInfo is null)
             return;
         
-        var model = new World(result.TileSize, result.ChunkResolution)
-        {
-            Guid = Guid.NewGuid(),
-            Name = result.Name
-        };
-    
-        AddWorld(model);
+        var world = _worldService.CreateWorld(worldCreateInfo.Name, worldCreateInfo.TileSize, worldCreateInfo.ChunkResolution);
+        AddWorld(world);
     }
 
-    public void AddWorld(World model)
+    public void AddWorld(IWorld world)
     {
-        AddWorld(new WorldViewModel(model));
+        AddWorld(new WorldViewModel(world));
     }
 
     public void AddWorld(WorldViewModel vm)
@@ -356,6 +355,10 @@ public partial class AssetEditorViewModel : Tool
         }
     }
 
+    private IProjectService _projectService;
+    private IWorldService _worldService;
+    
+    
     private readonly IProjectManager _projectManager;
     private readonly ISelectionService _selectionService;
     private TreeNodeViewModel? _selectedAsset;

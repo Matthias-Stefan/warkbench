@@ -1,4 +1,5 @@
 namespace warkbench.ViewModels;
+
 public class NewWorldSettings
 {
     public string Name { get; set; } = "new_world";

@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class BoolNodeModel : NodeModel
 {
     public BoolNodeModel()

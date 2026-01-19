@@ -6,6 +6,7 @@ using warkbench.viewport;
 
 
 namespace warkbench.ViewModels;
+
 public class WorldDocumentViewModel : Document
 {
     public WorldDocumentViewModel()
@@ -13,12 +14,14 @@ public class WorldDocumentViewModel : Document
         ActiveTool = ViewportTool.Selection;
             
         //Bitmap player = new Bitmap("C:\\Users\\mat019\\Documents\\code\\warpunk.emberfall\\assets\\Sprites\\Player\\Player.png");
-        Bitmap player = new Bitmap("/home/ms/Documents/warpunk.emberfall/assets/Sprites/Player/Player.png");
+        //Bitmap player = new Bitmap("/home/ms/Documents/warpunk.emberfall/assets/Sprites/Player/Player.png");
+#if false
         Renderables.Add(new SpriteRenderable(
             bitmap: player, 
             bounds: new Rect(new Point(200, 200), new Size(32, 32)), 
             layer: 0, 
             sourceRect: new Rect(new Point(0, 0), new Size(32, 32))));
+#endif
     }
 
     public viewport.ViewportTool ActiveTool

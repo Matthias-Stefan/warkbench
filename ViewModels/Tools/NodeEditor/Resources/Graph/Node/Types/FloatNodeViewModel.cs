@@ -8,6 +8,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class FloatNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public FloatNodeViewModel(FloatNodeModel model)

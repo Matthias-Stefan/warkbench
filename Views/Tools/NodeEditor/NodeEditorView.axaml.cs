@@ -11,6 +11,7 @@ using warkbench.ViewModels;
 
 
 namespace warkbench.Views;
+
 public partial class NodeEditorView : UserControl
 {
     public NodeEditorView()

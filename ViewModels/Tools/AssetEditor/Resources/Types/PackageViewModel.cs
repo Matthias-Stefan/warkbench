@@ -6,6 +6,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public sealed partial class PackageViewModel : AssetViewModel
 {
     public PackageViewModel(PackageModel model, GraphModel blueprint)

@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class TextureNodeModel : NodeModel
 {
     public TextureNodeModel()

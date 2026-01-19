@@ -26,7 +26,19 @@ internal partial class World : ObservableObject, IWorld
         get => _localPath;
         init => SetProperty(ref _localPath, value);
     }
+
+    public required int TileSize
+    {
+        get => _tileSize;
+        init => SetProperty(ref _tileSize, value);
+    }
     
+    public required int ChunkResolution
+    {
+        get => _chunkResolution;
+        set => SetProperty(ref _chunkResolution, value);
+    }
+
     public IEnumerable<object> Chunks { get; }
     
     public IEnumerable<IScene> Scenes { get; }
@@ -38,4 +50,7 @@ internal partial class World : ObservableObject, IWorld
     private readonly Guid _id = Guid.NewGuid();
     private readonly string _name = string.Empty;
     private readonly string _localPath = string.Empty;
+
+    private int _tileSize = 32;
+    private int _chunkResolution = 32;
 }

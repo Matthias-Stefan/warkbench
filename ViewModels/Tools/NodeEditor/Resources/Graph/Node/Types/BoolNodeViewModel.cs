@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class BoolNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public BoolNodeViewModel(BoolNodeModel model)

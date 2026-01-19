@@ -5,6 +5,7 @@ using warkbench.ViewModels;
 
 
 namespace warkbench.Models;
+
 public abstract class NodeModel : IDeepCloneable<NodeModel>
 {
     public abstract NodeModel DeepClone();

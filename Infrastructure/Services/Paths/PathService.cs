@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Infrastructure;
+
 public class PathService
 {
     private string BasePath { get; init; }

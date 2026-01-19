@@ -5,6 +5,7 @@ using warkbench.Views;
 
 
 namespace warkbench.DataTemplates;
+
 public class ContextToolbarTemplateSelector : IDataTemplate
 {
     public Control Build(object? data)

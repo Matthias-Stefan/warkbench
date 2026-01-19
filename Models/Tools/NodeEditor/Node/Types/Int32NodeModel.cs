@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class Int32NodeModel : NodeModel
 {
     public Int32NodeModel()

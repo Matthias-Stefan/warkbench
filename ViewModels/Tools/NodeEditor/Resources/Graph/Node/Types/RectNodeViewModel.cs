@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class RectNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public RectNodeViewModel(RectNodeModel model)

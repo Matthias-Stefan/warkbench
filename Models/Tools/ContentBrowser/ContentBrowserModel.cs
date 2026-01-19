@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace warkbench.Models
+namespace warkbench.Models;
+
+public class ContentBrowserModel
 {
-    public class ContentBrowserModel
-    {
-    }
 }

@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class Int32NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public Int32NodeViewModel(Int32NodeModel model)

@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public abstract partial class NodeViewModel : ObservableObject, IDetailsHeader
 {
     protected NodeViewModel(NodeModel model)

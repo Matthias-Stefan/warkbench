@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 
 
 namespace warkbench.Models;
+
 public class PropertyNodeModel : NodeModel
 {
     public PropertyNodeModel()

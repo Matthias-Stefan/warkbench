@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class TextureNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public TextureNodeViewModel(TextureNodeModel model)

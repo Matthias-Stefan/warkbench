@@ -8,6 +8,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class Int64NodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public Int64NodeViewModel(Int64NodeModel model)

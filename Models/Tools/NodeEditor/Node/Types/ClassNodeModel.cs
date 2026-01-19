@@ -1,4 +1,5 @@
 ﻿namespace warkbench.Models;
+
 public class ClassNodeModel : NodeModel
 {
     public ClassNodeModel()

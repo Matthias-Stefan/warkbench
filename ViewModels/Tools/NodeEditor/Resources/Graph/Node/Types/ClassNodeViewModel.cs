@@ -10,6 +10,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class ClassNodeViewModel : NodeViewModel, IInputNodeViewModel
 {
     public ClassNodeViewModel(ClassNodeModel model) 

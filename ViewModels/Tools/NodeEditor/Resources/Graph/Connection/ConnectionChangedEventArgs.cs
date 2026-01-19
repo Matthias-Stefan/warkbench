@@ -1,4 +1,5 @@
 ﻿namespace warkbench.ViewModels;
+
 public class ConnectionChangedEventArgs(
     ConnectorViewModel sourceConnector,
     ConnectorViewModel targetConnector,

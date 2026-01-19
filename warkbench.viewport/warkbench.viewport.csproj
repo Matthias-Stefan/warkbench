@@ -19,6 +19,14 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
-        <ProjectReference Include="..\warkbench.core\warkbench.core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="src\internal\Math\" />
+      <Folder Include="src\internal\Rendering\" />
+      <Folder Include="src\internal\Theme\" />
+      <Folder Include="src\internal\Viewport\" />
+      <Folder Include="src\public\Rendering\" />
+      <Folder Include="src\public\Viewport\" />
     </ItemGroup>
 </Project>

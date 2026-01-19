@@ -157,6 +157,12 @@
     <Compile Update="src\basis\warkbench.interfaces\Projects\IProjectService.cs">
       <Link>src\basis\warkbench.interface\Projects\IProjectService.cs</Link>
     </Compile>
+    <Compile Update="src\editors\warkbench.project_explorer\Class1.cs">
+      <Link>src\editors\warkbench.projectexplorer\Class1.cs</Link>
+    </Compile>
+    <Compile Update="src\editors\warkbench.editors.project_explorer\ViewModel\ProjectExplorerViewModel.cs">
+      <Link>src\editors\warkbench.project_explorer\ViewModel\ProjectExplorerViewModel.cs</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -222,7 +228,5 @@
   <ItemGroup>
     <ProjectReference Include="src\basis\warkbench.core\warkbench.core.csproj" />
     <ProjectReference Include="src\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
-    <ProjectReference Include="warkbench.core\warkbench.core.csproj" />
-    <ProjectReference Include="warkbench.viewport\warkbench.viewport.csproj" />
   </ItemGroup>
 </Project>

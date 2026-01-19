@@ -3,6 +3,7 @@ using warkbench.Models;
 
 
 namespace warkbench.Infrastructure;
+
 public interface IOBase
 {
     void Save(object? value, string? path);

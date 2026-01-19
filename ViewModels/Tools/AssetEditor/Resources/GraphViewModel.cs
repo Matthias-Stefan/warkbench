@@ -8,6 +8,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public class GraphViewModel : AssetViewModel, IGraphContainer, IDisposable
 {
     public GraphViewModel(GraphModel model)

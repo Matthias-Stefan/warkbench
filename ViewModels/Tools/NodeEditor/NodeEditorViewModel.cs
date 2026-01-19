@@ -15,6 +15,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class NodeEditorViewModel : Tool
 {
     public NodeEditorViewModel(
@@ -1113,7 +1114,7 @@ public partial class NodeEditorViewModel : Tool
     // ===============   NodeRect   ===============
     // ============================================
     
-   /// <summary>
+    /// <summary>
     /// Represents a bounding box for a logical subtree of nodes. A <see cref="NodeRect"/> 
     /// tracks all nodes that belong to the same subtree and computes a unified rectangle 
     /// that tightly encloses all of them. The rect automatically updates whenever nodes 

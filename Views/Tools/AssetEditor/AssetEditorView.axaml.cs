@@ -9,6 +9,7 @@ using warkbench.ViewModels;
 
 
 namespace warkbench.Views;
+
 public partial class AssetEditorView : UserControl
 {
     public AssetEditorView()

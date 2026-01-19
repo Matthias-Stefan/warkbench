@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 
 
 namespace warkbench.ViewModels;
+
 public partial class PendingConnectionViewModel : ObservableObject
 {
     public PendingConnectionViewModel(NodeEditorViewModel nodeEditorViewModel)

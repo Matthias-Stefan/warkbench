@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 
 namespace warkbench.Models;
+
 public class Int64NodeModel : NodeModel
 {
     public Int64NodeModel()

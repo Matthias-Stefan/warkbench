@@ -2,6 +2,7 @@
 
 
 namespace warkbench.Models;
+
 public class Vec2NodeModel : NodeModel
 {
     public Vec2NodeModel()

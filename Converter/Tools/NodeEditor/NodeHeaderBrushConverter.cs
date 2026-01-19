@@ -8,6 +8,7 @@ using warkbench.Brushes;
 
 
 namespace warkbench.Converter;
+
 public class NodeHeaderBrushConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class StringNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public StringNodeViewModel(StringNodeModel model)

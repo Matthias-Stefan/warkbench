@@ -1,10 +1,11 @@
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using warkbench.Infrastructure;
-using warkbench.core;
+using warkbench.src.basis.interfaces.Worlds;
 
 
 namespace warkbench.Models;
+
 public sealed class Project
 {
     public Project(PathService pathService)
@@ -19,10 +20,10 @@ public sealed class Project
     public string Name { get; set; }
 
     [JsonProperty]
-    public ObservableCollection<World> Worlds { get; } = [];
+    public ObservableCollection<IWorld> Worlds { get; } = [];
     
     [JsonIgnore]
-    public World? ActiveWorld { get; set; }
+    public IWorld? ActiveWorld { get; set; }
     
     [JsonProperty]
     public ObservableCollection<PackageModel> Packages { get; } = [];

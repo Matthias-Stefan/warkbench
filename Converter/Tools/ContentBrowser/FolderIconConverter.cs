@@ -5,6 +5,7 @@ using System;
 using System.Globalization;
 
 namespace warkbench.Converter;
+
 public class FolderIconConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

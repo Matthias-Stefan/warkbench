@@ -13,6 +13,15 @@ public interface IWorld : IIdentifiable, INotifyPropertyChanged
     /// <summary> The relative folder name or path within the workspace. </summary>
     string LocalPath { get; }
     
+    /// <summary> Size in pixels of a single tile. </summary>
+    int TileSize { get; }
+    
+    /// <summary> Tiles per side in one Chunk (e.g. 16 means a 16x16 grid). </summary>
+    int ChunkResolution { get; set; }
+    
+    /// <summary> Computed property for convenience. </summary>
+    int TotalTilesPerChunk => ChunkResolution * ChunkResolution;
+    
     // TODO: IChunk
     /// <summary> Gets the collection of spatial segments containing terrain and static data. </summary>
     IEnumerable<object> Chunks { get; }

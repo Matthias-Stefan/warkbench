@@ -5,6 +5,7 @@ using System.Linq;
 
 
 namespace warkbench.ViewModels;
+
 public partial class TreeNodeViewModel : ObservableObject
 {
     private readonly INameable _data;

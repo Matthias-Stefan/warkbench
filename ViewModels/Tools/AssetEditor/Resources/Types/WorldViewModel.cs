@@ -1,13 +1,14 @@
 using Avalonia.Controls;
 using Avalonia;
 using System;
-using warkbench.core;
+using warkbench.src.basis.interfaces.Worlds;
 
 
 namespace warkbench.ViewModels;
+
 public sealed partial class WorldViewModel : AssetViewModel
 {
-    public WorldViewModel(World model)
+    public WorldViewModel(IWorld model)
     {
         Model = model;
     }
@@ -19,7 +20,6 @@ public sealed partial class WorldViewModel : AssetViewModel
 
     protected override void SetName(string value)
     {
-        Model.Name = value;
     }
 
     protected override string GetVirtualPath()
@@ -34,9 +34,9 @@ public sealed partial class WorldViewModel : AssetViewModel
     public override string DetailsHeader => "World";
     public override object? DetailsIcon => Application.Current?.FindResource("icon_globe") ?? null;
     
-    public Guid Guid => Model.Guid;
+    public Guid Guid => Model.Id;
     public int TileSize => Model.TileSize;
-    public int ChunkSize => Model.ChunkSize;
+    public int ChunkSize => Model.ChunkResolution;
     
-    public World Model { get; }
+    public IWorld Model { get; }
 }

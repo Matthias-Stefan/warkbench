@@ -20,7 +20,7 @@ public class WorldService : IWorldService, IDisposable
         _projectService.ActiveProjectChanged -= OnProjectChanged;
     }
 
-    public void CreateWorld(string name)
+    public IWorld CreateWorld(string name, int tileSize, int chunkResolution)
     {
         var currentProject = _projectService.ActiveProject;
         
@@ -39,9 +39,12 @@ public class WorldService : IWorldService, IDisposable
             Id = Guid.NewGuid(),
             Name = name,
             LocalPath = _pathService.GetRelativeLocalPath(_pathService.ProjectPath, _pathService.BasePath),
+            TileSize = tileSize,
+            ChunkResolution = chunkResolution  
         };
         
         currentProject.AddWorld(newWorld);
+        return newWorld;
     }
 
     public void LoadWorld(Guid worldId)

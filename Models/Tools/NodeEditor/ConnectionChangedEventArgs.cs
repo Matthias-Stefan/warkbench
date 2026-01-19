@@ -2,6 +2,7 @@ using System;
 
 
 namespace warkbench.Models;
+
 public enum ConnectionChangeType
 {
     New,

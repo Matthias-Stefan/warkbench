@@ -3,6 +3,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public static class NodeFactory
 {
     public static NodeViewModel CreateFromModel(NodeModel model)

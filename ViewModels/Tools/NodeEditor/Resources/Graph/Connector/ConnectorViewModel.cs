@@ -3,6 +3,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class ConnectorViewModel : ObservableObject
 {
     public ConnectorViewModel(ConnectorModel model, NodeViewModel node)

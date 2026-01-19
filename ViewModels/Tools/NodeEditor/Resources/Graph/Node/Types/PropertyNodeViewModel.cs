@@ -7,6 +7,7 @@ using warkbench.Models;
 
 
 namespace warkbench.ViewModels;
+
 public partial class PropertyNodeViewModel : NodeViewModel, IOutputNodeViewModel
 {
     public PropertyNodeViewModel(PropertyNodeModel model)

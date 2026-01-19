@@ -2,6 +2,7 @@
 
 
 namespace warkbench.ViewModels;
+
 public interface IGraphContainer
 {
     ObservableCollection<NodeViewModel> Nodes { get; }
