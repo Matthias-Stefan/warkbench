@@ -1,6 +1,9 @@
+using System;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using warkbench.Brushes;
 using warkbench.Infrastructure;
 using warkbench.Models;

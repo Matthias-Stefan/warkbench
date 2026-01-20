@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
@@ -9,25 +10,28 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-    <PackageIcon></PackageIcon>
     <ApplicationIcon>Assets\Icons\App\warkbench.ico</ApplicationIcon>
+
+    <!-- CRITICAL: prevent default globbing from compiling sources inside sub-project folders -->
+    <DefaultItemExcludes>
+      $(DefaultItemExcludes);
+      src\basis\**;
+      src\editors\**;
+      src\ui\**;
+      warkbench.core\**;
+      warkbench.viewport\**;
+
+      **\obj\**;
+      **\bin\**;
+    </DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'" />
 
-  <!-- App-owned resources only -->
+  <!-- App-owned Avalonia assets only -->
   <ItemGroup>
+    <!-- Put ALL app assets under Assets/** -->
     <AvaloniaResource Include="Assets\**" />
-
-    <!-- Prevent accidentally including resources from sub-project folders -->
-    <AvaloniaResource Remove="warkbench.core\**" />
-    <AvaloniaResource Remove="warkbench.viewport\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaXaml Remove="warkbench.core\Assets\IconResources.axaml" />
-    <AvaloniaXaml Remove="warkbench.core\**" />
-    <AvaloniaXaml Remove="warkbench.viewport\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,217 +62,20 @@
     <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.0.2" />
   </ItemGroup>
 
+  <!-- Native/3rdParty binaries -->
+  <!--
   <ItemGroup>
-    <Compile Update="Views\Tools\ContentBrowser\ContentBrowserView.axaml.cs">
-      <DependentUpon>ContentBrowserView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Tools\PackageEditor\Content\Types\WgeometryView.axaml.cs">
-      <DependentUpon>WgeometryView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Tools\PackageEditor\Content\Types\WpackageView.axaml.cs">
-      <DependentUpon>WpackageView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Tools\NodeEditor\NodeEditorView.axaml.cs">
-      <DependentUpon>DetailsView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\DetailsView.axaml.cs">
-      <DependentUpon>NodeEditorView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Tools\NodeEditor\Resources\Graph\Node\Types\IntNodeView.axaml.cs">
-      <DependentUpon>PackageView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\AssetEditor\BlueprintView.axaml.cs">
-      <DependentUpon>BasePackageView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\ClassNodeView.axaml.cs">
-      <DependentUpon>ClassNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\FloatNodeView.axaml.cs">
-      <DependentUpon>FloatNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\StringNodeView.axaml.cs">
-      <DependentUpon>StringNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PackageView.axaml.cs">
-      <DependentUpon>PackageView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\BoolNodeView.axaml.cs">
-      <DependentUpon>BoolNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\RectNodeView.axaml.cs">
-      <DependentUpon>RectNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\Vec2NodeView.axaml.cs">
-      <DependentUpon>Vec2NodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\TextureNodeView.axaml.cs">
-      <DependentUpon>TextureNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\AssetEditor\PropertyView.axaml.cs">
-      <DependentUpon>PropertyView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\PropertyNodeView.axaml.cs">
-      <DependentUpon>PropertyNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\Resources\NodeEditor\Node\Types\Int64NodeView.axaml.cs">
-      <DependentUpon>Int64NodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\Details\DetailsHeaderView.axaml.cs">
-      <DependentUpon>DetailsHeaderView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\World\WorldDocumentView.axaml.cs">
-      <DependentUpon>BoolNodeView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <None Include="3rdParty\tiny_obj_loader.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="3rdParty\tiny_obj_loader.pdb" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="3rdParty\tiny_obj_loader.so"  CopyToOutputDirectory="PreserveNewest" />
 
-    <Compile Remove="warkbench.core\**" />
-    <Compile Remove="warkbench.viewport\**" />
-    <Compile Update="Views\Tools\Details\Resources\AssetEditor\WorldView.axaml.cs">
-      <DependentUpon>WorldView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\AssetEditor\Resources\Types\PackageToolbarView.axaml.cs">
-      <DependentUpon>PackageToolbarView.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="Views\Tools\AssetEditor\Resources\Types\CreateWorldWindow.axaml.cs">
-      <DependentUpon>CreateWorldWindow.axaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="src\basis\warkbench.interfaces\Projects\IProject.cs">
-      <Link>src\basis\warkbench.interface\Projects\IProject.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.interfaces\Projects\IProjectService.cs">
-      <Link>src\basis\warkbench.interface\Projects\IProjectService.cs</Link>
-    </Compile>
-    <Compile Update="src\editors\warkbench.project_explorer\Class1.cs">
-      <Link>src\editors\warkbench.projectexplorer\Class1.cs</Link>
-    </Compile>
-    <Compile Update="src\editors\warkbench.editors.project_explorer\ViewModel\ProjectExplorerViewModel.cs">
-      <Link>src\editors\warkbench.project_explorer\ViewModel\ProjectExplorerViewModel.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\obj\Debug\net9.0\warkbench.core.GlobalUsings.g.cs">
-      <Link>src\basis\core\obj\Debug\net9.0\warkbench.core.GlobalUsings.g.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\Io\BaseIoService.cs">
-      <Link>src\basis\warkbench.core\Common\Io\BaseIoService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\Io\ProjectIoService.cs">
-      <Link>src\basis\warkbench.core\Common\Io\ProjectIoService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\Io\WorldIoService.cs">
-      <Link>src\basis\warkbench.core\Common\Io\WorldIoService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\ConsoleLogger.cs">
-      <Link>src\basis\warkbench.core\Common\ConsoleLogger.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\PathService.cs">
-      <Link>src\basis\warkbench.core\Common\PathService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\UnixPath.cs">
-      <Link>src\basis\warkbench.core\Common\UnixPath.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Common\Versions.cs">
-      <Link>src\basis\warkbench.core\Common\Versions.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Projects\Project.cs">
-      <Link>src\basis\warkbench.core\Projects\Project.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Projects\ProjectService.cs">
-      <Link>src\basis\warkbench.core\Projects\ProjectService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Scenes\Scene.cs">
-      <Link>src\basis\warkbench.core\Scenes\Scene.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Scenes\SceneService.cs">
-      <Link>src\basis\warkbench.core\Scenes\SceneService.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Worlds\World.cs">
-      <Link>src\basis\warkbench.core\Worlds\World.cs</Link>
-    </Compile>
-    <Compile Update="src\basis\warkbench.core\Worlds\WorldService.cs">
-      <Link>src\basis\warkbench.core\Worlds\WorldService.cs</Link>
-    </Compile>
+    <None Include="3rdParty\stb_image.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="3rdParty\stb_image.pdb" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="3rdParty\stb_image.so"  CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  -->
 
-  <ItemGroup>
-    <AvaloniaResource Update="Assets\Icons\IconResources.axaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Assets\Icons\App\warkbench.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-
-    <None Remove="warkbench.core\**" />
-    <None Remove="warkbench.viewport\**" />
-    <None Update="src\basis\warkbench.core\obj\Debug\net9.0\warkbench.core.GeneratedMSBuildEditorConfig.editorconfig">
-      <Link>src\basis\core\obj\Debug\net9.0\warkbench.core.GeneratedMSBuildEditorConfig.editorconfig</Link>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="3rdParty\tiny_obj_loader.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>tiny_obj_loader.dll</Link>
-    </None>
-    <None Update="3rdParty\tiny_obj_loader.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>tiny_obj_loader.pdb</Link>
-    </None>
-    <None Update="3rdParty\tiny_obj_loader.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>tiny_obj_loader.so</Link>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="3rdParty\stb_image.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>stb_image.dll</Link>
-    </None>
-    <None Update="3rdParty\stb_image.pdb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>stb_image.pdb</Link>
-    </None>
-    <None Update="3rdParty\stb_image.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>stb_image.so</Link>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Tools\Details\Resources\NodeEditor\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="warkbench.core\**" />
-    <EmbeddedResource Remove="warkbench.viewport\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Remove="warkbench.core\**" />
-    <AdditionalFiles Remove="warkbench.viewport\**" />
-  </ItemGroup>
-
+  <!-- Project references (the ONLY way you should consume subprojects) -->
   <ItemGroup>
     <ProjectReference Include="src\basis\warkbench.core\warkbench.core.csproj" />
     <ProjectReference Include="src\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
@@ -278,4 +85,5 @@
     <ProjectReference Include="src\ui\warkbench.ui.core\warkbench.ui.core.csproj" />
     <ProjectReference Include="src\ui\warkbench.ui.viewport\warkbench.ui.viewport.csproj" />
   </ItemGroup>
+
 </Project>

@@ -13,9 +13,9 @@ public class WorldDocumentViewModel : Document
     {
         ActiveTool = ViewportTool.Selection;
             
-        //Bitmap player = new Bitmap("C:\\Users\\mat019\\Documents\\code\\warpunk.emberfall\\assets\\Sprites\\Player\\Player.png");
+        Bitmap player = new Bitmap("C:\\Users\\mat019\\Documents\\code\\warpunk.emberfall\\assets\\Sprites\\Player\\Player.png");
         //Bitmap player = new Bitmap("/home/ms/Documents/warpunk.emberfall/assets/Sprites/Player/Player.png");
-#if false
+#if true
         Renderables.Add(new SpriteRenderable(
             bitmap: player, 
             bounds: new Rect(new Point(200, 200), new Size(32, 32)), 
@@ -29,9 +29,8 @@ public class WorldDocumentViewModel : Document
         get => _activeTool;
         set
         {
-            OnPropertyChanging(nameof(ActiveTool));
             _activeTool = value;
-            OnPropertyChanged(nameof(ActiveTool));
+            OnPropertyChanged();
 
             if (ActiveTool == ViewportTool.Selection)
             {
