@@ -20,13 +20,12 @@ public class ProjectExplorerViewModel : Tool, IDisposable
         _projectSelectionService = projectSelectionService;
         _worldSelectionService = worldSelectionService;
 
-        Projects = new TreeNodeViewModel("Projects", null);
         Worlds = new TreeNodeViewModel("Worlds", null);
         Packages = new TreeNodeViewModel("Packages", null);
         Blueprints = new TreeNodeViewModel("Blueprints", null);
         Properties = new TreeNodeViewModel("Properties", null);
         
-        Assets = [ Projects, Worlds, Packages, Blueprints, Properties ];
+        Assets = [ Worlds, Packages, Blueprints, Properties ];
 
         _projectSelectionService.SelectionChanged += OnProjectSelectionChanged;
         _worldSelectionService.SelectionChanged += OnWorldSelectionChanged;
@@ -48,7 +47,6 @@ public class ProjectExplorerViewModel : Tool, IDisposable
         SelectedWorld = e.CurrentPrimary;
     }
     
-    public ITreeNode Projects { get; }
     public ITreeNode Worlds { get; }
     public ITreeNode Packages { get; }
     public ITreeNode Blueprints { get; }
@@ -66,10 +64,20 @@ public class ProjectExplorerViewModel : Tool, IDisposable
             
             if (value is null)
             {
+                foreach (var worldNode in Worlds.Children)
+                {
+                    if (worldNode.Data is not IWorld world)
+                        continue;
+                    
+                    _worldService.SaveWorld();
+                }
+                    
                 _projectService.SaveProject();
                 _projectService.CloseProject();
                 return;
             }
+            
+            
             
             // new selection
             _selectedProject = value;
