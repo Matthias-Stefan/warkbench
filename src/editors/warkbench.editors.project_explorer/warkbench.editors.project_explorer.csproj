@@ -18,6 +18,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
+      <ProjectReference Include="..\warkbench.editors.core\warkbench.editors.core.csproj" />
     </ItemGroup>
 
 </Project>

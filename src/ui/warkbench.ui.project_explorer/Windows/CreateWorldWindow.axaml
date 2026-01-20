@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="warkbench.Views.CreateWorldWindow"
+        Title="Create New World" 
+        Width="300" 
+        Height="400"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+    
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock Text="World Name:" />
+        <TextBox Name="NameInput" Text="New World" />
+        
+        <TextBlock Text="Tile Size (pixel):" />
+        <NumericUpDown Name="TileSizeInput" Value="32" Minimum="8" Maximum="128" FormatString="0" />
+        
+        <TextBlock Text="Chunk Resolution (tiles):" />
+        <NumericUpDown Name="ChunkResInput" Value="32" Minimum="8" Maximum="128" FormatString="0" />
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+            <Button Content="Cancel" Click="OnCancel" />
+            <Button Content="Create" Click="OnCreate" Classes="accent" />
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dock.Avalonia" Version="11.3.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="AssetEditor\Resources\Types\CreateWorldWindow.axaml.cs">
+        <DependentUpon>CreateWorldWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="AssetEditor\Resources\Types\PackageToolbarView.axaml.cs">
+        <DependentUpon>PackageToolbarView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="AssetEditor\AssetEditorView.axaml.cs">
+        <DependentUpon>AssetEditorView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\AssetEditorView.axaml.cs">
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\PackageToolbarView.axaml.cs">
+        <DependentUpon>PackageToolbarView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Windows\CreateWorldWindow.axaml.cs">
+        <DependentUpon>CreateWorldWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\editors\warkbench.editors.project_explorer\warkbench.editors.project_explorer.csproj" />
+      <ProjectReference Include="..\warkbench.ui.core\warkbench.ui.core.csproj" />
+    </ItemGroup>
+    
+</Project>
