@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dock.Avalonia" Version="11.3.8" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Bold.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-BoldItalic.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Italic.ttf" />
+      <AvaloniaResource Include="Assets\Fonts\Cousine\Cousine-Regular.ttf" />
+      <AvaloniaResource Include="Assets\Icons\App\png\ChatGPT Image 8. Aug. 2025, 09_09_37.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\ChatGPT Image Aug 8, 2025, 08_38_35 PM.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\ChatGPT Image Aug 8, 2025, 08_48_16 PM.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\ChatGPT Image Aug 8, 2025, 09_02_18 PM.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_01.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_02.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_03.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_04.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_alpha_03.png" />
+      <AvaloniaResource Include="Assets\Icons\App\png\warkbench_1024x1024_alpha_04.png" />
+      <AvaloniaResource Include="Assets\Icons\App\project_name_w.svg" />
+      <AvaloniaResource Include="Assets\Icons\App\warkbench.ico" />
+      <AvaloniaResource Include="Assets\Icons\App\warkbench.xcf" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_blueprint_with_template.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_bool.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_file_template.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_node_font_bakbak_one_template.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_node_symbol_template.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_project_template.svg" />
+      <AvaloniaResource Include="Assets\Icons\Templates\icon_rect.svg" />
+    </ItemGroup>
+</Project>

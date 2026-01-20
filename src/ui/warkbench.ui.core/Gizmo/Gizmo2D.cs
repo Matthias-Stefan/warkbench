@@ -10,7 +10,7 @@ namespace warkbench.src.ui.core.Gizmo;
 
 public partial class Gizmo2D : IDisposable
 {
-    internal enum Part
+    public enum Part
     {
         None,
         Center,
@@ -232,9 +232,9 @@ public partial class Gizmo2D : IDisposable
 
         var dx = mousePos.X - origin.X;
         var dy = mousePos.Y - origin.Y;
-        var dist = Math.Sqrt(dx * dx + dy * dy);
+        var dist = System.Math.Sqrt(dx * dx + dy * dy);
 
-        if (Math.Abs(dist - RotateRadius) <= RotateHitBand)
+        if (System.Math.Abs(dist - RotateRadius) <= RotateHitBand)
             return Part.Rotate;
 
         return Part.None;
@@ -257,7 +257,7 @@ public partial class Gizmo2D : IDisposable
 
         var mid = (count - 1) * 0.5;
 
-        var idx = (int)Math.Floor(((axisPos - pivotAxisPos) + (ModifierStep * 0.5)) / ModifierStep + mid);
+        var idx = (int)System.Math.Floor(((axisPos - pivotAxisPos) + (ModifierStep * 0.5)) / ModifierStep + mid);
         idx = ClampIndex(idx, count);
 
         return ModifierValues[idx];
@@ -271,15 +271,15 @@ public partial class Gizmo2D : IDisposable
 
     private Rect GetAxisBounds(Point a, Point b)
     {
-        if (Math.Abs(a.Y - b.Y) < 1e-9)
+        if (System.Math.Abs(a.Y - b.Y) < 1e-9)
         {
-            var x0 = Math.Min(a.X, b.X);
-            var w  = Math.Abs(b.X - a.X);
+            var x0 = System.Math.Min(a.X, b.X);
+            var w  = System.Math.Abs(b.X - a.X);
             return new Rect(x0, a.Y - AxisHitHalfThickness, w, AxisHitHalfThickness * 2);
         }
 
-        var y0 = Math.Min(a.Y, b.Y);
-        var h  = Math.Abs(b.Y - a.Y);
+        var y0 = System.Math.Min(a.Y, b.Y);
+        var h  = System.Math.Abs(b.Y - a.Y);
         return new Rect(a.X - AxisHitHalfThickness, y0, AxisHitHalfThickness * 2, h);
     }
 
@@ -297,7 +297,7 @@ public partial class Gizmo2D : IDisposable
     private Rect GetScaleHandleHitRect(Point end)
     {
         var r = GetScaleHandleRect(end);
-        var inflate = Math.Max(3.0, AxisHitHalfThickness);
+        var inflate = System.Math.Max(3.0, AxisHitHalfThickness);
         return new Rect(r.X - inflate, r.Y - inflate, r.Width + 2 * inflate, r.Height + 2 * inflate);
     }
 

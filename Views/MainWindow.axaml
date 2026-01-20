@@ -57,9 +57,9 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Width="28"
-                                            Height="28"
-                                            Margin="0,0,4,0"
-                                            Source="avares://warkbench.core/src/public/Assets/Icons/App/warkbench.ico" />
+                                           Height="28"
+                                           Margin="0,0,4,0"
+                                           Source="avares://warkbench/Assets/Icons/App/warkbench.ico" />
                                 </StackPanel>
                             </MenuItem.Header>
                         </MenuItem>

@@ -104,7 +104,7 @@ public partial class App : Application
         
     private void ConfigureServices(IServiceCollection services)
     {
-        // --- init core lib ---
+        // --- init warkbench.core lib ---
         services.AddSingleton<ILogger, ConsoleLogger>();
         services.AddSingleton<IPathService, PathService>();
 

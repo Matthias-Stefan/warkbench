@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:wvp="clr-namespace:warkbench.viewport;assembly=warkbench.viewport"
+             xmlns:wbuv="clr-namespace:warkbench.src.ui.viewport.Controls;assembly=warkbench.ui.viewport"
              xmlns:vm="using:warkbench.ViewModels"
              x:Name="Root"
              d:DesignHeight="450"
@@ -94,9 +94,8 @@
         </StackPanel>
         
         <!--  World viewport  -->
-        <wvp:WorldViewport 
-            Grid.Row="1" 
-            ActiveTool="{Binding ActiveTool}"
-            Renderables="{Binding Renderables}"/>
+        <wbuv:WorldViewport Grid.Row="1" 
+                            ActiveTool="{Binding ActiveTool}"
+                            Renderables="{Binding Renderables}"/>
     </Grid>
 </UserControl>

@@ -4,7 +4,8 @@ using Avalonia;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using warkbench.core;
+using warkbench.src.ui.core.Math;
+using warkbench.src.ui.core.Themes;
 
 
 namespace warkbench.src.ui.core.Gizmo;
@@ -60,9 +61,9 @@ public partial class Gizmo2D
 
         if (showX)
         {
-            var x0 = Math.Min(translateXStart.X, translateXEnd.X);
-            var x1 = Math.Max(translateXStart.X, translateXEnd.X);
-            var w = Math.Max(1.0, x1 - x0);
+            var x0 = System.Math.Min(translateXStart.X, translateXEnd.X);
+            var x1 = System.Math.Max(translateXStart.X, translateXEnd.X);
+            var w = System.Math.Max(1.0, x1 - x0);
 
             DrawModifierBandsVertical(
                 ctx,
@@ -75,9 +76,9 @@ public partial class Gizmo2D
         }
         else if (showY)
         {
-            var y0 = Math.Min(translateYStart.Y, translateYEnd.Y);
-            var y1 = Math.Max(translateYStart.Y, translateYEnd.Y);
-            var h = Math.Max(1.0, y1 - y0);
+            var y0 = System.Math.Min(translateYStart.Y, translateYEnd.Y);
+            var y1 = System.Math.Max(translateYStart.Y, translateYEnd.Y);
+            var h = System.Math.Max(1.0, y1 - y0);
 
             DrawModifierBandsHorizontal(
                 ctx,
@@ -103,7 +104,7 @@ public partial class Gizmo2D
             RotateRadius,
             RotateRadius);
 
-        var dir = new Vector(Math.Cos(Angle), Math.Sin(Angle));
+        var dir = new Vector(System.Math.Cos(Angle), System.Math.Sin(Angle));
         var ringInnerPoint = origin + dir * RotateRadius;
         var ringOuterPoint = origin + dir * (RotateRadius + IndicatorLength);
 
@@ -186,16 +187,16 @@ public partial class Gizmo2D
         var dx = end.X - start.X;
         var dy = end.Y - start.Y;
 
-        var length = Math.Sqrt(dx * dx + dy * dy);
+        var length = System.Math.Sqrt(dx * dx + dy * dy);
         if (length < 1e-9)
-            return WarkbenchMath.EmptyGeometry;
+            return AvaloniaMathExtension.EmptyGeometry;
 
         var ux = dx / length;
         var uy = dy / length;
 
-        var angleRad = headAngleDeg * Math.PI / 180.0;
-        var sin      = Math.Sin(angleRad);
-        var cos      = Math.Cos(angleRad);
+        var angleRad = headAngleDeg * System.Math.PI / 180.0;
+        var sin      = System.Math.Sin(angleRad);
+        var cos      = System.Math.Cos(angleRad);
 
         var lx =  cos * ux - sin * uy;
         var ly =  sin * ux + cos * uy;
@@ -245,8 +246,8 @@ public partial class Gizmo2D
             var offset = (i - mid) * step;
             var yTop   = pivotY + offset - (step * 0.5);
 
-            var normalized = Math.Clamp(Math.Log2(factor + 1.0) / 2.0, 0.0, 1.0);
-            var intensity  = (byte)Math.Clamp(80 + normalized * 175, 0, 255);
+            var normalized = System.Math.Clamp(System.Math.Log2(factor + 1.0) / 2.0, 0.0, 1.0);
+            var intensity  = (byte)System.Math.Clamp(80 + normalized * 175, 0, 255);
 
             var color = Color.FromArgb(128, intensity, baseColor.G, baseColor.B);
 
@@ -298,8 +299,8 @@ public partial class Gizmo2D
             var offset = (i - mid) * step;
             var xLeft  = pivotX + offset - (step * 0.5);
 
-            var normalized = Math.Clamp(Math.Log2(factor + 1.0) / 2.0, 0.0, 1.0);
-            var intensity  = (byte)Math.Clamp(80 + normalized * 175, 0, 255);
+            var normalized = System.Math.Clamp(System.Math.Log2(factor + 1.0) / 2.0, 0.0, 1.0);
+            var intensity  = (byte)System.Math.Clamp(80 + normalized * 175, 0, 255);
 
             var color = Color.FromArgb(128, baseColor.R, intensity, baseColor.B);
 

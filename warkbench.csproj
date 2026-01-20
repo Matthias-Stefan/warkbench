@@ -22,7 +22,6 @@
     <!-- Prevent accidentally including resources from sub-project folders -->
     <AvaloniaResource Remove="warkbench.core\**" />
     <AvaloniaResource Remove="warkbench.viewport\**" />
-    <AvaloniaResource Remove="Assets\Icons\App\warkbench.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -163,6 +162,48 @@
     <Compile Update="src\editors\warkbench.editors.project_explorer\ViewModel\ProjectExplorerViewModel.cs">
       <Link>src\editors\warkbench.project_explorer\ViewModel\ProjectExplorerViewModel.cs</Link>
     </Compile>
+    <Compile Update="src\basis\warkbench.core\obj\Debug\net9.0\warkbench.core.GlobalUsings.g.cs">
+      <Link>src\basis\core\obj\Debug\net9.0\warkbench.core.GlobalUsings.g.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\Io\BaseIoService.cs">
+      <Link>src\basis\warkbench.core\Common\Io\BaseIoService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\Io\ProjectIoService.cs">
+      <Link>src\basis\warkbench.core\Common\Io\ProjectIoService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\Io\WorldIoService.cs">
+      <Link>src\basis\warkbench.core\Common\Io\WorldIoService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\ConsoleLogger.cs">
+      <Link>src\basis\warkbench.core\Common\ConsoleLogger.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\PathService.cs">
+      <Link>src\basis\warkbench.core\Common\PathService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\UnixPath.cs">
+      <Link>src\basis\warkbench.core\Common\UnixPath.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Common\Versions.cs">
+      <Link>src\basis\warkbench.core\Common\Versions.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Projects\Project.cs">
+      <Link>src\basis\warkbench.core\Projects\Project.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Projects\ProjectService.cs">
+      <Link>src\basis\warkbench.core\Projects\ProjectService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Scenes\Scene.cs">
+      <Link>src\basis\warkbench.core\Scenes\Scene.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Scenes\SceneService.cs">
+      <Link>src\basis\warkbench.core\Scenes\SceneService.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Worlds\World.cs">
+      <Link>src\basis\warkbench.core\Worlds\World.cs</Link>
+    </Compile>
+    <Compile Update="src\basis\warkbench.core\Worlds\WorldService.cs">
+      <Link>src\basis\warkbench.core\Worlds\WorldService.cs</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -179,6 +220,9 @@
 
     <None Remove="warkbench.core\**" />
     <None Remove="warkbench.viewport\**" />
+    <None Update="src\basis\warkbench.core\obj\Debug\net9.0\warkbench.core.GeneratedMSBuildEditorConfig.editorconfig">
+      <Link>src\basis\core\obj\Debug\net9.0\warkbench.core.GeneratedMSBuildEditorConfig.editorconfig</Link>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -228,5 +272,10 @@
   <ItemGroup>
     <ProjectReference Include="src\basis\warkbench.core\warkbench.core.csproj" />
     <ProjectReference Include="src\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
+    <ProjectReference Include="src\editors\warkbench.editors.core\warkbench.editors.core.csproj" />
+    <ProjectReference Include="src\editors\warkbench.editors.project_explorer\warkbench.editors.project_explorer.csproj" />
+    <ProjectReference Include="src\editors\warkbench.editors.viewport\warkbench.editors.viewport.csproj" />
+    <ProjectReference Include="src\ui\warkbench.ui.core\warkbench.ui.core.csproj" />
+    <ProjectReference Include="src\ui\warkbench.ui.viewport\warkbench.ui.viewport.csproj" />
   </ItemGroup>
 </Project>

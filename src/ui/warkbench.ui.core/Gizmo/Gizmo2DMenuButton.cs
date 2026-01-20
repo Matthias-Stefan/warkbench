@@ -2,8 +2,7 @@
 using Avalonia.Media;
 using Avalonia;
 using System.Globalization;
-using System;
-
+using warkbench.src.ui.core.Themes;
 
 namespace warkbench.src.ui.core.Gizmo;
 
@@ -73,11 +72,11 @@ internal class Gizmo2DMenuButton
 
     private (Point Center, double Theta) GetCenterAndAngle(Point originScreenSpace, double ringRadiusScreenSpace)
     {
-        var theta = Degrees * Math.PI / 180.0;
+        var theta = Degrees * System.Math.PI / 180.0;
 
         var center = new Point(
-            originScreenSpace.X + Math.Cos(theta) * ringRadiusScreenSpace,
-            originScreenSpace.Y + Math.Sin(theta) * ringRadiusScreenSpace);
+            originScreenSpace.X + System.Math.Cos(theta) * ringRadiusScreenSpace,
+            originScreenSpace.Y + System.Math.Sin(theta) * ringRadiusScreenSpace);
 
         return (center, theta);
     }

@@ -22,7 +22,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://warkbench.core/src/public/Assets/Icons/IconResources.axaml"/>
+                <ResourceInclude Source="avares://warkbench.ui.core/Assets/Icons/IconResources.axaml"/>
                 <ResourceInclude Source="avares://Nodify/Theme.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

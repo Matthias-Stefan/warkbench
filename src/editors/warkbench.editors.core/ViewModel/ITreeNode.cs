@@ -37,7 +37,7 @@ public interface ITreeNode : INotifyPropertyChanged
     /// <summary> List of nested child nodes. </summary>
     ReadOnlyObservableCollection<ITreeNode> Children { get; }
     
-    /// <summary> The underlying core data object (e.g., World, Project, Asset). </summary>
+    /// <summary> The underlying warkbench.core data object (e.g., World, Project, Asset). </summary>
     object? Data { get; }
     
     /// <summary> Gets or sets whether the node is currently expanded in the UI. </summary>

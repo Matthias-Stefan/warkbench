@@ -2,8 +2,8 @@ using Avalonia.Media.Imaging;
 using Avalonia;
 using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
-using warkbench.viewport;
-
+using warkbench.src.ui.viewport.Controls;
+using warkbench.src.ui.viewport.Rendering;
 
 namespace warkbench.ViewModels;
 
@@ -24,7 +24,7 @@ public class WorldDocumentViewModel : Document
 #endif
     }
 
-    public viewport.ViewportTool ActiveTool
+    public ViewportTool ActiveTool
     {
         get => _activeTool;
         set
@@ -57,6 +57,6 @@ public class WorldDocumentViewModel : Document
 
     public ObservableCollection<IRenderable> Renderables { get; set; } = [];    
 
-    private viewport.ViewportTool _activeTool = ViewportTool.Selection;
+    private ViewportTool _activeTool = ViewportTool.Selection;
     private bool _isSelectToolEnabled = true;
 }

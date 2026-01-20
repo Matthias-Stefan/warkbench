@@ -431,7 +431,7 @@
                                VerticalAlignment="Bottom"
                                IsHitTestVisible="False"
                                Opacity="0.2"
-                               Source="avares://warkbench.core/src/public/Assets/Icons/App/png/warkbench_1024x1024_alpha_03.png" />
+                               Source="avares://warkbench.ui.core/Assets/Icons/App/png/warkbench_1024x1024_alpha_03.png" />
 
                         <ScrollViewer>
                             <ItemsControl ItemsSource="{Binding CurrentLevel}">

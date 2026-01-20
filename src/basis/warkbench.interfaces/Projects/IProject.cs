@@ -5,7 +5,7 @@ using warkbench.src.basis.interfaces.Worlds;
 namespace warkbench.src.basis.interfaces.Projects;
 
 /// <summary>
-/// Defines the core data structure and state of a workbench project.
+/// Defines the warkbench.core data structure and state of a workbench project.
 /// </summary>
 public interface IProject : IIdentifiable, INotifyPropertyChanged
 {
