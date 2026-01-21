@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="using:warkbench.Views"
         xmlns:vm="using:warkbench.ViewModels"
         x:Name="MainWindowView"
         Title="Warkbench"
@@ -86,16 +85,14 @@
                         </MenuItem>
 
                         <MenuItem Header="File">
-                            <MenuItem Header="New" />
+                            <MenuItem Header="New Project" />
                             <MenuItem Header="Open..." />
-                            <MenuItem Header="Save" />
+                            <MenuItem Header="Save All" />
                             <MenuItem Header="Exit" />
                         </MenuItem>
                         <MenuItem Header="Edit" />
                         <MenuItem Header="Tools">
-                            <MenuItem Header="Asset Editor" />
-                            <MenuItem Header="ContentBrowser" />
-                            <MenuItem Header="Details" />
+                            <MenuItem Header="Workspace Explorer" />
                         </MenuItem>
                         <MenuItem Header="Help" />
                     </Menu>

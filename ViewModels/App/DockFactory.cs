@@ -4,6 +4,7 @@ using Dock.Model.Core;
 using Dock.Model.Mvvm.Controls;
 using Dock.Model.Mvvm.Core;
 using System;
+using warkbench.src.editors.workspace_explorer.ViewModels;
 
 
 namespace warkbench.ViewModels;
@@ -50,7 +51,7 @@ public class DockFactory : Dock.Model.Mvvm.Factory
 
     private readonly Func<ContentBrowserViewModel> _createContentBrowserFunc;
     private readonly Func<DetailsViewModel> _createDetailsFunc;
-    private readonly Func<AssetEditorViewModel> _createAssetEditorFunc;
+    private readonly Func<WorkspaceExplorerViewModel> _createWorkspaceExplorerFunc;
     private readonly Func<NodeEditorViewModel> _createNodeEditorFunc;
 
     public override IRootDock CreateLayout()
@@ -75,9 +76,9 @@ public class DockFactory : Dock.Model.Mvvm.Factory
         nodeEditor.Id = "NodeEditor";
         nodeEditor.Title = "Node Editor";
             
-        var assetEditor = _createAssetEditorFunc();
-        assetEditor.Id = "AssetEditor";
-        assetEditor.Title = "Asset Editor";
+        var workspaceExplorer = _createWorkspaceExplorerFunc();
+        workspaceExplorer.Id = "WorkspaceExplorer";
+        workspaceExplorer.Title = "Workspace Explorer";
 
         var contentBrowserDock = new ProportionalDock
         {
@@ -133,7 +134,7 @@ public class DockFactory : Dock.Model.Mvvm.Factory
             // CanDrop = false
         };
 
-        var assetEditorDock = new ProportionalDock
+        var workspaceExplorerDock = new ProportionalDock
         {
             Proportion = 0.25,
             Orientation = Orientation.Vertical,
@@ -142,8 +143,8 @@ public class DockFactory : Dock.Model.Mvvm.Factory
             (
                 new ToolDock
                 {
-                    ActiveDockable = assetEditor,
-                    VisibleDockables = CreateList<IDockable>(assetEditor),
+                    ActiveDockable = workspaceExplorer,
+                    VisibleDockables = CreateList<IDockable>(workspaceExplorer),
                     Alignment = Alignment.Left,
                     // CanDrop = false
                 }
@@ -171,7 +172,7 @@ public class DockFactory : Dock.Model.Mvvm.Factory
                     Orientation = Orientation.Horizontal,
                     VisibleDockables = CreateList<IDockable>
                     (
-                        assetEditorDock,
+                        workspaceExplorerDock,
                         new ProportionalDockSplitter(),
                         documentDock,
                         new ProportionalDockSplitter(),
@@ -223,12 +224,12 @@ public class DockFactory : Dock.Model.Mvvm.Factory
     public DockFactory(
         Func<ContentBrowserViewModel> createContentBrowserFunc,
         Func<DetailsViewModel> createDetailsFunc,
-        Func<AssetEditorViewModel> createAssetEditorFunc,
+        Func<WorkspaceExplorerViewModel> createWorkspaceExplorerFunc,
         Func<NodeEditorViewModel> createNodeEditorFunc)
     {
         _createContentBrowserFunc = createContentBrowserFunc;
         _createDetailsFunc = createDetailsFunc;
-        _createAssetEditorFunc = createAssetEditorFunc;
+        _createWorkspaceExplorerFunc = createWorkspaceExplorerFunc;
         _createNodeEditorFunc = createNodeEditorFunc;
     }
 }

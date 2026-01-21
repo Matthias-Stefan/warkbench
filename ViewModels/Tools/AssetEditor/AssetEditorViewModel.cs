@@ -107,8 +107,9 @@ public partial class AssetEditorViewModel : Tool
     }
 
     [RelayCommand]
-    public async Task AddWorld()
+    public Task AddWorld()
     {
+#if false
         var desktop = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
         
         var owner = desktop?.MainWindow;
@@ -123,6 +124,8 @@ public partial class AssetEditorViewModel : Tool
         
         var world = _worldService.CreateWorld(worldCreateInfo.Name, worldCreateInfo.TileSize, worldCreateInfo.ChunkResolution);
         AddWorld(world);
+#endif
+        return Task.CompletedTask;
     }
 
     public void AddWorld(IWorld world)

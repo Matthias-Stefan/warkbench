@@ -1,56 +1,89 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using warkbench.src.basis.interfaces.Scenes;
 using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.core.Worlds;
 
-internal partial class World : ObservableObject, IWorld
+internal class World : IWorld
 {
-    public required Guid Id
-    {
-        get => _id;
-        init => SetProperty(ref _id, value);
-    }
+   
+    // --- Properties ---
     
-    public required string Name
-    {
-        get => _name;
-        init => SetProperty(ref _name, value);
-    }
-    
-    [ObservableProperty]
-    private string _description = string.Empty;
-    
-    public required string LocalPath
-    {
-        get => _localPath;
-        init => SetProperty(ref _localPath, value);
-    }
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required string LocalPath { get; init; }
+    public required int TileSize { get; init; } = 32;
 
-    public required int TileSize
-    {
-        get => _tileSize;
-        init => SetProperty(ref _tileSize, value);
-    }
-    
     public required int ChunkResolution
     {
         get => _chunkResolution;
-        set => SetProperty(ref _chunkResolution, value);
+        set => Set(ref _chunkResolution, value);
     }
+    
+    public string Description
+    {
+        get => _description;
+        set => Set(ref _description, value);
+    }
+    
+    public DateTime CreatedAt
+    {
+        get => _createdAt;
+        set => Set(ref _createdAt, value);
+    }
+    
+    public DateTime LastModifiedAt
+    {
+        get => _lastModifiedAt;
+        private set => Set(ref _lastModifiedAt, value);
+    }
+    
+    public bool IsDirty
+    {
+        get => _isDirty;
+        set => Set(ref _isDirty, value);
+    }
+    
+    public IScene? ActiveScene
+    {
+        get => _activeScene;
+        set => Set(ref _activeScene, value);
+    }
+    
+    // ---- Container ----
+    
+    public IEnumerable<object> Chunks => _chunks;
+    public IEnumerable<IScene> Scenes => _scenes;
+    public IEnumerable<IScene> LoadedScenes => _loadedScenes;
+    
+    // ---- INotifyPropertyChanged ----
 
-    public IEnumerable<object> Chunks { get; }
-    
-    public IEnumerable<IScene> Scenes { get; }
-    
-    public IScene? ActiveScene { get; set; }
-    
-    public IEnumerable<IScene> LoadedScenes { get; }
-    
-    private readonly Guid _id = Guid.NewGuid();
-    private readonly string _name = string.Empty;
-    private readonly string _localPath = string.Empty;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    private int _tileSize = 32;
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    private bool Set<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
+
+        field = value;
+        OnPropertyChanged(propertyName);
+        return true;
+    }
+    
+    // --- Fields ---
+
     private int _chunkResolution = 32;
+    private string _description = string.Empty;
+    private DateTime _createdAt = DateTime.Now;
+    private DateTime _lastModifiedAt = DateTime.Now;
+    private bool _isDirty;
+    private IScene? _activeScene;
+    
+    private readonly List<object> _chunks = [];
+    private readonly List<IScene> _scenes = [];
+    private readonly List<IScene> _loadedScenes = [];
 }

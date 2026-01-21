@@ -10,6 +10,15 @@ public interface IWorld : IIdentifiable, INotifyPropertyChanged
     /// <summary> Textual summary providing world context or metadata. </summary>
     string Description { get; }
     
+    /// <summary> ISO timestamp of the initial world creation. </summary>
+    DateTime CreatedAt { get; }
+
+    /// <summary> ISO timestamp of the most recent persistence operation. </summary>
+    DateTime LastModifiedAt { get; }
+    
+    /// <summary> Flag indicating unsaved changes in the current session. </summary>
+    bool IsDirty { get; set; }
+    
     /// <summary> The relative folder name or path within the workspace. </summary>
     string LocalPath { get; }
     

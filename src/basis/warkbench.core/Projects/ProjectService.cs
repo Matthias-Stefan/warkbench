@@ -17,11 +17,10 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         };
     }
 
-    public void LoadProject(string path)
+    public IProject LoadProject(string path)
     {
-        var loaded = projectIo.Load<Project>(path);
-    
-        if (loaded is null)
+        var loadedProject = projectIo.Load<Project>(path);
+        if (loadedProject is null)
         {
             var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {path}";
             logger?.Error(errorMsg); 
@@ -29,11 +28,11 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
             throw new FileNotFoundException(errorMsg, path);
         }
 
-        ActiveProject = loaded;
-        logger?.Info($"[ProjectService] Project '{ActiveProject.Name}' loaded and activated.");
+        logger?.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated.");
+        return loadedProject;
     }
 
-    public Task LoadProjectAsync(string path)
+    public Task<IProject> LoadProjectAsync(string path)
     {
         if (string.IsNullOrWhiteSpace(path))
             throw new ArgumentException("[ProjectService] Project path cannot be null or empty.", nameof(path));
@@ -41,73 +40,39 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         try
         {
             // TODO: make Load awaitable 
-            var loaded = projectIo.Load<Project>(path);
-
-            if (loaded is null)
+            var loadedProject = projectIo.Load<Project>(path);
+            if (loadedProject is null)
             {
-                var errorMsg = $"[ProjectService] Failed to load project. File is invalid or empty: {path}";
+                var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {path}";
                 logger.Error(errorMsg);
                 throw new InvalidDataException(errorMsg);
             }
 
-            ActiveProject = loaded;
-            logger.Info($"[ProjectService] Project '{ActiveProject.Name}' loaded and activated from {path}");
-            
-            ActiveProjectChanged?.Invoke(ActiveProject);
+            logger.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated from {path}");
+            return Task.FromResult<IProject>(loadedProject);
         }
         catch (Exception ex)
         {
             logger.Error($"[ProjectService] Critical error loading project at {path}: {ex.Message}");
             throw;
         }
-
-        return Task.CompletedTask;
     }
 
-    public void SaveProject()
+    public void SaveProject(IProject project)
     {
-        if (ActiveProject == null) 
-            return;
+        if (project.IsDirty)
+            projectIo.Save(project, pathService.ProjectPath);
 
-        projectIo.Save(ActiveProject, pathService.ProjectPath);
-        ActiveProject.IsDirty = false;
+        project.IsDirty = false;
     }
 
-    public void CloseProject()
+    public void DeleteProject(IProject project)
     {
-        ActiveProject = null;
-    }
-
-    public void DeleteProject(string path)
-    {
-        if (ActiveProject is null)
-            return;
-        
-        if (ActiveProject?.LocalPath == path)
-            CloseProject();
-
-        var absolutePath = UnixPath.Combine(pathService.BasePath, ActiveProject!.LocalPath);
+        var absolutePath = UnixPath.Combine(pathService.BasePath, project!.LocalPath);
         if (absolutePath == pathService.BasePath)
             return;
 
         if (Directory.Exists(absolutePath))
             Directory.Delete(absolutePath, true);
     }
-
-    public IProject? ActiveProject
-    {
-        get => _activeProject;
-        private set
-        {
-            if (_activeProject == value) 
-                return;
-            
-            _activeProject = value;
-            ActiveProjectChanged?.Invoke(_activeProject);
-        }
-    }
-
-    public event Action<IProject?>? ActiveProjectChanged;
-
-    private IProject? _activeProject;
 }

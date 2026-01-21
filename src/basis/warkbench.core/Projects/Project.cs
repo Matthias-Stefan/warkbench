@@ -1,71 +1,111 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using warkbench.src.basis.core.Worlds;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.core.Projects;
 
-internal partial class Project : ObservableObject, IProject
+internal class Project : IProject
 {
     public void AddWorld(IWorld world)
     {
-        throw new NotImplementedException();
+        if (_worlds.Contains(world))
+            return;
+
+        _worlds.Add(world);
+        LastModifiedAt = DateTime.Now;
+        IsDirty = true;
+
+        OnPropertyChanged(nameof(Worlds));
+
+        ActiveWorld ??= world;
     }
 
     public void RemoveWorld(IWorld world)
     {
-        throw new NotImplementedException();
+        if (!_worlds.Remove(world))
+            return;
+
+        if (ReferenceEquals(ActiveWorld, world))
+            ActiveWorld = _worlds.FirstOrDefault();
+
+        LastModifiedAt = DateTime.Now;
+        IsDirty = true;
+
+        OnPropertyChanged(nameof(Worlds));
     }
     
-    public required Guid Id
+    // --- Properties ---
+    
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required string LocalPath { get; init; }
+    public required string Version { get; init; }
+    
+    public string Description
     {
-        get => _id;
-        init => SetProperty(ref _id, value);
+        get => _description;
+        set => Set(ref _description, value);
+    }
+    
+    public DateTime CreatedAt
+    {
+        get => _createdAt;
+        set => Set(ref _createdAt, value);
+    }
+    
+    public DateTime LastModifiedAt
+    {
+        get => _lastModifiedAt;
+        private set => Set(ref _lastModifiedAt, value);
+    }
+    
+    public bool IsDirty
+    {
+        get => _isDirty;
+        set => Set(ref _isDirty, value);
+    }
+    
+    public IWorld? ActiveWorld
+    {
+        get => _activeWorld;
+        set => Set(ref _activeWorld, value);
     }
 
-    public required string Name
+    // ---- Container ----
+    
+    public IEnumerable<IWorld> Worlds => _worlds;
+    public IEnumerable<object> Packages => _packages;
+    public IEnumerable<object> Blueprints => _blueprints;
+    public IEnumerable<object> Properties => _properties;
+    
+    // ---- INotifyPropertyChanged ----
+    
+    public event PropertyChangedEventHandler? PropertyChanged;
+    
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    private bool Set<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        get => _name;
-        init => SetProperty(ref _name, value);
+        if (EqualityComparer<T>.Default.Equals(field, value))
+            return false;
+
+        field = value!;
+        OnPropertyChanged(propertyName);
+        return true;
     }
     
-    [ObservableProperty]
+    // --- Fields ---
+    
     private string _description = string.Empty;
-    
-    public required string LocalPath
-    {
-        get => _localPath;
-        init => SetProperty(ref _localPath, value);
-    }
-    
-    [ObservableProperty]
     private DateTime _createdAt = DateTime.Now;
-    
-    [ObservableProperty]
     private DateTime _lastModifiedAt = DateTime.Now;
+    private bool _isDirty;
+    private IWorld? _activeWorld;
     
-    public required string Version
-    {
-        get => _version;
-        init => SetProperty(ref _version, value);
-    }
-
-    [ObservableProperty] 
-    private bool _isDirty = false;
-    
-    public IEnumerable<IWorld> Worlds { get; } = new List<World>();
-    
-    [ObservableProperty] 
-    private IWorld? _activeWorld = null;
-    
-    public IEnumerable<object> Packages { get; } = new List<object>();
-    
-    public IEnumerable<object> Blueprints { get; } = new List<object>();
-    
-    public IEnumerable<object> Properties { get; } = new List<object>();
-    
-    private readonly Guid _id = Guid.NewGuid();
-    private readonly string _name = string.Empty;
-    private readonly string _localPath = string.Empty;
-    private readonly string _version = string.Empty;
+    private readonly List<IWorld> _worlds = [];
+    private readonly List<object> _packages = [];
+    private readonly List<object> _blueprints = [];
+    private readonly List<object> _properties = [];
 }

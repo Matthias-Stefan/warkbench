@@ -80,10 +80,11 @@
     <ProjectReference Include="src\basis\warkbench.core\warkbench.core.csproj" />
     <ProjectReference Include="src\basis\warkbench.interfaces\warkbench.interfaces.csproj" />
     <ProjectReference Include="src\editors\warkbench.editors.core\warkbench.editors.core.csproj" />
-    <ProjectReference Include="src\editors\warkbench.editors.project_explorer\warkbench.editors.project_explorer.csproj" />
+    <ProjectReference Include="src\editors\warkbench.editors.workspace_explorer\warkbench.editors.workspace_explorer.csproj" />
     <ProjectReference Include="src\editors\warkbench.editors.viewport\warkbench.editors.viewport.csproj" />
     <ProjectReference Include="src\ui\warkbench.ui.core\warkbench.ui.core.csproj" />
     <ProjectReference Include="src\ui\warkbench.ui.viewport\warkbench.ui.viewport.csproj" />
+    <ProjectReference Include="src\ui\warkbench.ui.workspace_explorer\warkbench.ui.workspace_explorer.csproj" />
   </ItemGroup>
 
 </Project>

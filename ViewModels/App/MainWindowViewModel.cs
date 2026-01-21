@@ -39,4 +39,5 @@ public partial class MainWindowViewModel : ObservableObject
     private Project Project { get; set; }
     private IOService ExportService { get; }
     private IProjectManager? ProjectManager { get; }
+    
 }

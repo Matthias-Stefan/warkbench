@@ -18,6 +18,7 @@ using warkbench.src.basis.core.Worlds;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
+using warkbench.src.editors.workspace_explorer.ViewModels;
 
 namespace warkbench;
 
@@ -109,15 +110,22 @@ public partial class App : Application
         // --- init warkbench.core lib ---
         services.AddSingleton<ILogger, ConsoleLogger>();
         services.AddSingleton<IPathService, PathService>();
-
+        
         // project
         services.AddSingleton<IProjectIoService, ProjectIoService>();
         services.AddSingleton<IProjectService, ProjectService>();
-            
+        services.AddSingleton<ISelectionService<IProject>, SelectionService<IProject>>();
+        
         // world
         services.AddSingleton<IWorldIoService, WorldIoService>();
         services.AddSingleton<IWorldService, WorldService>();
-            
+        services.AddSingleton<ISelectionService<IWorld>, SelectionService<IWorld>>();
+
+        // session
+        services.AddSingleton<IProjectSession, ProjectSession>();
+        
+        // vm
+        services.AddSingleton<WorkspaceExplorerViewModel>();
             
 #if true
         // Platform
@@ -182,6 +190,13 @@ public partial class App : Application
                 sp.GetRequiredService<Models.NodeEditorModel>(),
                 sp.GetRequiredService<Infrastructure.ISelectionService>()
             );
+        });
+        services.AddTransient<Func<WorkspaceExplorerViewModel>>(sp =>
+        {
+            return () => new WorkspaceExplorerViewModel(
+                sp.GetRequiredService<IProjectSession>(),
+                sp.GetRequiredService<ISelectionService<IProject>>(),
+                sp.GetRequiredService<ISelectionService<IWorld>>());
         });
 #endif
     }

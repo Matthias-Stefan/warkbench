@@ -15,20 +15,20 @@ public interface IProject : IIdentifiable, INotifyPropertyChanged
     /// <summary> Removes an existing world instance from the project's collection. </summary>
     void RemoveWorld(IWorld world);
     
+    /// <summary> The relative folder name or path within the workspace. </summary>
+    string LocalPath { get; }
+    
     /// <summary> Textual summary providing project context or metadata. </summary>
     string Description { get; }
     
-    /// <summary> The relative folder name or path within the workspace. </summary>
-    string LocalPath { get; }
+    /// <summary> Semantic version of the application used during project creation. </summary>
+    string Version { get; }
     
     /// <summary> ISO timestamp of the initial project creation. </summary>
     DateTime CreatedAt { get; }
 
     /// <summary> ISO timestamp of the most recent persistence operation. </summary>
     DateTime LastModifiedAt { get; }
-    
-    /// <summary> Semantic version of the application used during project creation. </summary>
-    string Version { get; }
     
     /// <summary> Flag indicating unsaved changes in the current session. </summary>
     bool IsDirty { get; set; }
@@ -37,7 +37,7 @@ public interface IProject : IIdentifiable, INotifyPropertyChanged
     IEnumerable<IWorld> Worlds { get; }
 
     /// <summary> The currently focused or edited world in the workspace. </summary>
-    IWorld ActiveWorld { get; set; }
+    IWorld? ActiveWorld { get; set; }
     
     // TODO: later IPackage
     /// <summary> Registry of external assets and dependency packages. </summary>
