@@ -155,7 +155,7 @@ public partial class App : Application
         // Project Manager
         var projectManager = new ProjectManager(ioService, pathService);
         services.AddSingleton<IProjectManager>(projectManager);
-        projectManager.Load(warkbench.Infrastructure.UnixPath.Combine(pathService.DataPath, "warpunk.emberfall.json"));
+        //projectManager.Load(warkbench.Infrastructure.UnixPath.Combine(pathService.DataPath, "warpunk.emberfall.json"));
             
         // Dock layout factory: creates and connects editor components
         services.AddSingleton<DockFactory>();

@@ -8,13 +8,17 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
 {
     public IProject CreateProject(string name)
     {
-        return new Project
+        var project = new Project
         {
             Id = Guid.NewGuid(),
             Name = name,
             LocalPath = pathService.GetRelativeLocalPath(pathService.ProjectPath, pathService.BasePath),
-            Version = Versions.CurrentProjectVersion
+            Version = Versions.CurrentProjectVersion,
+            IsDirty = true
         };
+        
+        SaveProject(project);
+        return project;
     }
 
     public IProject LoadProject(string path)
@@ -61,7 +65,7 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
     public void SaveProject(IProject project)
     {
         if (project.IsDirty)
-            projectIo.Save(project, pathService.ProjectPath);
+            projectIo.Save(project, UnixPath.Combine(pathService.ProjectPath, project.Name));
 
         project.IsDirty = false;
     }

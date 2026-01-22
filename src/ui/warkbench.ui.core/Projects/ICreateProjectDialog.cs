@@ -7,5 +7,5 @@ namespace warkbench.src.ui.core.Projects;
 public interface ICreateProjectDialog
 {
     /// <summary>Shows the create project dialog and returns the user input or null if cancelled.</summary>
-    Task<CreateProjectResult?> ShowAsync(Window owner);
+    Task<CreateProjectInfo?> ShowAsync(Window owner);
 }

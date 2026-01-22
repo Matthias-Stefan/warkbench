@@ -12,8 +12,9 @@
         <TextBlock Text="Project Name"/>
         <TextBox Text="{Binding ProjectName}"/>
 
+        <!-- TODO: Configurable? -->
         <TextBlock Text="Project Location"/>
-        <TextBox Text="{Binding ProjectPath}"/>
+        <TextBlock Text="{Binding ProjectPath}"/>
 
         <CheckBox Content="Open project after creation"
                   IsChecked="{Binding OpenAfterCreation}"/>

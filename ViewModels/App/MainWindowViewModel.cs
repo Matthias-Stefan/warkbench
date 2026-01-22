@@ -39,11 +39,15 @@ public partial class MainWindowViewModel : ObservableObject
         if (owner is null)
             return;
 
-        var result = await _createProjectDialog.ShowAsync(owner);
-        if (result is null)
+        var createProjectInfo = await _createProjectDialog.ShowAsync(owner);
+        if (createProjectInfo is null)
             return;
 
-        int x = 5;
+        var project = _projectService.CreateProject(createProjectInfo.ProjectName);
+        if (!createProjectInfo.OpenAfterCreation)
+            return;
+        
+        await _projectSession.SwitchToAsync(project);
     }
 
     [RelayCommand]

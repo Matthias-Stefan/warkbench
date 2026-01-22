@@ -1,0 +1,16 @@
+{
+  "$id": "1",
+  "Id": "603d1571-ec24-406f-ad8a-bff5bee0cb32",
+  "Name": "Warpunk Emberfall",
+  "LocalPath": "warkbench/projects",
+  "Version": "1.0.0",
+  "Description": "",
+  "CreatedAt": "2026-01-22T20:33:20.0258798+01:00",
+  "LastModifiedAt": "2026-01-22T20:33:20.0258832+01:00",
+  "IsDirty": true,
+  "ActiveWorld": null,
+  "Worlds": [],
+  "Packages": [],
+  "Blueprints": [],
+  "Properties": []
+}

@@ -11,7 +11,7 @@ public sealed partial class CreateProjectViewModel(IPathService pathService) : O
     [RelayCommand(CanExecute = nameof(CanConfirm))]
     private void Confirm()
     {
-        RequestClose?.Invoke(new CreateProjectResult
+        RequestClose?.Invoke(new CreateProjectInfo
         {
             ProjectName = ProjectName,
             ProjectPath = ProjectPath,
@@ -39,5 +39,5 @@ public sealed partial class CreateProjectViewModel(IPathService pathService) : O
     private bool _openAfterCreation = true;
     
     /// <summary>Raised when the dialog requests to be closed.</summary>
-    public event Action<CreateProjectResult?>? RequestClose;
+    public event Action<CreateProjectInfo?>? RequestClose;
 }

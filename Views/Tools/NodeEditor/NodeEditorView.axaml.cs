@@ -132,7 +132,8 @@ public partial class NodeEditorView : UserControl
             return;    
         }
 
-        foreach (var property in vm.ProjectManager.CurrentProject.Properties)
+        return;
+        foreach (var property in vm.ProjectManager?.CurrentProject?.Properties)
         {
             AddPropertyMenuEntry(RootPropertyMenuNodeMenuRoot, property, vm.AddPropertyNodeCommand);
             AddPropertyMenuEntry(RootPropertyMenuNodePaletteMenu, property, vm.AddPropertyNodeFromMouseCommand);

@@ -8,7 +8,7 @@ namespace warkbench.src.ui.core.Projects;
 public class CreateProjectDialog(IPathService pathService) : ICreateProjectDialog
 {
     /// <summary>Shows the create project dialog as a modal window.</summary>
-    public async Task<CreateProjectResult?> ShowAsync(Window owner)
+    public async Task<CreateProjectInfo?> ShowAsync(Window owner)
     {
         var viewModel = new CreateProjectViewModel(pathService);
         var window = new CreateProjectWindow
@@ -16,6 +16,6 @@ public class CreateProjectDialog(IPathService pathService) : ICreateProjectDialo
             DataContext = viewModel
         };
 
-        return await window.ShowDialog<CreateProjectResult?>(owner);
+        return await window.ShowDialog<CreateProjectInfo?>(owner);
     }
 }

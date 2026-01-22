@@ -13,8 +13,8 @@ public class WorldDocumentViewModel : Document
     {
         ActiveTool = ViewportTool.Selection;
             
-        Bitmap player = new Bitmap("C:\\Users\\mat019\\Documents\\code\\warpunk.emberfall\\assets\\Sprites\\Player\\Player.png");
-        //Bitmap player = new Bitmap("/home/ms/Documents/warpunk.emberfall/assets/Sprites/Player/Player.png");
+        //Bitmap player = new Bitmap("C:\\Users\\mat019\\Documents\\code\\warpunk.emberfall\\assets\\Sprites\\Player\\Player.png");
+        Bitmap player = new Bitmap("/home/ms/Documents/warpunk.emberfall/assets/Sprites/Player/Player.png");
 #if true
         Renderables.Add(new SpriteRenderable(
             bitmap: player, 

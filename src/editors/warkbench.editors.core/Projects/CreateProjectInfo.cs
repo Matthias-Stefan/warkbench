@@ -1,7 +1,7 @@
 ﻿namespace warkbench.src.editors.core.ViewModel;
 
 /// <summary>Contains user-defined data required to create a new project.</summary>
-public sealed class CreateProjectResult
+public sealed class CreateProjectInfo
 {
     /// <summary>The display name of the project.</summary>
     public required string ProjectName { get; init; }
