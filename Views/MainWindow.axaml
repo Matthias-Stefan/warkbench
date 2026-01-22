@@ -31,8 +31,13 @@
     </Design.DataContext>
     
     <Window.KeyBindings>
-        <KeyBinding Gesture="Ctrl+S"
-                    Command="{Binding SaveProjectCommand}" />
+        <KeyBinding 
+            Gesture="Ctrl+O"
+            Command="{Binding OpenProjectCommand}" />
+        
+        <KeyBinding 
+            Gesture="Ctrl+S"
+            Command="{Binding SaveAllCommand}" />
     </Window.KeyBindings>
     
     <Grid Margin="8,8,8,8">
@@ -85,10 +90,18 @@
                         </MenuItem>
 
                         <MenuItem Header="File">
-                            <MenuItem Header="New Project" />
-                            <MenuItem Header="Open..." />
-                            <MenuItem Header="Save All" />
-                            <MenuItem Header="Exit" />
+                            <MenuItem 
+                                Header="New Project"
+                                Command="{Binding CreateProjectCommand}"/>
+                            <MenuItem 
+                                Header="Open Project" 
+                                Command="{Binding OpenProjectCommand}"/>      
+                            <MenuItem 
+                                Header="Save All"
+                                Command="{Binding SaveAllCommand}"/>
+                            <MenuItem 
+                                Header="Exit" 
+                                Command="{Binding ExitCommand}"/>
                         </MenuItem>
                         <MenuItem Header="Edit" />
                         <MenuItem Header="Tools">

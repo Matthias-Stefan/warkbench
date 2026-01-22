@@ -1,0 +1,111 @@
+<UserControl x:Class="warkbench.src.ui.workspace_explorer.Views.WorkspaceExplorerView"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             
+             xmlns:wbcl="clr-namespace:warkbench.src.ui.workspace_explorer.Converter"
+             xmlns:wbdt="clr-namespace:warkbench.src.ui.workspace_explorer.Templates"
+             xmlns:wbvm="clr-namespace:warkbench.src.editors.workspace_explorer.ViewModels;assembly=warkbench.editors.workspace_explorer"
+
+             d:DesignHeight="450"
+             d:DesignWidth="800"
+             x:CompileBindings="True"
+             x:DataType="wbvm:WorkspaceExplorerViewModel"
+             x:Name="Root"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--  Converter  -->
+        <wbcl:ContextMenuConverter x:Key="ContextMenuConverter" />
+        <wbcl:ResourceIconConverter x:Key="ResourceIconConverter" />
+        <wbcl:ResourceIconColorConverter x:Key="ResourceIconColorConverter" />
+
+        <!--  Extra Toolbar  -->
+        <wbdt:WorkspaceContextToolbarTemplateSelector x:Key="WorkspaceContextToolbarTemplateSelector" />
+    </UserControl.Resources>
+    
+    <Design.DataContext>
+        <wbvm:WorkspaceExplorerViewModel />
+    </Design.DataContext>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="2" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Menu  -->
+        <Border Grid.Row="0"
+                Margin="3,3,3,0"
+                Padding="6"
+                Background="#191a1c">
+            <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                <!--  General  -->
+                <Menu>
+                    <!--  Workspace  -->
+                    <!--  World  -->
+                    <MenuItem Header="Create">
+                        
+                    </MenuItem>
+               </Menu>
+
+                <!--  Context-sensitive menu bar  -->
+                <ContentControl MinHeight="32"
+                                Content="{Binding Selected}"
+                                ContentTemplate="{StaticResource WorkspaceContextToolbarTemplateSelector}" />
+            </StackPanel>
+        </Border>
+
+        <!--  Splitter  -->
+        <GridSplitter Grid.Row="1"
+                      Background="Transparent"
+                      IsHitTestVisible="False"
+                      ResizeDirection="Rows" />
+
+        <!--  Project  -->
+        <ScrollViewer Grid.Row="2">
+            <Border Padding="3,3,3,0"
+                    Background="#191a1c">
+                <StackPanel Spacing="4">
+                    <Border DragDrop.AllowDrop="True">
+                        <Expander HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Top"
+                                  ExpandDirection="Down"
+                                  Header="Projects"
+                                  IsExpanded="True">
+                            <TreeView AutoScrollToSelectedItem="True"
+                                      ItemsSource="{Binding RootLevel}"
+                                      SelectedItem="{Binding Selected}">
+                                <TreeView.ItemTemplate>
+                                    <TreeDataTemplate ItemsSource="{Binding Children}">
+                                        <Border>
+                                            <StackPanel Orientation="Horizontal">
+                                                <StackPanel.ContextMenu>
+                                                    <MultiBinding Converter="{StaticResource ContextMenuConverter}">
+                                                        <Binding Path="Data" />
+                                                        <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                    </MultiBinding>
+                                                </StackPanel.ContextMenu>
+                                                
+                                                <!--  Icon  -->
+                                                <PathIcon Width="16"
+                                                          Height="16"
+                                                          Margin="0,0,6,0"
+                                                          Data="{Binding Data, Converter={StaticResource ResourceIconConverter}}"
+                                                          Foreground="{Binding Data, Converter={StaticResource ResourceIconColorConverter}}" />
+                                                
+                                                <!--  Name  -->
+                                                <TextBlock Text="{Binding Name}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </TreeDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </Expander>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

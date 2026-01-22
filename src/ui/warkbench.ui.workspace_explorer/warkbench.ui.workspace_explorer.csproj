@@ -10,11 +10,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Dock.Avalonia" Version="11.3.8" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\basis\warkbench.core\warkbench.core.csproj" />
+      <Compile Update="Views\WorkspaceExplorerView.axaml.cs">
+        <DependentUpon>WorkspaceExplorerView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\editors\warkbench.editors.workspace_explorer\warkbench.editors.workspace_explorer.csproj" />
     </ItemGroup>
 
 </Project>

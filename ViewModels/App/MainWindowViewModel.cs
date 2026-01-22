@@ -1,22 +1,27 @@
-﻿using System.Globalization;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Controls;
-using warkbench.Infrastructure;
-using warkbench.Models;
+using System.Threading.Tasks;
+using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.ui.core.Projects;
 
 
 namespace warkbench.ViewModels;
 
 public partial class MainWindowViewModel : ObservableObject
 {
-    public MainWindowViewModel(DockFactory dockFactory, IOService exportService, IProjectManager projectManager)
+    public MainWindowViewModel(
+        DockFactory dockFactory,
+        IProjectService projectService,
+        IProjectSession projectSession,
+        ICreateProjectDialog createProjectDialog)
     {
         Layout = dockFactory.CreateLayout();
         dockFactory.InitLayout(Layout);
-        ExportService = exportService;
-        ProjectManager = projectManager;
+        
+        _projectService = projectService;
+        _projectSession = projectSession;
+        _createProjectDialog = createProjectDialog;
     }
         
     public IRootDock? Layout
@@ -25,19 +30,51 @@ public partial class MainWindowViewModel : ObservableObject
         set => SetProperty(ref _layout, value);
     }
 
-    public string CurrentProjectName => ProjectManager?.CurrentProject is null ? string.Empty : ProjectManager.CurrentProject.Name;
+    [RelayCommand]
+    private async Task OnCreateProject()
+    {
+        var desktop = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+        
+        var owner = desktop?.MainWindow;
+        if (owner is null)
+            return;
+
+        var result = await _createProjectDialog.ShowAsync(owner);
+        if (result is null)
+            return;
+
+        int x = 5;
+    }
 
     [RelayCommand]
-    private Task OnSaveProject()
+    private Task OnOpenProject()
     {
-        ProjectManager?.Save();
         return Task.CompletedTask;
     }
 
-    private IRootDock? _layout;
+    [RelayCommand]
+    private Task OnSaveAll()
+    {
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private Task OnExit()
+    {
+        return Task.CompletedTask;
+    }
+
+    private void CloseProject()
+    {
         
-    private Project Project { get; set; }
-    private IOService ExportService { get; }
-    private IProjectManager? ProjectManager { get; }
+    }
+
+    [ObservableProperty] 
+    private string _currentProjectName = string.Empty;
     
+    private IRootDock? _layout;
+    
+    private readonly IProjectService _projectService;
+    private readonly IProjectSession _projectSession;
+    private readonly ICreateProjectDialog _createProjectDialog;
 }

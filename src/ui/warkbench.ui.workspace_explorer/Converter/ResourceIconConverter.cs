@@ -14,6 +14,7 @@ public class ResourceIconConverter : IValueConverter
         {
             resourceKey = value switch
             {
+                "Project" => "icon_ad",
                 "Worlds" => "icon_globe",
                 "Packages" => "icon_package",
                 "Blueprints" => "icon_blueprint",

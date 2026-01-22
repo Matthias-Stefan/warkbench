@@ -40,4 +40,15 @@
       <AvaloniaResource Include="Assets\Icons\Templates\icon_project_template.svg" />
       <AvaloniaResource Include="Assets\Icons\Templates\icon_rect.svg" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\editors\warkbench.editors.core\warkbench.editors.core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Projects\CreateProjectWindow.axaml.cs">
+        <DependentUpon>CreateProjectWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
 </Project>

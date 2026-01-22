@@ -19,7 +19,7 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         _projectSelectionService = projectSelectionService;
         _worldSelectionService = worldSelectionService;
 
-        Root = new TreeNodeViewModel("Project", "Worlds");
+        Root = new TreeNodeViewModel("Project", "Project");
 
         Worlds = new TreeNodeViewModel("Worlds", "Worlds");
         Packages = new TreeNodeViewModel("Packages", "Packages");

@@ -19,6 +19,7 @@ using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 using warkbench.src.editors.workspace_explorer.ViewModels;
+using warkbench.src.ui.core.Projects;
 
 namespace warkbench;
 
@@ -124,9 +125,12 @@ public partial class App : Application
         // session
         services.AddSingleton<IProjectSession, ProjectSession>();
         
-        // vm
+        // --- init warkbench.editors libs ---
         services.AddSingleton<WorkspaceExplorerViewModel>();
-            
+        
+        // --- init warkbench.ui libs ---
+        services.AddSingleton<ICreateProjectDialog, CreateProjectDialog>();
+        
 #if true
         // Platform
         services.AddSingleton<IPlatformLibrary>(PlatformLibraryFactory.GetPlatformLibrary());
