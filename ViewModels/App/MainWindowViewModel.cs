@@ -48,6 +48,7 @@ public partial class MainWindowViewModel : ObservableObject
             return;
         
         await _projectSession.SwitchToAsync(project);
+        CurrentProjectName = project.Name;
     }
 
     [RelayCommand]

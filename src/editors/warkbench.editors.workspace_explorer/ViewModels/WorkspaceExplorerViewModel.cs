@@ -47,20 +47,36 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
 
     private void OnProjectSelectionChanged(object? sender, SelectionChangedEventArgs<IProject> e)
     {
+        // TODO: cleanup
+        
         SelectedProject = e.CurrentPrimary;
+        
+        Root = new TreeNodeViewModel("Project", "Project");
+
+        Worlds = new TreeNodeViewModel("Worlds", "Worlds");
+        Packages = new TreeNodeViewModel("Packages", "Packages");
+        Blueprints = new TreeNodeViewModel("Blueprints",  "Blueprints");
+        Properties = new TreeNodeViewModel("Properties",  "Properties");
+
+        Root.AddChild(Worlds);
+        Root.AddChild(Packages);
+        Root.AddChild(Blueprints);
+        Root.AddChild(Properties);
+
+        RootLevel.Add(Root);
     }
 
     private void OnWorldSelectionChanged(object? sender, SelectionChangedEventArgs<IWorld> e)
     {
         
     }
-    
-    public ObservableCollection<ITreeNode> RootLevel { get; init; }
-    public ITreeNode Root { get; }
-    public ITreeNode Worlds { get; }
-    public ITreeNode Packages { get; }
-    public ITreeNode Blueprints { get; }
-    public ITreeNode Properties { get; }
+
+    public ObservableCollection<ITreeNode> RootLevel { get; } = [];
+    public ITreeNode Root { get; private set; }
+    public ITreeNode Worlds { get; private set; }
+    public ITreeNode Packages { get; private set; }
+    public ITreeNode Blueprints { get; private set; }
+    public ITreeNode Properties { get; private set; }
 
     public object? Selected { get; private set; }
 
