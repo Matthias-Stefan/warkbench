@@ -1,11 +1,20 @@
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using System.Reflection;
+using warkbench.src.basis.interfaces.Paths;
 
-namespace warkbench.src.basis.core.Common;
+namespace warkbench.src.basis.core.Io;
 
 public abstract class BaseIoService
 {
+    protected static void EnsureExtension(AbsolutePath path, string expectedExtension)
+    {
+        if (!path.Value.EndsWith(expectedExtension, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException(
+                $"Invalid file extension. Expected '{expectedExtension}', got '{Path.GetExtension(path.Value)}'."
+            );
+    }
+    
     protected static readonly JsonSerializerSettings JsonSettings = new()
     {
         TypeNameHandling = TypeNameHandling.Auto,

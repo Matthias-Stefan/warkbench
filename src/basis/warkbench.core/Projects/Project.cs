@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 
@@ -39,7 +40,7 @@ internal class Project : IProject
     
     public required Guid Id { get; init; }
     public required string Name { get; init; }
-    public required string LocalPath { get; init; }
+    public required LocalPath LocalPath { get; init; }
     public required string Version { get; init; }
     
     public string Description

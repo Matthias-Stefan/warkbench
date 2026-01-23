@@ -1,4 +1,6 @@
-﻿using warkbench.src.basis.interfaces.Common;
+﻿using warkbench.src.basis.interfaces.App;
+using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 
@@ -7,10 +9,12 @@ namespace warkbench.src.basis.core.Projects;
 public class ProjectSession : IProjectSession, IDisposable
 {
     public ProjectSession(
+        IAppStateService appStateService,
         ISelectionService<IProject> projectSelection,
         IProjectService projectService,
         IWorldService worldService)
     {
+        _appStateService = appStateService;
         _projectSelection = projectSelection;
         _projectService = projectService;
         _worldService = worldService;
@@ -24,44 +28,7 @@ public class ProjectSession : IProjectSession, IDisposable
     }
     
     public void SwitchTo(IProject? project)
-    {
-        if (_isSwitching)
-            return;
-
-        var current = _projectSelection.Primary;
-        if (ReferenceEquals(current, project))
-            return;
-
-        try
-        {
-            _isSwitching = true;
-
-            // 1) Save current session (if any)
-            if (current is not null)
-            {
-                SaveAllDirty();
-                _projectService.SaveProject(current);
-                _projectSelection.Deselect(current);
-            }
-
-            // 2) Close
-            if (project is null)
-            {
-                CurrentChanged?.Invoke(null);
-                return;
-            }
-
-            // 3) Load and publish the loaded instance
-            var loaded = _projectService.LoadProject(project.LocalPath);
-            _projectSelection.Select(loaded);
-
-            CurrentChanged?.Invoke(loaded);
-        }
-        finally
-        {
-            _isSwitching = false;
-        }
-    }
+        => SwitchToAsync(project).GetAwaiter().GetResult();
 
     public async Task SwitchToAsync(IProject? project)
     {
@@ -93,12 +60,19 @@ public class ProjectSession : IProjectSession, IDisposable
                 .ConfigureAwait(false);
 
             _projectSelection.Select(loaded);
+            PersistLastProjectPath(loaded.LocalPath);
             CurrentChanged?.Invoke(loaded);
         }
         finally
         {
             _isSwitching = false;
         }
+    }
+    
+    private void PersistLastProjectPath(LocalPath path)
+    {
+        _appStateService.State.LastProjectPath = path;
+        _appStateService.Save();
     }
     
     private void OnSelectionChanged(object? sender, SelectionChangedEventArgs<IProject> e)
@@ -131,6 +105,7 @@ public class ProjectSession : IProjectSession, IDisposable
 
     public event Action<IProject?>? CurrentChanged;
     
+    private readonly IAppStateService _appStateService;
     private readonly ISelectionService<IProject> _projectSelection;
     private readonly IProjectService _projectService;
     private readonly IWorldService _worldService;

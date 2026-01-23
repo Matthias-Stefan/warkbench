@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace warkbench.src.basis.core.Common;
+namespace warkbench.src.basis.core.Paths;
 
 /// <summary> Provides utility methods for path manipulation enforced in Unix-style format (using forward slashes). </summary>
 public static class UnixPath

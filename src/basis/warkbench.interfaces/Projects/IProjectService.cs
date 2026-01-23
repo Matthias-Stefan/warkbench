@@ -1,4 +1,6 @@
-﻿namespace warkbench.src.basis.interfaces.Projects;
+﻿using warkbench.src.basis.interfaces.Paths;
+
+namespace warkbench.src.basis.interfaces.Projects;
 
 /// <summary>Provides project creation, loading, persistence, and deletion services.</summary>
 public interface IProjectService
@@ -7,10 +9,10 @@ public interface IProjectService
     IProject CreateProject(string name);
     
     /// <summary>Loads and deserializes a project from the specified path.</summary>
-    IProject LoadProject(string path);
+    IProject LoadProject(LocalPath localPath);
 
     /// <summary>Asynchronously loads and deserializes a project from the specified path.</summary> 
-    Task<IProject> LoadProjectAsync(string path);
+    Task<IProject> LoadProjectAsync(LocalPath localPath);
     
     /// <summary>Saves the specified project to persistent storage.</summary>
     void SaveProject(IProject project);

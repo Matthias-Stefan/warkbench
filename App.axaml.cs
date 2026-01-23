@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -9,13 +10,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Nodify.Compatibility;
 using Nodify;
+using warkbench.Infrastructure;
 using warkbench.Interop;
+using warkbench.src.basis.core.App;
 using warkbench.ViewModels;
 using warkbench.Views;
+
 using warkbench.src.basis.core.Common;
+using warkbench.src.basis.core.Io;
 using warkbench.src.basis.core.Projects;
 using warkbench.src.basis.core.Worlds;
+using warkbench.src.basis.interfaces.App;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Io;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
 using warkbench.src.editors.workspace_explorer.ViewModels;
@@ -47,7 +55,7 @@ public partial class App : Application
             {
                 DataContext = mainWindowViewModel
             };
-                
+              
             InitializeProjectAsync();
         }
 
@@ -76,29 +84,21 @@ public partial class App : Application
             
         try
         {
-            var pathService = _host.Services.GetRequiredService<IPathService>();
-            var projectIoService = _host.Services.GetRequiredService<IProjectIoService>();
-            var projectService = _host.Services.GetRequiredService<IProjectService>();
-                
-            try 
-            {
-                var projects = projectIoService.DiscoverProjects(pathService.ProjectPath).ToList();
-        
-                if (projects.Count == 0)
-                {
-                    logger.Warn("[App] No projects found in project path.");
-                    return;
-                }
+            var appStateService = _host.Services.GetRequiredService<IAppStateService>();
+            var projectService  = _host.Services.GetRequiredService<IProjectService>();
+            var session = _host.Services.GetRequiredService<IProjectSession>();
 
-                var projectPath = projects.First();
-                logger.Info($"[App] Auto-loading project: {projectPath}");
+            // 1) Load persisted app state
+            appStateService.Load();
 
-                await projectService.LoadProjectAsync(projectPath);
-            }
-            catch (Exception e)
-            {
-                logger.Error($"[App] Critical error during startup initialization: {e.Message}");
-            }
+            // 2) Try auto-open last project
+            if (appStateService.State.LastProjectPath is not { } lastProjectPath)
+                return;
+            
+            var project = await projectService.LoadProjectAsync(lastProjectPath);
+            logger.Info($"[App] Auto-loading last project: {lastProjectPath.Value}");
+            
+            await session.SwitchToAsync(project);
         }
         catch (Exception e)
         {
@@ -110,7 +110,12 @@ public partial class App : Application
     {
         // --- init warkbench.core lib ---
         services.AddSingleton<ILogger, ConsoleLogger>();
-        services.AddSingleton<IPathService, PathService>();
+        // TODO: remove full qualified!
+        services.AddSingleton<IPathService, warkbench.src.basis.core.Paths.PathService>();
+        
+        // app
+        services.AddSingleton<IAppStateIoService, AppStateIoService>();
+        services.AddSingleton<IAppStateService, AppStateService>();
         
         // project
         services.AddSingleton<IProjectIoService, ProjectIoService>();

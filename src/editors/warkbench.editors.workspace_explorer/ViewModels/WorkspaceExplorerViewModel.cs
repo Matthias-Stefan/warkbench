@@ -18,7 +18,8 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         _projectSession = projectSession;
         _projectSelectionService = projectSelectionService;
         _worldSelectionService = worldSelectionService;
-
+        
+#if false
         Root = new TreeNodeViewModel("Project", "Project");
 
         Worlds = new TreeNodeViewModel("Worlds", "Worlds");
@@ -32,6 +33,7 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         Root.AddChild(Properties);
 
         RootLevel = [ Root ];
+#endif
 
         _projectSelectionService.SelectionChanged += OnProjectSelectionChanged;
         _worldSelectionService.SelectionChanged += OnWorldSelectionChanged;
@@ -46,8 +48,6 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     private void OnProjectSelectionChanged(object? sender, SelectionChangedEventArgs<IProject> e)
     {
         SelectedProject = e.CurrentPrimary;
-        
-        
     }
 
     private void OnWorldSelectionChanged(object? sender, SelectionChangedEventArgs<IWorld> e)

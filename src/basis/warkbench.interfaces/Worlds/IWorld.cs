@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Scenes;
 
 namespace warkbench.src.basis.interfaces.Worlds;
@@ -20,7 +21,7 @@ public interface IWorld : IIdentifiable, INotifyPropertyChanged
     bool IsDirty { get; set; }
     
     /// <summary> The relative folder name or path within the workspace. </summary>
-    string LocalPath { get; }
+    LocalPath LocalPath { get; }
     
     /// <summary> Size in pixels of a single tile. </summary>
     int TileSize { get; }

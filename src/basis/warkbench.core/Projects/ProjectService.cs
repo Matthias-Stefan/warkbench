@@ -1,5 +1,8 @@
 ﻿using warkbench.src.basis.core.Common;
+using warkbench.src.basis.core.Paths;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Io;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.basis.core.Projects;
@@ -8,11 +11,12 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
 {
     public IProject CreateProject(string name)
     {
+        var localPath = new LocalPath($"{name}{IProjectIoService.Extension}");
         var project = new Project
         {
             Id = Guid.NewGuid(),
             Name = name,
-            LocalPath = pathService.GetRelativeLocalPath(pathService.ProjectPath, pathService.BasePath),
+            LocalPath = localPath,
             Version = Versions.CurrentProjectVersion,
             IsDirty = true
         };
@@ -21,62 +25,51 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         return project;
     }
 
-    public IProject LoadProject(string path)
+    public IProject LoadProject(LocalPath localPath)
     {
-        var loadedProject = projectIo.Load<Project>(path);
+        if (localPath.IsEmpty)
+            throw new ArgumentException("[ProjectService] Project path cannot be null or empty.", nameof(localPath));
+
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectPath.Value, localPath.Value)
+        );
+
+        var loadedProject = projectIo.Load<Project>(absolutePath);
         if (loadedProject is null)
         {
-            var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {path}";
-            logger?.Error(errorMsg); 
-        
-            throw new FileNotFoundException(errorMsg, path);
+            var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {absolutePath.Value}";
+            logger.Error(errorMsg);
+            throw new FileNotFoundException(errorMsg, absolutePath.Value);
         }
 
-        logger?.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated.");
+        logger.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated from {absolutePath.Value}");
         return loadedProject;
     }
 
-    public Task<IProject> LoadProjectAsync(string path)
+    public Task<IProject> LoadProjectAsync(LocalPath localPath)
     {
-        if (string.IsNullOrWhiteSpace(path))
-            throw new ArgumentException("[ProjectService] Project path cannot be null or empty.", nameof(path));
-
-        try
-        {
-            // TODO: make Load awaitable 
-            var loadedProject = projectIo.Load<Project>(path);
-            if (loadedProject is null)
-            {
-                var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {path}";
-                logger.Error(errorMsg);
-                throw new InvalidDataException(errorMsg);
-            }
-
-            logger.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated from {path}");
-            return Task.FromResult<IProject>(loadedProject);
-        }
-        catch (Exception ex)
-        {
-            logger.Error($"[ProjectService] Critical error loading project at {path}: {ex.Message}");
-            throw;
-        }
+        return Task.FromResult(LoadProject(localPath));
     }
 
     public void SaveProject(IProject project)
     {
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectPath.Value, project.LocalPath.Value)
+        );
+        
         if (project.IsDirty)
-            projectIo.Save(project, UnixPath.Combine(pathService.ProjectPath, project.Name));
+            projectIo.Save(project, absolutePath);
 
         project.IsDirty = false;
     }
 
     public void DeleteProject(IProject project)
     {
-        var absolutePath = UnixPath.Combine(pathService.BasePath, project!.LocalPath);
-        if (absolutePath == pathService.BasePath)
-            return;
-
-        if (Directory.Exists(absolutePath))
-            Directory.Delete(absolutePath, true);
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectPath.Value, project.LocalPath.Value)
+        );
+        
+        if (Directory.Exists(absolutePath.Value))
+            Directory.Delete(absolutePath.Value, true);
     }
 }

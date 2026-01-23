@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Scenes;
 using warkbench.src.basis.interfaces.Worlds;
 
@@ -12,7 +13,7 @@ internal class World : IWorld
     
     public required Guid Id { get; init; }
     public required string Name { get; init; }
-    public required string LocalPath { get; init; }
+    public required LocalPath LocalPath { get; init; }
     public required int TileSize { get; init; } = 32;
 
     public required int ChunkResolution

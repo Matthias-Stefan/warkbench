@@ -1,6 +1,7 @@
-﻿using warkbench.src.basis.interfaces.Projects;
+﻿using warkbench.src.basis.interfaces.Paths;
+using warkbench.src.basis.interfaces.Projects;
 
-namespace warkbench.src.basis.interfaces.Common;
+namespace warkbench.src.basis.interfaces.Io;
 
 public interface IProjectIoService : IIoService
 {
@@ -8,10 +9,7 @@ public interface IProjectIoService : IIoService
     /// Updates an existing project instance with data from the disk. 
     /// Uses Newtonsoft.Json.Populate to maintain object references.
     /// </summary>
-    void PopulateProject(string path, IProject target);
-    
-    /// <summary> Scans a directory for all available workbench project files. </summary>
-    IEnumerable<string> DiscoverProjects(string searchPath, bool recursive = true);
+    void PopulateProject(AbsolutePath path, IProject target);
     
     /// <summary> The standard file extension for warkbench projects. </summary>
     const string Extension = ".wbproj";

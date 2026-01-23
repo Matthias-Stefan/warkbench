@@ -1,5 +1,5 @@
 ﻿using Avalonia.Controls;
-using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.editors.core.ViewModel;
 
 namespace warkbench.src.ui.core.Projects;

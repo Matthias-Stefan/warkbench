@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 
 namespace warkbench.src.editors.core.ViewModel;
 
@@ -33,7 +33,7 @@ public sealed partial class CreateProjectViewModel(IPathService pathService) : O
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
-    private string _projectPath = pathService.ProjectPath;
+    private string _projectPath = pathService.ProjectPath.Value;
 
     [ObservableProperty]
     private bool _openAfterCreation = true;

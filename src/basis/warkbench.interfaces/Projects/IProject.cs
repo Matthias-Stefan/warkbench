@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.interfaces.Projects;
@@ -16,7 +17,7 @@ public interface IProject : IIdentifiable, INotifyPropertyChanged
     void RemoveWorld(IWorld world);
     
     /// <summary> The relative folder name or path within the workspace. </summary>
-    string LocalPath { get; }
+    LocalPath LocalPath { get; }
     
     /// <summary> Textual summary providing project context or metadata. </summary>
     string Description { get; }
