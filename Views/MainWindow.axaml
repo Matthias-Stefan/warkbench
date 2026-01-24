@@ -73,11 +73,12 @@
                             <MenuItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Svg Path="avares://warkbench/Assets/Icons/App/project_name_w.svg"
-                                             Width="12"
-                                             Height="12"
-                                             Margin="0,0,4,0" 
-                                             VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding WindowBarProjectTitle}">
+                                         Width="22"
+                                         Height="22"
+                                         Margin="0,0,4,0" 
+                                         VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding WindowBarProjectTitle}"
+                                               VerticalAlignment="Center">
                                         <TextBlock.Foreground>
                                             <LinearGradientBrush StartPoint="0,0" EndPoint="100,0">
                                                 <GradientStop Color="#FF0084" Offset="0" />
