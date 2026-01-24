@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Input;
@@ -56,7 +57,17 @@ public partial class App : Application
                 DataContext = mainWindowViewModel
             };
               
-            InitializeProjectAsync();
+            Avalonia.Threading.Dispatcher.UIThread.Post(async void () =>
+            {
+                try
+                {
+                    await InitializeProjectAsync();
+                }
+                catch (Exception ex)
+                {
+                    // TODO:
+                }
+            });
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -75,19 +86,18 @@ public partial class App : Application
         }
     }
 
-    private async void InitializeProjectAsync()
+    private async Task InitializeProjectAsync()
     {
         if (_host is null) 
             return;
             
         var logger = _host.Services.GetRequiredService<ILogger>();
-            
+        var appStateService = _host.Services.GetRequiredService<IAppStateService>();
+        var projectService  = _host.Services.GetRequiredService<IProjectService>();
+        var session = _host.Services.GetRequiredService<IProjectSession>();    
+        
         try
         {
-            var appStateService = _host.Services.GetRequiredService<IAppStateService>();
-            var projectService  = _host.Services.GetRequiredService<IProjectService>();
-            var session = _host.Services.GetRequiredService<IProjectSession>();
-
             // 1) Load persisted app state
             appStateService.Load();
 
@@ -96,13 +106,16 @@ public partial class App : Application
                 return;
             
             var project = await projectService.LoadProjectAsync(lastProjectPath);
-            logger.Info($"[App] Auto-loading last project: {lastProjectPath.Value}");
+            logger.Info<App>($"Auto-loading last project: {lastProjectPath.Value}");
             
             await session.SwitchToAsync(project);
         }
         catch (Exception e)
         {
-            logger.Error($"[App] Critical error during startup initialization: {e.Message}");
+            logger.Warn<App>("Stored application state references a project that no longer exists. " +
+                             "Continuing startup without restoring the previous project.");
+            appStateService.State.LastProjectPath = null;
+            appStateService.Save();
         }
     }
         

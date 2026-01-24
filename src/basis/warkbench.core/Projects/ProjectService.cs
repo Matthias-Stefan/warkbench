@@ -11,7 +11,9 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
 {
     public IProject CreateProject(string name)
     {
-        var localPath = new LocalPath($"{name}{IProjectIoService.Extension}");
+        CreateProjectStructure(name);
+        
+        var localPath = new LocalPath(UnixPath.Combine(name, $"{name}{IProjectIoService.Extension}"));
         var project = new Project
         {
             Id = Guid.NewGuid(),
@@ -25,36 +27,102 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         return project;
     }
 
-    public IProject LoadProject(LocalPath localPath)
+    public async Task<IProject> CreateProjectAsync(string name)
     {
-        if (localPath.IsEmpty)
-            throw new ArgumentException("[ProjectService] Project path cannot be null or empty.", nameof(localPath));
+        CreateProjectStructure(name);
 
-        var absolutePath = new AbsolutePath(
-            UnixPath.Combine(pathService.ProjectPath.Value, localPath.Value)
-        );
+        var localPath = new LocalPath(UnixPath.Combine(name, $"{name}{IProjectIoService.Extension}"));
+        var project = new Project
+        {
+            Id = Guid.NewGuid(),
+            Name = name,
+            LocalPath = localPath,
+            Version = Versions.CurrentProjectVersion,
+            IsDirty = true
+        };
+        
+        await SaveProjectAsync(project);
+        return project;
+    }
 
-        var loadedProject = projectIo.Load<Project>(absolutePath);
+    public IProject? LoadProject(AbsolutePath absolutePath)
+    {
+        if (absolutePath.IsEmpty)
+        {
+            const string errorMsg = "Project path cannot be null or empty.";
+            logger.Error<ProjectService>(errorMsg);
+            throw new ArgumentException(errorMsg, nameof(absolutePath));
+        }
+        
+        var loadedProject = projectIo.Load(absolutePath);
         if (loadedProject is null)
         {
-            var errorMsg = $"[ProjectService] Failed to load project. No valid project file found at: {absolutePath.Value}";
-            logger.Error(errorMsg);
+            var errorMsg = $"Failed to load project. No valid project file found at: {absolutePath.Value}";
+            logger.Warn<ProjectService>(errorMsg);
             throw new FileNotFoundException(errorMsg, absolutePath.Value);
         }
 
-        logger.Info($"[ProjectService] Project '{loadedProject.Name}' loaded and activated from {absolutePath.Value}");
+        logger.Info<ProjectService>($"Project '{loadedProject.Name}' loaded and activated from {absolutePath.Value}");
         return loadedProject;
     }
 
-    public Task<IProject> LoadProjectAsync(LocalPath localPath)
+    public async Task<IProject?> LoadProjectAsync(AbsolutePath absolutePath)
     {
-        return Task.FromResult(LoadProject(localPath));
+        if (absolutePath.IsEmpty)
+        {
+            const string errorMsg = "Project path cannot be null or empty.";
+            logger.Error<ProjectService>(errorMsg);
+            throw new ArgumentException(errorMsg, nameof(absolutePath));
+        }
+        
+        var loadedProject = await projectIo.LoadAsync(absolutePath);
+        if (loadedProject is null)
+        {
+            var errorMsg = $"Failed to load project. No valid project file found at: {absolutePath.Value}";
+            logger.Error<ProjectService>(errorMsg);
+            throw new FileNotFoundException(errorMsg, absolutePath.Value);
+        }
+
+        logger.Info<ProjectService>($"Project '{loadedProject.Name}' loaded and activated from {absolutePath.Value}");
+        return loadedProject;
+    }
+
+    public IProject? LoadProject(LocalPath localPath)
+    {
+        if (localPath.IsEmpty)
+        {
+            const string errorMsg = "Project path cannot be null or empty.";
+            logger.Error<ProjectService>(errorMsg);
+            throw new ArgumentException(errorMsg, nameof(localPath));
+        }
+        
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectsPath.Value, localPath.Value)
+        );
+
+        return LoadProject(absolutePath);
+    }
+
+    public async Task<IProject?> LoadProjectAsync(LocalPath localPath)
+    {
+        if (localPath.IsEmpty)
+        {
+            const string errorMsg = "Project path cannot be null or empty.";
+            logger.Error<ProjectService>(errorMsg);
+            throw new ArgumentException(errorMsg, nameof(localPath));
+        }
+        
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectsPath.Value, localPath.Value)
+        );
+
+        return await LoadProjectAsync(absolutePath);
     }
 
     public void SaveProject(IProject project)
     {
         var absolutePath = new AbsolutePath(
-            UnixPath.Combine(pathService.ProjectPath.Value, project.LocalPath.Value)
+            UnixPath.Combine(pathService.ProjectsPath.Value, project.LocalPath.Value)
         );
         
         if (project.IsDirty)
@@ -63,13 +131,56 @@ public class ProjectService(IProjectIoService projectIo, IPathService pathServic
         project.IsDirty = false;
     }
 
+    public Task SaveProjectAsync(IProject project)
+    {
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(pathService.ProjectsPath.Value, project.LocalPath.Value)
+        );
+        
+        if (project.IsDirty)
+            return projectIo.SaveAsync(project, absolutePath);
+
+        project.IsDirty = false;
+        return Task.CompletedTask;
+    }
+
     public void DeleteProject(IProject project)
     {
         var absolutePath = new AbsolutePath(
-            UnixPath.Combine(pathService.ProjectPath.Value, project.LocalPath.Value)
+            UnixPath.Combine(pathService.ProjectsPath.Value, project.LocalPath.Value)
         );
         
         if (Directory.Exists(absolutePath.Value))
             Directory.Delete(absolutePath.Value, true);
+    }
+
+    private void CreateProjectStructure(string name)
+    {
+        var projectFolderPath = UnixPath.Combine(pathService.ProjectsPath.Value, name);
+
+        List<AbsolutePath> paths = [
+            new AbsolutePath(projectFolderPath),
+            new AbsolutePath(UnixPath.Combine(projectFolderPath, IProject.WorldsFolderName)),
+            new AbsolutePath(UnixPath.Combine(projectFolderPath, IProject.ScenesFolderName)),
+            new AbsolutePath(UnixPath.Combine(projectFolderPath, IProject.PackagesFolderName)),
+            new AbsolutePath(UnixPath.Combine(projectFolderPath, IProject.BlueprintsFolderName)),
+            new AbsolutePath(UnixPath.Combine(projectFolderPath, IProject.PropertiesFolderName)),
+        ];
+        
+        logger.Info<ProjectService>($"Creating project directory structure for '{name}'.");
+        
+        try
+        {
+            foreach (var path in paths)
+            {
+                Directory.CreateDirectory(path.Value);
+                logger.Info<ProjectService>($"Created directory: '{path.Value}'.");
+            }
+        }
+        catch (IOException ex)
+        {
+            logger.Error<ProjectService>("Failed to create project directory structure.", ex);
+            throw;
+        }
     }
 }

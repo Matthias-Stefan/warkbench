@@ -2,28 +2,38 @@
 
 namespace warkbench.src.basis.core.Common;
 
-public class ConsoleLogger : ILogger
+public sealed class ConsoleLogger : ILogger
 {
-    public void Info(string message) => WriteLog("INFO", message, ConsoleColor.Gray);
+    public void Info<TModule>(string message)
+        => WriteLog<TModule>("INFO", message, ConsoleColor.Gray);
 
-    public void Warn(string message) => WriteLog("WARN", message, ConsoleColor.Yellow);
+    public void Warn<TModule>(string message)
+        => WriteLog<TModule>("WARN", message, ConsoleColor.Yellow);
 
-    public void Error(string message, Exception? ex = null)
+    public void Error<TModule>(string message, Exception? ex = null)
     {
-        WriteLog("ERROR", message, ConsoleColor.Red);
-        if (ex == null) 
+        WriteLog<TModule>("ERROR", message, ConsoleColor.Red);
+
+        if (ex is null)
             return;
-        
+
         Console.ForegroundColor = ConsoleColor.DarkRed;
         Console.WriteLine($"[EXCEPTION] {ex.Message}");
         Console.WriteLine($"[STACKTRACE] {ex.StackTrace}");
         Console.ResetColor();
     }
 
-    private static void WriteLog(string level, string message, ConsoleColor color)
+    private static void WriteLog<TModule>(
+        string level,
+        string message,
+        ConsoleColor color)
     {
+        var module = typeof(TModule).Name;
+
         Console.ForegroundColor = color;
-        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] [{level}] {message}");
+        Console.WriteLine(
+            $"[{DateTime.Now:HH:mm:ss}] [{level}] [{module}] {message}"
+        );
         Console.ResetColor();
     }
 }

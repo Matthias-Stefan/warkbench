@@ -45,8 +45,8 @@ public class ProjectSession : IProjectSession, IDisposable
 
             if (current is not null)
             {
-                await SaveAllDirtyAsync().ConfigureAwait(false);
-                _projectService.SaveProject(current);
+                await SaveAllDirtyAsync();
+                await _projectService.SaveProjectAsync(current);
                 _projectSelection.Deselect(current);
             }
 
@@ -56,12 +56,9 @@ public class ProjectSession : IProjectSession, IDisposable
                 return;
             }
 
-            var loaded = await _projectService.LoadProjectAsync(project.LocalPath)
-                .ConfigureAwait(false);
-
-            _projectSelection.Select(loaded);
-            PersistLastProjectPath(loaded.LocalPath);
-            CurrentChanged?.Invoke(loaded);
+            _projectSelection.Select(project);
+            PersistLastProjectPath(project.LocalPath);
+            CurrentChanged?.Invoke(project);
         }
         finally
         {

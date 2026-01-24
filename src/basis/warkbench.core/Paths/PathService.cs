@@ -13,7 +13,7 @@ public class PathService : IPathService
         if (parent is null)
         {
             const string errorMsg = "Fatal: Could not resolve BasePath.";
-            logger.Error(errorMsg);
+            logger.Error<PathService>(errorMsg);
             
             throw new DirectoryNotFoundException(errorMsg);
         }
@@ -28,9 +28,13 @@ public class PathService : IPathService
         AssetsPath = new AbsolutePath(UnixPath.Combine(BasePath.Value, gameFolderName, "assets"));
         
         const string projectFolderName = "projects";
-        ProjectPath = new AbsolutePath(UnixPath.Combine(ToolsPath.Value, projectFolderName));
+        ProjectsPath = new AbsolutePath(UnixPath.Combine(ToolsPath.Value, projectFolderName));
         
-        logger.Info($"[PathService] Initialized. Base: {BasePath}");
+        logger.Info<PathService>($"Initialized. Base: {BasePath}");
+        logger.Info<PathService>($"Initialized. Tools: {ToolsPath}");
+        logger.Info<PathService>($"Initialized. Data: {DataPath}");
+        logger.Info<PathService>($"Initialized. Assets: {AssetsPath}");
+        logger.Info<PathService>($"Initialized. Projects: {ProjectsPath}");
     }
 
     public LocalPath GetRelativeLocalPath(AbsolutePath absolutePath, AbsolutePath relativeTo)
@@ -43,7 +47,7 @@ public class PathService : IPathService
     public AbsolutePath ToolsPath { get; }
     public AbsolutePath DataPath { get; }
     public AbsolutePath AssetsPath { get; }
-    public AbsolutePath ProjectPath { get; }
+    public AbsolutePath ProjectsPath { get; }
     
     private static AbsolutePath FindToolsPath(string startPath, string targetName)
     {

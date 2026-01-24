@@ -21,5 +21,5 @@ public interface IPathService
     AbsolutePath AssetsPath { get; }
     
     /// <summary> Gets the absolute path to the primary project configuration file (project.json). </summary>
-    AbsolutePath ProjectPath { get; }
+    AbsolutePath ProjectsPath { get; }
 }

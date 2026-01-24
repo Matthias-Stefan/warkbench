@@ -5,12 +5,12 @@
 /// </summary>
 public interface ILogger
 {
-    /// <summary> Logs non-critical operational messages for tracing application flow. </summary>
-    void Info(string message);
+    /// <summary>Logs non-critical operational messages for tracing application flow.</summary>
+    void Info<TModule>(string message);
 
-    /// <summary> Logs non-terminal issues that require attention but do not halt execution. </summary>
-    void Warn(string message);
+    /// <summary>Logs non-terminal issues that require attention but do not halt execution.</summary>
+    void Warn<TModule>(string message);
 
-    /// <summary> Logs critical failures and associated exception metadata for debugging. </summary>
-    void Error(string message, Exception? ex = null);
+    /// <summary>Logs critical failures and optional exception metadata for debugging.</summary>
+    void Error<TModule>(string message, Exception? ex = null);
 }

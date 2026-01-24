@@ -1,64 +1,118 @@
 ﻿using Newtonsoft.Json;
 using warkbench.src.basis.core.App;
+using warkbench.src.basis.core.Paths;
 using warkbench.src.basis.interfaces.App;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Io;
+using warkbench.src.basis.interfaces.Paths;
 
 namespace warkbench.src.basis.core.Io;
 
 public class AppStateIoService(ILogger logger) : BaseIoService, IAppStateIoService
 {
-    public IAppState? Load()
+    public IAppState? Load(AbsolutePath path)
     {
-        var path = GetAppStateFilePath();
+        var filePath = path.Value;
 
-        if (!File.Exists(path))
+        if (!File.Exists(filePath))
             return null;
 
         try
         {
-            var json = File.ReadAllText(path);
+            var json = File.ReadAllText(filePath);
             return JsonConvert.DeserializeObject<AppState>(json, JsonSettings);
         }
         catch (Exception ex)
         {
-            logger.Error($"[AppStateIoService] Load failed for '{path}'. {ex.Message}");
+            logger.Error<AppStateIoService>($"Load failed for '{filePath}'.", ex);
             return null;
         }
     }
 
-    public void Save(IAppState state)
+    public async Task<IAppState?> LoadAsync(AbsolutePath path)
     {
-        var path = GetAppStateFilePath();
-        var dir  = Path.GetDirectoryName(path);
+        var filePath = path.Value;
+
+        if (!File.Exists(filePath))
+            return null;
+
+        try
+        {
+            var json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<AppState>(json, JsonSettings);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<AppStateIoService>($"LoadAsync failed for '{filePath}'.", ex);
+            return null;
+        }
+    }
+    
+    public void Save(IAppState value, AbsolutePath path)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        var filePath = path.Value;
+        var dir = Path.GetDirectoryName(filePath);
 
         if (string.IsNullOrEmpty(dir))
         {
-            var errorMsg = $"[AppStateIoService] Invalid save path: {path}";
-            logger.Error(errorMsg);
-            throw new IOException(errorMsg);
+            logger.Warn<AppStateIoService>($"Invalid save path: '{filePath}'.");
+            return;
         }
 
         try
         {
             Directory.CreateDirectory(dir);
 
-            var json = JsonConvert.SerializeObject(state, JsonSettings);
-            File.WriteAllText(path, json);
+            var json = JsonConvert.SerializeObject(value, JsonSettings);
+            File.WriteAllText(filePath, json);
         }
         catch (Exception ex)
         {
-            logger.Error($"[AppStateIoService] Save failed for '{path}'. {ex.Message}");
+            logger.Error<AppStateIoService>($"Save failed for '{filePath}'.", ex);
             throw;
         }
     }
+
+    public async Task SaveAsync(IAppState value, AbsolutePath path)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        var filePath = path.Value;
+        var dir = Path.GetDirectoryName(filePath);
+
+        if (string.IsNullOrEmpty(dir))
+        {
+            logger.Warn<AppStateIoService>($"Invalid save path: '{filePath}'.");
+            return;
+        }
+
+        try
+        {
+            Directory.CreateDirectory(dir);
+
+            var json = JsonConvert.SerializeObject(value, JsonSettings);
+            await File.WriteAllTextAsync(filePath, json);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<AppStateIoService>($"SaveAsync failed for '{filePath}'.", ex);
+            throw;
+        }
+    }
+
+    public IAppState? Load() => Load(GetAppStateFilePath());
+    public Task<IAppState?> LoadAsync() => LoadAsync(GetAppStateFilePath());
+    public void Save(IAppState state) => Save(state, GetAppStateFilePath());
+    public Task SaveAsync(IAppState state) => SaveAsync(state, GetAppStateFilePath());
     
-    private static string GetAppStateFilePath()
+    private static AbsolutePath GetAppStateFilePath()
     {
         var baseDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        return Path.Combine(baseDir, AppName, FileName);
+        return new AbsolutePath(UnixPath.Combine(baseDir, AppName, FileName));
     }
-    
+
     private const string AppName  = "Warkbench";
     private const string FileName = "appstate.json";
 }

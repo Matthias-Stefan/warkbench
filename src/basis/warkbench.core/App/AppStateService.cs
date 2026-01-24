@@ -13,11 +13,11 @@ public class AppStateService(IAppStateIoService appStateIo, ILogger logger) : IA
             var loadedState = appStateIo.Load();
             State = loadedState ?? new AppState();
 
-            logger.Info("[AppStateService] Application state loaded.");
+            logger.Info<AppStateService>("Application state loaded.");
         }
         catch (Exception ex)
         {
-            logger.Error($"[AppStateService] Failed to load application state: {ex.Message}");
+            logger.Error<AppStateService>($"Failed to load application state: {ex.Message}");
             State = new AppState();
         }
     }
@@ -27,11 +27,11 @@ public class AppStateService(IAppStateIoService appStateIo, ILogger logger) : IA
         try
         {
             appStateIo.Save(State);
-            logger.Info("[AppStateService] Application state saved.");
+            logger.Info<AppStateService>("Application state saved.");
         }
         catch (Exception ex)
         {
-            logger.Error($"[AppStateService] Failed to save application state: {ex.Message}");
+            logger.Error<AppStateService>($"Failed to save application state: {ex.Message}");
             throw;
         }
     }

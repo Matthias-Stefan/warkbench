@@ -3,6 +3,8 @@
 /// <summary>Provides access to the persisted application state.</summary>
 public interface IAppStateService
 {
+    // TODO: Async!!!
+    
     /// <summary>Loads state from persistent storage (or creates defaults).</summary>
     void Load();
 

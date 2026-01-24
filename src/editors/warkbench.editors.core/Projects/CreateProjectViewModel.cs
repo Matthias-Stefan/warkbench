@@ -27,13 +27,13 @@ public sealed partial class CreateProjectViewModel(IPathService pathService) : O
         => !string.IsNullOrWhiteSpace(ProjectName)
            && !string.IsNullOrWhiteSpace(ProjectPath);
     
-    [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
+    [ObservableProperty]
     private string _projectName = string.Empty;
-
-    [ObservableProperty]
+    
     [NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
-    private string _projectPath = pathService.ProjectPath.Value;
+    [ObservableProperty]
+    private string _projectPath = pathService.ProjectsPath.Value;
 
     [ObservableProperty]
     private bool _openAfterCreation = true;

@@ -2,14 +2,18 @@
 
 namespace warkbench.src.basis.interfaces.Io;
 
-/// <summary>
-/// Provides a unified interface for physical file system access and object persistence.
-/// </summary>
-public interface IIoService
+/// <summary>Provides file system access and persistence for a specific model type.</summary>
+public interface IIoService<T> where T : class
 {
-    /// <summary> Serializes an object to a file at the given path. </summary>
-    void Save<T>(T value, AbsolutePath path) where T : class;
+    /// <summary>Reads a file and deserializes its content into a new instance.</summary>
+    T? Load(AbsolutePath path);
 
-    /// <summary> Reads a file and deserializes its content into a new object instance. </summary>
-    T? Load<T>(AbsolutePath path) where T : class;
+    /// <summary>Asynchronously reads a file and deserializes its content into a new instance.</summary>
+    Task<T?> LoadAsync(AbsolutePath path);
+    
+    /// <summary>Serializes a value to a file at the given path.</summary>
+    void Save(T value, AbsolutePath path);
+
+    /// <summary>Asynchronously serializes a value to a file at the given path.</summary>
+    Task SaveAsync(T value, AbsolutePath path);
 }

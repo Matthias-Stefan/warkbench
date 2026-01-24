@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
-using warkbench.src.basis.core.Common;
-using warkbench.src.basis.core.Paths;
+using warkbench.src.basis.core.Projects;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Io;
 using warkbench.src.basis.interfaces.Paths;
@@ -10,51 +9,125 @@ namespace warkbench.src.basis.core.Io;
 
 public class ProjectIoService(ILogger logger) : BaseIoService, IProjectIoService
 {
-    public void Save<T>(T value, AbsolutePath path) where T : class
+    public IProject? Load(AbsolutePath path)
     {
         EnsureExtension(path, IProjectIoService.Extension);
         
-        if (value is not IProject project)
-        {
-            var errorMsg = $"[ProjectIoService] Save failed. Expected IProject, but received {typeof(T).Name}.";
-            logger.Error(errorMsg);
-            throw new ArgumentException(errorMsg);
-        }
-        
-        var directory = Path.GetDirectoryName(path.Value);
-        if (string.IsNullOrEmpty(directory))
-        {
-            var errorMsg = $"[ProjectIoService] Invalid save path: {path}";
-            logger.Error(errorMsg);
-            throw new IOException(errorMsg);    
-        }
-        
-        if (!Directory.Exists(directory))
-            Directory.CreateDirectory(directory);
-        
-        var json = JsonConvert.SerializeObject(value, JsonSettings);
-        File.WriteAllText(path.Value, json);
-    }
-
-    public T? Load<T>(AbsolutePath path) where T : class
-    {
-        EnsureExtension(path, IProjectIoService.Extension);
+        var filePath = path.Value;
         
         if (!File.Exists(path.Value)) 
             return null;
 
-        var json = File.ReadAllText(path.Value);
-        return JsonConvert.DeserializeObject<T>(json, JsonSettings);
+        try
+        {
+            var json = File.ReadAllText(filePath);
+            return JsonConvert.DeserializeObject<Project>(json, JsonSettings);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<ProjectIoService>($"Load failed for '{filePath}'.", ex);
+            return null;
+        }
     }
 
+    public async Task<IProject?> LoadAsync(AbsolutePath path)
+    {
+        EnsureExtension(path, IProjectIoService.Extension);
+        
+        var filePath = path.Value;
+        
+        if (!File.Exists(path.Value)) 
+            return null;
+
+        try
+        {
+            var json = await File.ReadAllTextAsync(filePath);
+            return JsonConvert.DeserializeObject<Project>(json, JsonSettings);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<ProjectIoService>($"Load failed for '{filePath}'.", ex);
+            return null;
+        }
+    }
+
+    public void Save(IProject value, AbsolutePath path)
+    {
+        EnsureExtension(path, IProjectIoService.Extension);
+        
+        var filePath = path.Value;
+        var dir = Path.GetDirectoryName(filePath);
+        
+        if (string.IsNullOrEmpty(dir))
+        {
+            logger.Warn<ProjectIoService>($"Invalid save path: '{filePath}'.");
+            return;   
+        }
+        
+        try
+        {
+            Directory.CreateDirectory(dir);
+
+            var json = JsonConvert.SerializeObject(value, JsonSettings);
+            File.WriteAllText(filePath, json);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<ProjectIoService>($"Save failed for '{filePath}'.", ex);
+            throw;
+        }
+    }
+
+    public async Task SaveAsync(IProject value, AbsolutePath path)
+    {
+        EnsureExtension(path, IProjectIoService.Extension);
+        
+        var filePath = path.Value;
+        var dir = Path.GetDirectoryName(filePath);
+        
+        if (string.IsNullOrEmpty(dir))
+        {
+            logger.Warn<ProjectIoService>($"Invalid save path: '{filePath}'.");
+            return;   
+        }
+        
+        try
+        {
+            Directory.CreateDirectory(dir);
+
+            var json = JsonConvert.SerializeObject(value, JsonSettings);
+            await File.WriteAllTextAsync(filePath, json);
+        }
+        catch (Exception ex)
+        {
+            logger.Error<ProjectIoService>($"Save failed for '{filePath}'.", ex);
+            throw;
+        }
+    }
+    
     public void PopulateProject(AbsolutePath path, IProject target)
     {
         EnsureExtension(path, IProjectIoService.Extension);
         
-        if (!File.Exists(path.Value)) 
+        var filePath = path.Value;
+        
+        if (!File.Exists(filePath)) 
             return;
 
-        var json = File.ReadAllText(path.Value);
+        var json = File.ReadAllText(filePath);
+        JsonConvert.PopulateObject(json, target, JsonSettings);
+    }
+
+    public async Task PopulateProjectAsync(AbsolutePath path, IProject target)
+    {
+        EnsureExtension(path, IProjectIoService.Extension);
+        
+        var filePath = path.Value;
+        
+        if (!File.Exists(filePath)) 
+            return;
+
+        var json = await File.ReadAllTextAsync(filePath);
         JsonConvert.PopulateObject(json, target, JsonSettings);
     }
 }

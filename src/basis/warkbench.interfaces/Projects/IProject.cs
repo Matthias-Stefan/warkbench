@@ -51,4 +51,19 @@ public interface IProject : IIdentifiable, INotifyPropertyChanged
     // TODO: later IProperty
     /// <summary> Set of global project parameters and configuration entries. </summary>
     IEnumerable<object> Properties { get; }
+    
+    /// <summary>Directory name used to store world data.</summary>
+    const string WorldsFolderName = "worlds";
+
+    /// <summary>Directory name used to store scene data.</summary>
+    const string ScenesFolderName = "scenes";
+
+    /// <summary>Directory name used to store package definitions and related assets.</summary>
+    const string PackagesFolderName = "packages";
+
+    /// <summary>Directory name used to store blueprint definitions.</summary>
+    const string BlueprintsFolderName = "blueprints";
+
+    /// <summary>Directory name used to store project property data.</summary>
+    const string PropertiesFolderName = "properties";
 }

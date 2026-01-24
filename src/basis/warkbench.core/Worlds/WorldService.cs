@@ -16,21 +16,37 @@ public class WorldService(IProjectService projectService, IPathService pathServi
         {
             Id = Guid.NewGuid(),
             Name = name,
-            LocalPath = pathService.GetRelativeLocalPath(pathService.ProjectPath, pathService.BasePath),
+            LocalPath = pathService.GetRelativeLocalPath(pathService.ProjectsPath, pathService.BasePath),
             TileSize = tileSize,
             ChunkResolution = chunkResolution  
         };
         
+        SaveWorld(newWorld);
         project.AddWorld(newWorld);
         return newWorld;
     }
 
-    public IWorld LoadWorld(Guid worldId)
+    public IWorld CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IWorld? LoadWorld(Guid worldId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IWorld>? LoadWorldAsync(Guid worldId)
     {
         throw new NotImplementedException();
     }
 
     public void SaveWorld(IWorld world)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SaveWorldAsync(IWorld world)
     {
         throw new NotImplementedException();
     }
@@ -44,7 +60,7 @@ public class WorldService(IProjectService projectService, IPathService pathServi
     {
         throw new NotImplementedException();
     }
-
+    
     public void DeleteWorld(IWorld world)
     {
         throw new NotImplementedException();

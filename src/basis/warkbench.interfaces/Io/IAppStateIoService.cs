@@ -2,15 +2,18 @@
 
 namespace warkbench.src.basis.interfaces.Io;
 
-/// <summary>
-/// Provides persistence for the application's internal runtime state
-/// (e.g. last opened project, workspace, window layout).
-/// </summary>
-public interface IAppStateIoService
+public interface IAppStateIoService : IIoService<IAppState>
 {
-    /// <summary> Loads the previously persisted application state, if any. </summary>
+    /// <summary>Loads the application state from the default application data location.</summary>
     IAppState? Load();
 
-    /// <summary> Persists the given application state. </summary>
+    /// <summary>Asynchronously loads the application state from the default application data location.</summary>
+    Task<IAppState?> LoadAsync();
+
+    /// <summary>Saves the application state to the default application data location.</summary>
     void Save(IAppState state);
+
+    /// <summary>Asynchronously saves the application state to the default application data location.</summary>
+    Task SaveAsync(IAppState state);
+
 }
