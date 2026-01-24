@@ -8,7 +8,6 @@ namespace warkbench.src.basis.core.Worlds;
 
 internal class World : IWorld
 {
-   
     // --- Properties ---
     
     public required Guid Id { get; init; }

@@ -148,7 +148,8 @@ public partial class App : Application
         
         // --- init warkbench.ui libs ---
         services.AddSingleton<ICreateProjectDialog, CreateProjectDialog>();
-        
+
+        services.AddTransient<WorkspaceExplorerViewModel>();
 #if true
         // Platform
         services.AddSingleton<IPlatformLibrary>(PlatformLibraryFactory.GetPlatformLibrary());
@@ -218,7 +219,8 @@ public partial class App : Application
             return () => new WorkspaceExplorerViewModel(
                 sp.GetRequiredService<IProjectSession>(),
                 sp.GetRequiredService<ISelectionService<IProject>>(),
-                sp.GetRequiredService<ISelectionService<IWorld>>());
+                sp.GetRequiredService<ISelectionService<IWorld>>(),
+                sp.GetRequiredService<IWorldService>());
         });
 #endif
     }

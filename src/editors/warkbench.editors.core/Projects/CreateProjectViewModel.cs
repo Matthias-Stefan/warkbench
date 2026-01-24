@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using warkbench.src.basis.interfaces.Paths;
 
-namespace warkbench.src.editors.core.ViewModel;
+namespace warkbench.src.editors.core.Projects;
 
 /// <summary>View model for the create project dialog.</summary>
 public sealed partial class CreateProjectViewModel(IPathService pathService) : ObservableObject
@@ -25,7 +25,7 @@ public sealed partial class CreateProjectViewModel(IPathService pathService) : O
 
     private bool CanConfirm()
         => !string.IsNullOrWhiteSpace(ProjectName)
-           && !string.IsNullOrWhiteSpace(ProjectPath);
+        && !string.IsNullOrWhiteSpace(ProjectPath);
     
     [NotifyCanExecuteChangedFor(nameof(ConfirmCommand))]
     [ObservableProperty]

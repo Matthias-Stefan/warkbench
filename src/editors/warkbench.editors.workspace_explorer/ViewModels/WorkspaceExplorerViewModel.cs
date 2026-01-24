@@ -13,28 +13,14 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     public WorkspaceExplorerViewModel(
         IProjectSession projectSession, 
         ISelectionService<IProject> projectSelectionService,
-        ISelectionService<IWorld> worldSelectionService)
+        ISelectionService<IWorld> worldSelectionService,
+        IWorldService worldService)
     {
         _projectSession = projectSession;
         _projectSelectionService = projectSelectionService;
         _worldSelectionService = worldSelectionService;
+        _worldService = worldService;
         
-#if false
-        Root = new TreeNodeViewModel("Project", "Project");
-
-        Worlds = new TreeNodeViewModel("Worlds", "Worlds");
-        Packages = new TreeNodeViewModel("Packages", "Packages");
-        Blueprints = new TreeNodeViewModel("Blueprints",  "Blueprints");
-        Properties = new TreeNodeViewModel("Properties",  "Properties");
-
-        Root.AddChild(Worlds);
-        Root.AddChild(Packages);
-        Root.AddChild(Blueprints);
-        Root.AddChild(Properties);
-
-        RootLevel = [ Root ];
-#endif
-
         _projectSelectionService.SelectionChanged += OnProjectSelectionChanged;
         _worldSelectionService.SelectionChanged += OnWorldSelectionChanged;
     }
@@ -44,19 +30,27 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         _projectSelectionService.SelectionChanged -= OnProjectSelectionChanged;
         _worldSelectionService.SelectionChanged -= OnWorldSelectionChanged;
     }
+    
+    public async Task OnCreateNewWorld()
+    {
+        var selectedProject = SelectedProject;
+        if (selectedProject is null)
+            return;
+
+        var _ = await _worldService.CreateWorldAsync(selectedProject, "world", 32, 32);
+        return;
+    }
 
     private void OnProjectSelectionChanged(object? sender, SelectionChangedEventArgs<IProject> e)
     {
-        // TODO: cleanup
-        
         SelectedProject = e.CurrentPrimary;
         
-        Root = new TreeNodeViewModel("Project", "Project");
+        Root = new TreeNodeViewModel(SelectedProject?.Name ?? string.Empty, "Project");
 
-        Worlds = new TreeNodeViewModel("Worlds", "Worlds");
-        Packages = new TreeNodeViewModel("Packages", "Packages");
-        Blueprints = new TreeNodeViewModel("Blueprints",  "Blueprints");
-        Properties = new TreeNodeViewModel("Properties",  "Properties");
+        Worlds = new TreeNodeViewModel(IProject.WorldsFolderName, "Worlds");
+        Packages = new TreeNodeViewModel(IProject.PackagesFolderName, "Packages");
+        Blueprints = new TreeNodeViewModel(IProject.BlueprintsFolderName,  "Blueprints");
+        Properties = new TreeNodeViewModel(IProject.PropertiesFolderName,  "Properties");
 
         Root.AddChild(Worlds);
         Root.AddChild(Packages);
@@ -71,12 +65,14 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         
     }
 
+
+
     public ObservableCollection<ITreeNode> RootLevel { get; } = [];
-    public ITreeNode Root { get; private set; }
-    public ITreeNode Worlds { get; private set; }
-    public ITreeNode Packages { get; private set; }
-    public ITreeNode Blueprints { get; private set; }
-    public ITreeNode Properties { get; private set; }
+    public ITreeNode? Root { get; private set; }
+    public ITreeNode? Worlds { get; private set; }
+    public ITreeNode? Packages { get; private set; }
+    public ITreeNode? Blueprints { get; private set; }
+    public ITreeNode? Properties { get; private set; }
 
     public object? Selected { get; private set; }
 
@@ -95,4 +91,5 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     
     private readonly ISelectionService<IProject> _projectSelectionService;
     private readonly ISelectionService<IWorld> _worldSelectionService;
+    private readonly IWorldService _worldService;
 }

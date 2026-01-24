@@ -9,7 +9,7 @@ public interface IWorldService
     IWorld CreateWorld(IProject project, string name, int tileSize, int chunkResolution);
     
     /// <summary>Asynchronously creates a new world instance with the specified configuration.</summary>
-    IWorld CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution);
+    Task<IWorld>? CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution);
     
     /// <summary>Loads an existing world identified by the specified world ID.</summary>
     IWorld? LoadWorld(Guid worldId);

@@ -26,9 +26,10 @@ public class WorldService(IProjectService projectService, IPathService pathServi
         return newWorld;
     }
 
-    public IWorld CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution)
+    public Task<IWorld>? CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution)
     {
-        throw new NotImplementedException();
+        int x = 5;
+        return null;
     }
 
     public IWorld? LoadWorld(Guid worldId)

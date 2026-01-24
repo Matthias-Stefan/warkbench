@@ -1,4 +1,4 @@
-<Window x:Class="warkbench.src.ui.core.Projects.CreateProjectWindow" 
+<Window x:Class="warkbench.src.ui.core.Projects.CreateWroldInfo" 
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,9 +12,6 @@
         MinHeight="300"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
-        Background="#1d1d20"
-        BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
-        BorderThickness="1"
         d:DesignHeight="450"
         d:DesignWidth="800"
         x:CompileBindings="True"
@@ -23,11 +20,11 @@
     
     <StackPanel Spacing="12" Margin="16">
         <TextBlock Text="Project Name"/>
-        <TextBox x:Name="TextBox_ProjectName" Text="{Binding ProjectName}"/>
+        <TextBox Text="{Binding ProjectName}"/>
 
         <!-- TODO: Configurable? -->
         <TextBlock Text="Project Location"/>
-        <TextBlock Text="{Binding ProjectPath}" />
+        <TextBlock Text="{Binding ProjectPath}"/>
 
         <CheckBox Content="Open project after creation"
                   IsChecked="{Binding OpenAfterCreation}"/>

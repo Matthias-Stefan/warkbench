@@ -8,10 +8,6 @@
         Title="Warkbench"
         Width="1920"
         Height="1080"
-        d:DesignHeight="1080"
-        d:DesignWidth="1920"
-        x:CompileBindings="True"
-        x:DataType="vm:MainWindowViewModel"
         Background="#1e1f22"
         BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
         BorderThickness="1"
@@ -24,6 +20,10 @@
         UseLayoutRounding="True"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
+        d:DesignHeight="1080"
+        d:DesignWidth="1920"
+        x:CompileBindings="True"
+        x:DataType="vm:MainWindowViewModel"
         mc:Ignorable="d">
     
     <Design.DataContext>
@@ -90,12 +90,23 @@
                         </MenuItem>
 
                         <MenuItem Header="File">
+                            <!-- Create Project -->
                             <MenuItem 
                                 Header="New Project"
                                 Command="{Binding CreateProjectCommand}"/>
-                            <MenuItem 
-                                Header="Open Project" 
-                                Command="{Binding OpenProjectCommand}"/>      
+                            <!-- Open Project -->
+                            <MenuItem Command="{Binding OpenProjectCommand}">
+                                <MenuItem.Header>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="Open Project"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Ctrl+O"
+                                                   Opacity="0.6"
+                                                   Margin="12 0 0 0"
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>    
                             <MenuItem 
                                 Header="Save All"
                                 Command="{Binding SaveAllCommand}"/>
