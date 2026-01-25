@@ -7,7 +7,10 @@ using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.basis.core.Projects;
 
-public class ProjectService(IProjectIoService projectIo, IPathService pathService, ILogger logger) : IProjectService
+public class ProjectService(
+    IProjectIoService projectIo, 
+    IPathService pathService, 
+    ILogger logger) : IProjectService
 {
     public IProject CreateProject(string name)
     {

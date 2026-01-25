@@ -48,7 +48,7 @@
                     <MenuItem Header="Project">
                         
                         <MenuItem Header="Create New World"
-                                  Command="{Binding OnCreateNewWorld}">
+                                  Click="OnCreateNewWorld">
                             <MenuItem.Icon>
                                 <PathIcon Width="16"
                                           Height="16"
@@ -56,12 +56,6 @@
                                           Data="{StaticResource icon_globe}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        
-                        <MenuItem Header="">
-                            
-                        </MenuItem>
-                        
-                        
                     </MenuItem>
                </Menu>
 

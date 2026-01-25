@@ -42,9 +42,14 @@ internal class World : IWorld
     public bool IsDirty
     {
         get => _isDirty;
-        set => Set(ref _isDirty, value);
+        set
+        {
+            Set(ref _isDirty, value);
+            IsDirtyChanged?.Invoke(this, EventArgs.Empty);
+        }
+        
     }
-    
+
     public IScene? ActiveScene
     {
         get => _activeScene;
@@ -56,6 +61,10 @@ internal class World : IWorld
     public IEnumerable<object> Chunks => _chunks;
     public IEnumerable<IScene> Scenes => _scenes;
     public IEnumerable<IScene> LoadedScenes => _loadedScenes;
+    
+    // ---- Events ----
+    
+    public event EventHandler? IsDirtyChanged;
     
     // ---- INotifyPropertyChanged ----
 

@@ -8,7 +8,7 @@ namespace warkbench.src.basis.interfaces.Projects;
 /// <summary>
 /// Defines the warkbench.core data structure and state of a workbench project.
 /// </summary>
-public interface IProject : IIdentifiable, INotifyPropertyChanged
+public interface IProject : IIdentifiable, IDirtyable, INotifyPropertyChanged
 {
     /// <summary> Registers a new world instance within the project's collection. </summary>
     void AddWorld(IWorld world);
@@ -51,6 +51,24 @@ public interface IProject : IIdentifiable, INotifyPropertyChanged
     // TODO: later IProperty
     /// <summary> Set of global project parameters and configuration entries. </summary>
     IEnumerable<object> Properties { get; }
+    
+    /// <summary>Root path of the project.</summary>
+    LocalPath ProjectPath { get; }
+
+    /// <summary>Path to the worlds directory.</summary>
+    LocalPath WorldsFolderPath { get; }
+
+    /// <summary>Path to the scenes directory.</summary>
+    LocalPath ScenesFolderPath { get; }
+
+    /// <summary>Path to the packages directory.</summary>
+    LocalPath PackagesFolderPath { get; }
+
+    /// <summary>Path to the blueprints directory.</summary>
+    LocalPath BlueprintsFolderPath { get; }
+
+    /// <summary>Path to the properties directory.</summary>
+    LocalPath PropertiesFolderPath { get; }
     
     /// <summary>Directory name used to store world data.</summary>
     const string WorldsFolderName = "worlds";

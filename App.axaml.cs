@@ -20,13 +20,16 @@ using warkbench.Views;
 using warkbench.src.basis.core.Common;
 using warkbench.src.basis.core.Io;
 using warkbench.src.basis.core.Projects;
+using warkbench.src.basis.core.Selection;
 using warkbench.src.basis.core.Worlds;
 using warkbench.src.basis.interfaces.App;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Io;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Selection;
 using warkbench.src.basis.interfaces.Worlds;
+using warkbench.src.editors.details_explorer.ViewModels;
 using warkbench.src.editors.workspace_explorer.ViewModels;
 using warkbench.src.ui.core.Projects;
 
@@ -34,8 +37,6 @@ namespace warkbench;
 
 public partial class App : Application
 {
-    private IHost? _host;
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -129,16 +130,17 @@ public partial class App : Application
         // app
         services.AddSingleton<IAppStateIoService, AppStateIoService>();
         services.AddSingleton<IAppStateService, AppStateService>();
+
+        // selection
+        services.AddSingleton<ISelectionCoordinator, SelectionCoordinator>();
         
         // project
         services.AddSingleton<IProjectIoService, ProjectIoService>();
         services.AddSingleton<IProjectService, ProjectService>();
-        services.AddSingleton<ISelectionService<IProject>, SelectionService<IProject>>();
         
         // world
         services.AddSingleton<IWorldIoService, WorldIoService>();
         services.AddSingleton<IWorldService, WorldService>();
-        services.AddSingleton<ISelectionService<IWorld>, SelectionService<IWorld>>();
 
         // session
         services.AddSingleton<IProjectSession, ProjectSession>();
@@ -149,8 +151,17 @@ public partial class App : Application
         // --- init warkbench.ui libs ---
         services.AddSingleton<ICreateProjectDialog, CreateProjectDialog>();
 
+        
+        
         services.AddTransient<WorkspaceExplorerViewModel>();
-#if true
+        services.AddTransient<DetailsExplorerViewModel>();
+        
+        
+#if true        
+        services.AddTransient<ContentBrowserViewModel>();
+        services.AddTransient<NodeEditorViewModel>();
+        services.AddTransient<DetailsViewModel>();
+
         // Platform
         services.AddSingleton<IPlatformLibrary>(PlatformLibraryFactory.GetPlatformLibrary());
         var pathService = new warkbench.Infrastructure.PathService();
@@ -181,47 +192,6 @@ public partial class App : Application
             
         // Root-level ViewModel for the main application window
         services.AddSingleton<MainWindowViewModel>();
-            
-        // ViewModel factories with auto-resolved model + services
-        services.AddTransient<Func<ContentBrowserViewModel>>(sp =>
-        {
-            return () => new ContentBrowserViewModel(
-                sp.GetRequiredService<Models.ContentBrowserModel>(),
-                sp.GetRequiredService<warkbench.Infrastructure.PathService>(),
-                sp.GetRequiredService<Infrastructure.ISelectionService>());
-        });
-        services.AddTransient<Func<DetailsViewModel>>(sp =>
-        {
-            return () => new DetailsViewModel(
-                sp.GetRequiredService<Models.DetailsModel>(),
-                sp.GetRequiredService<Infrastructure.ISelectionService>());
-        });
-        services.AddTransient<Func<AssetEditorViewModel>>(sp =>
-        {
-            return () => new AssetEditorViewModel(
-                sp.GetRequiredService<IProjectManager>(),
-                sp.GetRequiredService<Models.AssetEditorModel>(),
-                sp.GetRequiredService<Infrastructure.ISelectionService>(),
-                // NEW
-                sp.GetRequiredService<IProjectService>(),
-                sp.GetRequiredService<IWorldService>());
-        });
-        services.AddTransient<Func<NodeEditorViewModel>>(sp =>
-        {
-            return () => new NodeEditorViewModel(
-                sp.GetRequiredService<IProjectManager>(),
-                sp.GetRequiredService<Models.NodeEditorModel>(),
-                sp.GetRequiredService<Infrastructure.ISelectionService>()
-            );
-        });
-        services.AddTransient<Func<WorkspaceExplorerViewModel>>(sp =>
-        {
-            return () => new WorkspaceExplorerViewModel(
-                sp.GetRequiredService<IProjectSession>(),
-                sp.GetRequiredService<ISelectionService<IProject>>(),
-                sp.GetRequiredService<ISelectionService<IWorld>>(),
-                sp.GetRequiredService<IWorldService>());
-        });
 #endif
     }
 
@@ -232,4 +202,6 @@ public partial class App : Application
             
         EditorGestures.Mappings.Connection.Disconnect.Value = new AnyGesture(new MouseGesture(MouseAction.LeftClick, KeyModifiers.Alt), new MouseGesture(MouseAction.RightClick));
     }
+    
+    private IHost? _host;
 }

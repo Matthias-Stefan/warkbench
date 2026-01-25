@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "warkbench.ui.viewport", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "warkbench.ui.workspace_explorer", "src\ui\warkbench.ui.workspace_explorer\warkbench.ui.workspace_explorer.csproj", "{F9669348-7DFF-4CCF-B6AD-0C54884DC92C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "warkbench.ui.details_explorer", "src\ui\warkbench.ui.details_explorer\warkbench.ui.details_explorer.csproj", "{8C733EDD-26DB-4927-B855-79A5CCEC0A56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "warkbench.editors.details_explorer", "src\editors\warkbench.editors.details_explorer\warkbench.editors.details_explorer.csproj", "{1CBF7BA6-9B87-48E7-AB0F-A521B8BD34E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{F9669348-7DFF-4CCF-B6AD-0C54884DC92C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9669348-7DFF-4CCF-B6AD-0C54884DC92C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9669348-7DFF-4CCF-B6AD-0C54884DC92C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C733EDD-26DB-4927-B855-79A5CCEC0A56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C733EDD-26DB-4927-B855-79A5CCEC0A56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C733EDD-26DB-4927-B855-79A5CCEC0A56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C733EDD-26DB-4927-B855-79A5CCEC0A56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CBF7BA6-9B87-48E7-AB0F-A521B8BD34E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CBF7BA6-9B87-48E7-AB0F-A521B8BD34E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CBF7BA6-9B87-48E7-AB0F-A521B8BD34E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CBF7BA6-9B87-48E7-AB0F-A521B8BD34E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

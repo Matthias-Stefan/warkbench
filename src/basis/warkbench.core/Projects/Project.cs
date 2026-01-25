@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using warkbench.src.basis.core.Paths;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Worlds;
@@ -14,22 +16,28 @@ internal class Project : IProject
             return;
 
         _worlds.Add(world);
+        WorldPaths.Add(world.LocalPath);
+        
         LastModifiedAt = DateTime.Now;
         IsDirty = true;
 
         OnPropertyChanged(nameof(Worlds));
 
-        ActiveWorld ??= world;
+        ActiveWorld = world;
+        ActiveWorldPath = world.LocalPath;
     }
 
     public void RemoveWorld(IWorld world)
     {
-        if (!_worlds.Remove(world))
+        if (!_worlds.Remove(world) || !WorldPaths.Remove(world.LocalPath))
             return;
 
         if (ReferenceEquals(ActiveWorld, world))
-            ActiveWorld = _worlds.FirstOrDefault();
-
+        {
+            ActiveWorld = null;
+            ActiveWorldPath = null;
+        }
+        
         LastModifiedAt = DateTime.Now;
         IsDirty = true;
 
@@ -40,7 +48,21 @@ internal class Project : IProject
     
     public required Guid Id { get; init; }
     public required string Name { get; init; }
-    public required LocalPath LocalPath { get; init; }
+
+    public required LocalPath LocalPath
+    {
+        get => _localPath;
+        init
+        {
+            _localPath = value;
+            ProjectPath = value.Parent();
+            WorldsFolderPath = new LocalPath(UnixPath.Combine(ProjectPath.Value, IProject.WorldsFolderName));
+            ScenesFolderPath = new LocalPath(UnixPath.Combine(ProjectPath.Value, IProject.ScenesFolderName));
+            PackagesFolderPath = new LocalPath(UnixPath.Combine(ProjectPath.Value, IProject.PackagesFolderName));
+            BlueprintsFolderPath = new LocalPath(UnixPath.Combine(ProjectPath.Value, IProject.BlueprintsFolderName));
+            PropertiesFolderPath = new LocalPath(UnixPath.Combine(ProjectPath.Value, IProject.PropertiesFolderName));
+        }
+    }
     public required string Version { get; init; }
     
     public string Description
@@ -61,24 +83,50 @@ internal class Project : IProject
         private set => Set(ref _lastModifiedAt, value);
     }
     
+    [JsonIgnore]
     public bool IsDirty
     {
         get => _isDirty;
-        set => Set(ref _isDirty, value);
+        set
+        {
+            Set(ref _isDirty, value);
+            IsDirtyChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
-    
+
+    [JsonIgnore]
     public IWorld? ActiveWorld
     {
         get => _activeWorld;
         set => Set(ref _activeWorld, value);
     }
 
+    public LocalPath? ActiveWorldPath { get; set; }
+
     // ---- Container ----
+    [JsonIgnore] public IEnumerable<IWorld> Worlds => _worlds;
+    [JsonIgnore] public IEnumerable<object> Packages => _packages;
+    [JsonIgnore] public IEnumerable<object> Blueprints => _blueprints;
+    [JsonIgnore] public IEnumerable<object> Properties => _properties;
+
+    public List<LocalPath> WorldPaths { get; init; } = [];
+
+    public List<LocalPath> PackagePaths { get; init; } = [];
+
+    public List<LocalPath> BlueprintPaths { get; init; } = [];
+
+    public List<LocalPath> PropertyPaths { get; init; } = [];
     
-    public IEnumerable<IWorld> Worlds => _worlds;
-    public IEnumerable<object> Packages => _packages;
-    public IEnumerable<object> Blueprints => _blueprints;
-    public IEnumerable<object> Properties => _properties;
+    [JsonIgnore] public LocalPath ProjectPath { get; private init; }
+    [JsonIgnore] public LocalPath WorldsFolderPath { get; private init; }
+    [JsonIgnore] public LocalPath ScenesFolderPath { get; private init; }
+    [JsonIgnore] public LocalPath PackagesFolderPath { get; private init; }
+    [JsonIgnore] public LocalPath BlueprintsFolderPath { get; private init; }
+    [JsonIgnore] public LocalPath PropertiesFolderPath { get; private init; }
+
+    // ---- Events ----
+    
+    public event EventHandler? IsDirtyChanged;
     
     // ---- INotifyPropertyChanged ----
     
@@ -98,12 +146,13 @@ internal class Project : IProject
     }
     
     // --- Fields ---
-    
-    private string _description = string.Empty;
+
     private DateTime _createdAt = DateTime.Now;
     private DateTime _lastModifiedAt = DateTime.Now;
-    private bool _isDirty;
     private IWorld? _activeWorld;
+    private LocalPath _localPath;
+    private bool _isDirty;
+    private string _description = string.Empty;
     
     private readonly List<IWorld> _worlds = [];
     private readonly List<object> _packages = [];

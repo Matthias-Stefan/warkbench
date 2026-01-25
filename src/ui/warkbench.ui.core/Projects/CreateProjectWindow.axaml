@@ -8,10 +8,10 @@
         
         Title="Create Project" 
         SizeToContent="WidthAndHeight"
-        MinWidth="450"
-        MinHeight="300"
+        Width="650"
+        Height="400"
         WindowStartupLocation="CenterOwner"
-        CanResize="False"
+        CanResize="True"
         Background="#1d1d20"
         BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
         BorderThickness="1"

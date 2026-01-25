@@ -1,13 +1,13 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using warkbench.src.editors.core.Projects;
+using warkbench.src.editors.core.Worlds;
 
-namespace warkbench.src.ui.core.Projects;
+namespace warkbench.src.ui.workspace_explorer.Worlds;
 
-public partial class CreateProjectWindow : Window, IDisposable
+public partial class CreateWorldWindow : Window, IDisposable
 {
-    public CreateProjectWindow()
+    public CreateWorldWindow()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
@@ -15,10 +15,10 @@ public partial class CreateProjectWindow : Window, IDisposable
     
     public void Dispose()
     {
-        if (DataContext is CreateProjectViewModel vm)
+        if (DataContext is CreateWorldViewModel vm)
             vm.RequestClose -= Close;
     }
-    
+
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
@@ -26,16 +26,16 @@ public partial class CreateProjectWindow : Window, IDisposable
         // Run after layout so focus/caret is guaranteed.
         Dispatcher.UIThread.Post(() =>
         {
-            if (TextBox_ProjectName is null)
+            if (TextBox_WorldName is null)
                 return;
 
-            TextBox_ProjectName.Focus();
+            TextBox_WorldName.Focus();
         }, DispatcherPriority.Loaded);
     }
-
+    
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
-        if (DataContext is CreateProjectViewModel vm)
+        if (DataContext is CreateWorldViewModel vm)
             vm.RequestClose += Close;
     }
 }

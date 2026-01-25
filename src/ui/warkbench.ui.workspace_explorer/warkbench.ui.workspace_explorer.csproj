@@ -24,4 +24,8 @@
       <ProjectReference Include="..\..\editors\warkbench.editors.workspace_explorer\warkbench.editors.workspace_explorer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Worlds\CreateWorldWindow.axaml" />
+    </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using warkbench.src.basis.interfaces.Common;
 
 // ReSharper disable once CheckNamespace
 namespace warkbench.src.editors.core.ViewModel;

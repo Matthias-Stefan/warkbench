@@ -1,7 +1,7 @@
 ﻿using warkbench.src.basis.interfaces.App;
-using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Selection;
 using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.core.Projects;
@@ -10,21 +10,24 @@ public class ProjectSession : IProjectSession, IDisposable
 {
     public ProjectSession(
         IAppStateService appStateService,
-        ISelectionService<IProject> projectSelection,
         IProjectService projectService,
-        IWorldService worldService)
+        ISelectionCoordinator selectionCoordinator,
+        IWorldService worldService
+        )
     {
         _appStateService = appStateService;
-        _projectSelection = projectSelection;
         _projectService = projectService;
+        _selectionCoordinator = selectionCoordinator;
         _worldService = worldService;
 
-        _projectSelection.SelectionChanged += OnSelectionChanged;
+        _selectionSubscription = selectionCoordinator.Subscribe(SelectionScope.Project);
+        _selectionSubscription.Changed += OnSelectionChanged;
     }
 
     public void Dispose()
     {
-        _projectSelection.SelectionChanged -= OnSelectionChanged;
+        _selectionSubscription.Changed -= OnSelectionChanged;
+        _selectionSubscription.Dispose();
     }
     
     public void SwitchTo(IProject? project)
@@ -32,38 +35,18 @@ public class ProjectSession : IProjectSession, IDisposable
 
     public async Task SwitchToAsync(IProject? project)
     {
-        if (_isSwitching)
-            return;
-
-        var current = _projectSelection.Primary;
+        var current = _selectionCoordinator.CurrentProject;
         if (ReferenceEquals(current, project))
             return;
 
-        try
+        if (current is not null)
         {
-            _isSwitching = true;
-
-            if (current is not null)
-            {
-                await SaveAllDirtyAsync();
-                await _projectService.SaveProjectAsync(current);
-                _projectSelection.Deselect(current);
-            }
-
-            if (project is null)
-            {
-                CurrentChanged?.Invoke(null);
-                return;
-            }
-
-            _projectSelection.Select(project);
-            PersistLastProjectPath(project.LocalPath);
-            CurrentChanged?.Invoke(project);
+            await _worldService.SaveAllDirtyAsync(current.Worlds);
+            await _projectService.SaveProjectAsync(current);
         }
-        finally
-        {
-            _isSwitching = false;
-        }
+
+        _selectionCoordinator.SelectProject(project);
+        PersistLastProjectPath(project?.LocalPath ?? new LocalPath());
     }
     
     private void PersistLastProjectPath(LocalPath path)
@@ -72,40 +55,13 @@ public class ProjectSession : IProjectSession, IDisposable
         _appStateService.Save();
     }
     
-    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs<IProject> e)
-    {
-        if (ReferenceEquals(e.CurrentPrimary, e.PreviousPrimary))
-            return;
-
-        CurrentChanged?.Invoke(e.CurrentPrimary);
-    }
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs<object> e)
+        => SwitchTo(_selectionCoordinator.CurrentProject);
     
-    private void SaveAllDirty()
-    {
-        if (_projectSelection.Primary is null)
-            return;
-        
-        _worldService.SaveAllDirty(_projectSelection.Primary.Worlds);
-        // TODO: scenes, assets, etc.
-    }
-    
-    private Task SaveAllDirtyAsync()
-    {
-        if (_projectSelection.Primary is null)
-            return Task.CompletedTask;
-        
-        return _worldService.SaveAllDirtyAsync(_projectSelection.Primary.Worlds);
-        // TODO: scenes, assets, etc.
-    }
-    
-    public IProject? Current => _projectSelection.Primary;
-
-    public event Action<IProject?>? CurrentChanged;
+    private readonly ISelectionSubscription _selectionSubscription;
     
     private readonly IAppStateService _appStateService;
-    private readonly ISelectionService<IProject> _projectSelection;
     private readonly IProjectService _projectService;
+    private readonly ISelectionCoordinator _selectionCoordinator;
     private readonly IWorldService _worldService;
-
-    private bool _isSwitching;
 }

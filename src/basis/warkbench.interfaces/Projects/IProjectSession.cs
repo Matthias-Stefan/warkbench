@@ -10,10 +10,4 @@ public interface IProjectSession
 
     /// <summary>Asynchronously switches the workspace to the specified project.</summary>
     Task SwitchToAsync(IProject? project);
-    
-    /// <summary>Gets the currently active project.</summary>
-    IProject? Current { get; }
-    
-    /// <summary>Raised when the currently active project changes.</summary>
-    event Action<IProject?>? CurrentChanged;
 }

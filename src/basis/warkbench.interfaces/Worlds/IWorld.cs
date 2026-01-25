@@ -6,7 +6,7 @@ using warkbench.src.basis.interfaces.Scenes;
 namespace warkbench.src.basis.interfaces.Worlds;
 
 /// <summary> Represents the persistent physical universe of a project, managing spatial chunks and associated content scenes. </summary>
-public interface IWorld : IIdentifiable, INotifyPropertyChanged
+public interface IWorld : IIdentifiable, IDirtyable, INotifyPropertyChanged
 {
     /// <summary> Textual summary providing world context or metadata. </summary>
     string Description { get; }

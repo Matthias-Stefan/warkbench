@@ -4,6 +4,7 @@ using Dock.Model.Core;
 using Dock.Model.Mvvm.Controls;
 using Dock.Model.Mvvm.Core;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using warkbench.src.editors.workspace_explorer.ViewModels;
 
 
@@ -46,39 +47,27 @@ public class CustomDocumentDock : DocumentDock
 
 public class DockFactory : Dock.Model.Mvvm.Factory
 {
-    private IRootDock? _rootDock;
-    private IDocumentDock? _documentDock;
+    public DockFactory(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
 
-    private readonly Func<ContentBrowserViewModel> _createContentBrowserFunc;
-    private readonly Func<DetailsViewModel> _createDetailsFunc;
-    private readonly Func<WorkspaceExplorerViewModel> _createWorkspaceExplorerFunc;
-    private readonly Func<NodeEditorViewModel> _createNodeEditorFunc;
-
+    private T CreateEditor<T>(string id, string title) where T : Tool
+    {
+        var vm = _serviceProvider.GetRequiredService<T>();
+        vm.Id = id;
+        vm.Title = title;
+        return vm;
+    }
+    
     public override IRootDock CreateLayout()
     {
-        // Content Browser
-        // Details
-        // Outliner
-            
-        var document1 = new WorldDocumentViewModel { Id = "Camera1", Title = "Camera1" };
-        var document2 = new DocumentViewModel { Id = "Document2", Title = "Document2" };
-        var document3 = new DocumentViewModel { Id = "Document3", Title = "Document3", CanClose = true };
+        var viewport = new WorldDocumentViewModel { Id = "Camera1", Title = "Camera1" };
 
-        var contentBrowser = _createContentBrowserFunc();
-        contentBrowser.Id = "ContentBrowser";
-        contentBrowser.Title = "Content Browser";
-
-        var details = _createDetailsFunc();
-        details.Id = "Details";
-        details.Title = "Details";
-
-        var nodeEditor = _createNodeEditorFunc();
-        nodeEditor.Id = "NodeEditor";
-        nodeEditor.Title = "Node Editor";
-            
-        var workspaceExplorer = _createWorkspaceExplorerFunc();
-        workspaceExplorer.Id = "WorkspaceExplorer";
-        workspaceExplorer.Title = "Workspace Explorer";
+        var contentBrowser = CreateEditor<ContentBrowserViewModel>("ContentBrowser", "Content Browser");
+        var details = CreateEditor<DetailsViewModel>("Details", "Details");
+        var nodeEditor = CreateEditor<NodeEditorViewModel>("NodeEditor", "Node Editor");
+        var workspaceExplorer = CreateEditor<WorkspaceExplorerViewModel>("WorkspaceExplorer", "Workspace Explorer");
 
         var contentBrowserDock = new ProportionalDock
         {
@@ -155,8 +144,8 @@ public class DockFactory : Dock.Model.Mvvm.Factory
         var documentDock = new CustomDocumentDock
         {
             IsCollapsable = false,
-            ActiveDockable = document1,
-            VisibleDockables = CreateList<IDockable>(document1, document2, document3),
+            ActiveDockable = viewport,
+            VisibleDockables = CreateList<IDockable>(viewport/*, ...*/),
             CanCreateDocument = true,
             // CanDrop = false,
             EnableWindowDrag = true,
@@ -220,16 +209,9 @@ public class DockFactory : Dock.Model.Mvvm.Factory
 
         return rootDock;
     }
+    
+    private IRootDock? _rootDock;
+    private IDocumentDock? _documentDock;
 
-    public DockFactory(
-        Func<ContentBrowserViewModel> createContentBrowserFunc,
-        Func<DetailsViewModel> createDetailsFunc,
-        Func<WorkspaceExplorerViewModel> createWorkspaceExplorerFunc,
-        Func<NodeEditorViewModel> createNodeEditorFunc)
-    {
-        _createContentBrowserFunc = createContentBrowserFunc;
-        _createDetailsFunc = createDetailsFunc;
-        _createWorkspaceExplorerFunc = createWorkspaceExplorerFunc;
-        _createNodeEditorFunc = createNodeEditorFunc;
-    }
+    private readonly IServiceProvider _serviceProvider;
 }

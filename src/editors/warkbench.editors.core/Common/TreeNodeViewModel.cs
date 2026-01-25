@@ -1,10 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using warkbench.src.basis.interfaces.Common;
 
 // ReSharper disable once CheckNamespace
 namespace warkbench.src.editors.core.ViewModel;
 
-public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode
+public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDisposable
 {
     public TreeNodeViewModel(string name, object? data)
     {
@@ -12,6 +14,15 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode
         Parent = null;
         Children = new ReadOnlyObservableCollection<ITreeNode>(_children);
         Data = data;
+
+        if (Data is IDirtyable dirtyable)
+            dirtyable.IsDirtyChanged += OnDirtyChanged!;
+    }
+    
+    public void Dispose()
+    {
+        if (Data is IDirtyable dirtyable)
+            dirtyable.IsDirtyChanged -= OnDirtyChanged!;
     }
 
     public void AddChild(ITreeNode node)
@@ -57,7 +68,20 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode
         return Parent == null ? Name : $"{Parent.GetFullPath(separator)}{separator}{Name}";
     }
 
-    public string Name { get; }
+    private void OnDirtyChanged(object sender, EventArgs e)
+    {
+        if (sender is not IDirtyable dirtyable)
+            return;
+        
+        Name = dirtyable.IsDirty ? $"{Name}*" : Name;
+    }
+
+    public string Name
+    {
+        get => _name;
+        private set => SetProperty(ref _name, value);
+    }
+    
     public ITreeNode? Parent { get; private set; }
     public ReadOnlyObservableCollection<ITreeNode> Children { get; }
 
@@ -66,4 +90,5 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode
     [ObservableProperty] private bool _isSelected = false;
     
     private readonly ObservableCollection<ITreeNode> _children = [];
+    private string _name;
 }

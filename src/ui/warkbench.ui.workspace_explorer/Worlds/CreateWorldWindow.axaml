@@ -1,34 +1,36 @@
-<Window x:Class="warkbench.src.ui.core.Projects.CreateWroldInfo" 
+<Window x:Class="warkbench.src.ui.workspace_explorer.Worlds.CreateWorldWindow" 
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         
-        xmlns:wbvm="clr-namespace:warkbench.src.editors.core.Projects;assembly=warkbench.editors.core"
+        xmlns:wbvm="clr-namespace:warkbench.src.editors.core.Worlds;assembly=warkbench.editors.core"
         
         Title="Create Project" 
         SizeToContent="WidthAndHeight"
-        MinWidth="450"
-        MinHeight="300"
+        Width="650"
+        Height="400"
         WindowStartupLocation="CenterOwner"
-        CanResize="False"
+        CanResize="True"
+        Background="#1d1d20"
+        BorderBrush="{DynamicResource DockThemeBorderLowBrush}"
+        BorderThickness="1"
         d:DesignHeight="450"
         d:DesignWidth="800"
         x:CompileBindings="True"
-        x:DataType="wbvm:CreateProjectViewModel"
+        x:DataType="wbvm:CreateWorldViewModel"
         mc:Ignorable="d">
     
     <StackPanel Spacing="12" Margin="16">
-        <TextBlock Text="Project Name"/>
-        <TextBox Text="{Binding ProjectName}"/>
+        <TextBlock Text="World Name"/>
+        <TextBox x:Name="TextBox_WorldName" Text="{Binding WorldName}"/>
 
-        <!-- TODO: Configurable? -->
-        <TextBlock Text="Project Location"/>
-        <TextBlock Text="{Binding ProjectPath}"/>
+        <TextBlock Text="Tile Size"/>
+        <TextBox Text="{Binding TileSize}"/>
 
-        <CheckBox Content="Open project after creation"
-                  IsChecked="{Binding OpenAfterCreation}"/>
-
+        <TextBlock Text="Chunk Resolution"/>
+        <TextBox Text="{Binding ChunkResolution}"/>
+        
         <StackPanel Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Spacing="8">
