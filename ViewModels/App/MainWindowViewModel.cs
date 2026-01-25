@@ -22,7 +22,8 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         IPathService pathService,
         IProjectService projectService,
         IProjectSession projectSession,
-        ISelectionCoordinator selectionCoordinator
+        ISelectionCoordinator selectionCoordinator,
+        IProjectPicker projectPicker
         )
     {
         Layout = dockFactory.CreateLayout();
@@ -34,6 +35,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         _projectService = projectService;
         _projectSession = projectSession;
         _selectionCoordinator = selectionCoordinator;
+        _projectPicker = projectPicker;
         
         _selectionSubscription = selectionCoordinator.Subscribe(SelectionScope.Project);
         _selectionSubscription.Changed += OnSelectionChanged;
@@ -54,13 +56,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task OnCreateProject()
     {
-        var desktop = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
-        
-        var window = desktop?.MainWindow;
-        if (window is null)
-            return;
-
-        var createProjectInfo = await _createProjectDialog.ShowAsync(window);
+        var createProjectInfo = await _createProjectDialog.ShowAsync();
         if (createProjectInfo is null)
             return;
 
@@ -76,53 +72,18 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task OnOpenProject()
     {
-        var desktop = Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
-        
-        var window = desktop?.MainWindow;
-        if (window is null)
+        var path = await _projectPicker.Open();
+        if (string.IsNullOrEmpty(path))
             return;
-        
-        var sp = window.StorageProvider;
-
-        var projectsPath = _pathService.ProjectsPath.Value;
-        IStorageFolder? startFolder = null;
-        if (!string.IsNullOrWhiteSpace(projectsPath))
-        {
-            startFolder = await sp.TryGetFolderFromPathAsync(projectsPath);
-        }
-        
-        var files = await sp.OpenFilePickerAsync(new FilePickerOpenOptions
-        {
-            Title = "Open Project",
-            AllowMultiple = false,
-            SuggestedStartLocation = startFolder,
-            FileTypeFilter =
-            [
-                new FilePickerFileType("Warkbench Project")
-                {
-                    Patterns = [$"*{IProjectIoService.Extension}"]
-                }
-            ]
-        });
-
-        if (files.Count == 0)
-            return;
-        
-        var platformPath = files[0].TryGetLocalPath();
-        if (string.IsNullOrEmpty(platformPath))
-        {
-            _logger.Error<MainWindowViewModel>("The selected file does not resolve to a local file system path.");
-            return;
-        }
         
         var currentProject = _selectionCoordinator.CurrentProject;
-        if (currentProject is not null && platformPath.Contains(currentProject.LocalPath.Value))
+        if (currentProject is not null && path.Contains(currentProject.LocalPath.Value))
         {
             _logger.Warn<MainWindowViewModel>("The selected project is already open and will not be reloaded.");
             return;
         }
         
-        var absoluteProjectPath = new AbsolutePath(platformPath);
+        var absoluteProjectPath = new AbsolutePath(path);
         var project = await _projectService.LoadProjectAsync(absoluteProjectPath);
         
         await _projectSession.SwitchToAsync(project);
@@ -165,4 +126,5 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     private readonly IProjectService _projectService;
     private readonly IProjectSession _projectSession;
     private readonly ISelectionCoordinator _selectionCoordinator;
+    private readonly IProjectPicker _projectPicker;
 }

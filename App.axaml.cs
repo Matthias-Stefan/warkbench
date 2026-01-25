@@ -32,6 +32,7 @@ using warkbench.src.basis.interfaces.Worlds;
 using warkbench.src.editors.details_explorer.ViewModels;
 using warkbench.src.editors.workspace_explorer.ViewModels;
 using warkbench.src.ui.core.Projects;
+using warkbench.src.ui.core.Window;
 
 namespace warkbench;
 
@@ -130,7 +131,7 @@ public partial class App : Application
         // app
         services.AddSingleton<IAppStateIoService, AppStateIoService>();
         services.AddSingleton<IAppStateService, AppStateService>();
-
+        
         // selection
         services.AddSingleton<ISelectionCoordinator, SelectionCoordinator>();
         
@@ -146,16 +147,13 @@ public partial class App : Application
         services.AddSingleton<IProjectSession, ProjectSession>();
         
         // --- init warkbench.editors libs ---
-        services.AddSingleton<WorkspaceExplorerViewModel>();
-        
-        // --- init warkbench.ui libs ---
-        services.AddSingleton<ICreateProjectDialog, CreateProjectDialog>();
-
-        
-        
         services.AddTransient<WorkspaceExplorerViewModel>();
         services.AddTransient<DetailsExplorerViewModel>();
         
+        // --- init warkbench.ui libs ---
+        services.AddSingleton<MainWindowProvider>();
+        services.AddSingleton<ICreateProjectDialog, CreateProjectDialog>();
+        services.AddSingleton<IProjectPicker, ProjectPicker>();        
         
 #if true        
         services.AddTransient<ContentBrowserViewModel>();

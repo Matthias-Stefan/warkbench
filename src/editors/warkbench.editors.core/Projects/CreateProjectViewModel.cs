@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using warkbench.src.basis.interfaces.Paths;
+using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.editors.core.Projects;
 

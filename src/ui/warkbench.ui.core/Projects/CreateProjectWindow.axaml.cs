@@ -5,7 +5,7 @@ using warkbench.src.editors.core.Projects;
 
 namespace warkbench.src.ui.core.Projects;
 
-public partial class CreateProjectWindow : Window, IDisposable
+public partial class CreateProjectWindow : Avalonia.Controls.Window, IDisposable
 {
     public CreateProjectWindow()
     {

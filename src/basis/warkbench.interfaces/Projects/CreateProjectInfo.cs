@@ -1,4 +1,4 @@
-﻿namespace warkbench.src.editors.core.Projects;
+namespace warkbench.src.basis.interfaces.Projects;
 
 /// <summary>Contains user-defined data required to create a new project.</summary>
 public sealed class CreateProjectInfo
