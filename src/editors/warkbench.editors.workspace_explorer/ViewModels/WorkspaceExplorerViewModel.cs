@@ -5,6 +5,7 @@ using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Selection;
 using warkbench.src.basis.interfaces.Worlds;
+using warkbench.src.editors.core.Models;
 using warkbench.src.editors.core.ViewModel;
 using warkbench.src.editors.core.Worlds;
 
@@ -109,7 +110,7 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         foreach (var worldPath in project.Worlds)
         {
             var displayName = GetDisplayName(worldPath);
-            Worlds.AddChild(new TreeNodeViewModel(displayName, worldPath));
+            Worlds.AddChild(new TreeNodeViewModel(displayName, worldPath, LoadState.NotLoaded));
         }
 
         RootLevel.Add(Root);

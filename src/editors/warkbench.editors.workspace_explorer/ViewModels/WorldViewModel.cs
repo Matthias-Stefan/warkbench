@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using warkbench.project_explorer.Models;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Worlds;
+using warkbench.src.editors.core.Models;
 
 namespace warkbench.src.editors.workspace_explorer.ViewModels;
 

@@ -89,24 +89,34 @@
                                 <TreeView.ItemTemplate>
                                     <TreeDataTemplate ItemsSource="{Binding Children}">
                                         <Border>
-                                            <StackPanel Orientation="Horizontal">
-                                                <StackPanel.ContextMenu>
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <Grid.ContextMenu>
                                                     <MultiBinding Converter="{StaticResource ContextMenuConverter}">
                                                         <Binding Path="Data" />
                                                         <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType=UserControl}" />
                                                     </MultiBinding>
-                                                </StackPanel.ContextMenu>
+                                                </Grid.ContextMenu>
                                                 
-                                                <!--  Icon  -->
-                                                <PathIcon Width="16"
+                                                <!-- Icon -->
+                                                <PathIcon Grid.Column="0"
+                                                          Width="16"
                                                           Height="16"
                                                           Margin="0,0,6,0"
                                                           Data="{Binding Data, Converter={StaticResource ResourceIconConverter}}"
                                                           Foreground="{Binding Data, Converter={StaticResource ResourceIconColorConverter}}" />
-                                                
-                                                <!--  Name  -->
-                                                <TextBlock Text="{Binding DisplayName}" />
-                                            </StackPanel>
+
+                                                <!-- Name -->
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding DisplayName}" />
+
+                                                <!-- Load State -->
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding LoadStateText}"
+                                                           Margin="8,0,0,0"
+                                                           FontStyle="Italic"
+                                                           Foreground="DarkGray"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
                                         </Border>
                                     </TreeDataTemplate>
                                 </TreeView.ItemTemplate>

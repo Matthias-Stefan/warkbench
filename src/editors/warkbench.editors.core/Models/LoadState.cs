@@ -1,4 +1,4 @@
-﻿namespace warkbench.project_explorer.Models;
+﻿namespace warkbench.src.editors.core.Models;
 
 /// <summary>Represents the current loading lifecycle state of an item.</summary>
 public enum LoadState

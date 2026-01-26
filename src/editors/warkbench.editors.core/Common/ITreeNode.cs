@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using warkbench.src.basis.interfaces.Common;
+using warkbench.src.editors.core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace warkbench.src.editors.core.ViewModel;
@@ -55,4 +55,9 @@ public interface ITreeNode : INotifyPropertyChanged
 
     /// <summary> Indicates if the node is at the top of the hierarchy. </summary>
     bool IsRoot => Parent is null;
+    
+    /// <summary>Gets the current loading state of the item.</summary>
+    LoadState? LoadState { get; }
+    
+    string LoadStateText { get; }
 }

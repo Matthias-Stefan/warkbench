@@ -2,13 +2,14 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.editors.core.Models;
 
 // ReSharper disable once CheckNamespace
 namespace warkbench.src.editors.core.ViewModel;
 
 public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDisposable
 {
-    public TreeNodeViewModel(string name, object? data)
+    public TreeNodeViewModel(string name, object? data, LoadState? loadState = null)
     {
         Name = name;
         Parent = null;
@@ -17,6 +18,8 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
 
         if (Data is IDirtyable dirtyable)
             dirtyable.IsDirtyChanged += OnDirtyChanged!;
+
+        LoadState = loadState;
     }
     
     public void Dispose()
@@ -93,6 +96,11 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         get => _isDirty;
         private set => SetProperty(ref _isDirty, value);
     }
+
+    [ObservableProperty]
+    private LoadState? _loadState;
+    public string LoadStateText => LoadState?.ToString() ?? string.Empty;
+    
     
     public ITreeNode? Parent { get; private set; }
     public ReadOnlyObservableCollection<ITreeNode> Children { get; }
