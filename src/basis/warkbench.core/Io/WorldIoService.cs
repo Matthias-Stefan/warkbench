@@ -10,27 +10,6 @@ namespace warkbench.src.basis.core.Io;
 
 public class WorldIoService(ILogger logger) : BaseIoService, IWorldIoService
 {
-    public IWorld? Load(AbsolutePath path)
-    {
-        EnsureExtension(path, IWorldIoService.Extension);
-        
-        var filePath = path.Value;
-
-        if (!File.Exists(filePath))
-            return null;
-
-        try
-        {
-            var json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<World>(json, JsonSettings);
-        }
-        catch (Exception ex)
-        {
-            logger.Error<WorldIoService>($"Load failed for '{filePath}'.", ex);
-            return null;
-        }
-    }
-
     public async Task<IWorld?> LoadAsync(AbsolutePath path)
     {
         EnsureExtension(path, IWorldIoService.Extension);
@@ -49,33 +28,6 @@ public class WorldIoService(ILogger logger) : BaseIoService, IWorldIoService
         {
             logger.Error<WorldIoService>($"Load failed for '{filePath}'.", ex);
             return null;
-        }
-    }
-
-    public void Save(IWorld value, AbsolutePath path)
-    {
-        EnsureExtension(path, IWorldIoService.Extension);
-        
-        var filePath = path.Value;
-        var dir = Path.GetDirectoryName(filePath);
-        
-        if (string.IsNullOrEmpty(dir))
-        {
-            logger.Warn<WorldIoService>($"Invalid save path: '{filePath}'.");
-            return;   
-        }
-        
-        try
-        {
-            Directory.CreateDirectory(dir);
-
-            var json = JsonConvert.SerializeObject(value, JsonSettings);
-            File.WriteAllText(filePath, json);
-        }
-        catch (Exception ex)
-        {
-            logger.Error<WorldIoService>($"Save failed for '{filePath}'.", ex);
-            throw;
         }
     }
 
@@ -104,19 +56,6 @@ public class WorldIoService(ILogger logger) : BaseIoService, IWorldIoService
             logger.Error<WorldIoService>($"Save failed for '{filePath}'.", ex);
             throw;
         }
-    }
-    
-    public void PopulateWorld(AbsolutePath path, IWorld target)
-    {
-        EnsureExtension(path, IWorldIoService.Extension);
-        
-        var filePath = path.Value;
-        
-        if (!File.Exists(filePath)) 
-            return;
-
-        var json = File.ReadAllText(filePath);
-        JsonConvert.PopulateObject(json, target, JsonSettings);
     }
 
     public async Task PopulateWorldAsync(AbsolutePath path, IWorld target)

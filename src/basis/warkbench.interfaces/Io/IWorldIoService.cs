@@ -5,9 +5,6 @@ namespace warkbench.src.basis.interfaces.Io;
 
 public interface IWorldIoService : IIoService<IWorld>
 {
-    /// <summary> Updates an existing world instance with data from disk (PopulateObject) to preserve references. </summary>
-    void PopulateWorld(AbsolutePath path, IWorld target);
-
     /// <summary> Asynchronously updates an existing world instance with data from disk (PopulateObject) to preserve references. </summary>
     Task PopulateWorldAsync(AbsolutePath path, IWorld target);
     

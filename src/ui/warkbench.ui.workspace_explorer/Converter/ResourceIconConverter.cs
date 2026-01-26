@@ -2,6 +2,9 @@
 using Avalonia.Data.Converters;
 using Avalonia;
 using System.Globalization;
+using warkbench.src.basis.interfaces.Io;
+using warkbench.src.basis.interfaces.Paths;
+using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.ui.workspace_explorer.Converter;
 
@@ -9,21 +12,23 @@ public class ResourceIconConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var resourceKey = string.Empty;
-        if (value is string stringValue)
+        var resourceKey = value switch
         {
-            resourceKey = value switch
-            {
-                "Project" => "icon_ad",
-                "Worlds" => "icon_globe",
-                "Packages" => "icon_package",
-                "Blueprints" => "icon_blueprint",
-                "Properties" => "icon_precision_manufacturing",
-                _ => string.Empty
-            };
-        }
+            IProject => "icon_ad",
 
-        return Application.Current?.FindResource(resourceKey) ?? AvaloniaProperty.UnsetValue;
+            LocalPath p when p.Value.Contains(IWorldIoService.Extension)
+                => "icon_globe",
+
+            "Worlds"     => "icon_globe",
+            "Packages"   => "icon_package",
+            "Blueprints" => "icon_blueprint",
+            "Properties" => "icon_precision_manufacturing",
+
+            _ => string.Empty
+        };
+
+        return Application.Current?.FindResource(resourceKey)
+               ?? AvaloniaProperty.UnsetValue;
     }
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

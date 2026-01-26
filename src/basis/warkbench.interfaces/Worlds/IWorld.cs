@@ -17,9 +17,6 @@ public interface IWorld : IIdentifiable, IDirtyable, INotifyPropertyChanged
     /// <summary> ISO timestamp of the most recent persistence operation. </summary>
     DateTime LastModifiedAt { get; }
     
-    /// <summary> Flag indicating unsaved changes in the current session. </summary>
-    bool IsDirty { get; set; }
-    
     /// <summary> The relative folder name or path within the workspace. </summary>
     LocalPath LocalPath { get; }
     
@@ -31,6 +28,8 @@ public interface IWorld : IIdentifiable, IDirtyable, INotifyPropertyChanged
     
     /// <summary> Computed property for convenience. </summary>
     int TotalTilesPerChunk => ChunkResolution * ChunkResolution;
+    
+    // ---------------------------- TODO:
     
     // TODO: IChunk
     /// <summary> Gets the collection of spatial segments containing terrain and static data. </summary>

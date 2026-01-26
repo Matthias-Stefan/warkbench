@@ -1,6 +1,7 @@
 ﻿using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Selection;
 using warkbench.src.basis.interfaces.Worlds;
@@ -15,12 +16,14 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         ILogger logger,
         IProjectSession projectSession, 
         ISelectionCoordinator selectionCoordinator,
+        IWorldRepository worldRepository,
         IWorldService worldService
         )
     {
         _logger = logger;
         _projectSession = projectSession;
         _selectionCoordinator = selectionCoordinator;
+        _worldRepository = worldRepository;
         _worldService = worldService;
 
         _selectionSubscription = selectionCoordinator.Subscribe(SelectionScope.Project);
@@ -59,7 +62,7 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
                 "WorkspaceExplorerViewModel.Worlds must not be null when creating a world.");
         }
 
-        Worlds.AddChild(new TreeNodeViewModel(newWorld.Name, newWorld));
+        Worlds.AddChild(new TreeNodeViewModel(GetDisplayName(newWorld.LocalPath), newWorld));
 
         _logger.Info<WorkspaceExplorerViewModel>(
             $"World '{newWorld.Name}' added to workspace. " +
@@ -71,20 +74,27 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     {
         if (e.CurrentPrimary is IProject project && !ReferenceEquals(_currentProject, project))
         {
-            OnProjectSelectionChanged();
-            _currentProject = _selectionCoordinator.CurrentProject;    
+            _currentProject = project;
+            BuildProjectTree(project);
+            return;
         }
-    }
-    
-    private void OnProjectSelectionChanged()
-    {
-        if (_selectionCoordinator.CurrentProject is null)
+
+        if (e.CurrentPrimary is not null || _currentProject is null) 
             return;
         
-        var selectedProject = _selectionCoordinator.CurrentProject;
+        _currentProject = null;
+        ClearProjectTree();
+    }
+    
+    private void BuildProjectTree(IProject project)
+    {
+        // Reset
+        ClearProjectTree();
         
-        Root = new TreeNodeViewModel(selectedProject?.Name ?? string.Empty, selectedProject);
+        // Root
+        Root = new TreeNodeViewModel(GetDisplayName(project.LocalPath), project);
 
+        // Folders
         Worlds = new TreeNodeViewModel(IProject.WorldsFolderName, "Worlds");
         Packages = new TreeNodeViewModel(IProject.PackagesFolderName, "Packages");
         Blueprints = new TreeNodeViewModel(IProject.BlueprintsFolderName,  "Blueprints");
@@ -95,9 +105,26 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         Root.AddChild(Blueprints);
         Root.AddChild(Properties);
 
+        // World nodes (manifest paths)
+        foreach (var worldPath in project.Worlds)
+        {
+            var displayName = GetDisplayName(worldPath);
+            Worlds.AddChild(new TreeNodeViewModel(displayName, worldPath));
+        }
+
         RootLevel.Add(Root);
     }
+
+    private void ClearProjectTree()
+    {
+        RootLevel.Clear();
+    }
     
+    private static string GetDisplayName(LocalPath path)
+    {
+        return path.IsEmpty ? string.Empty : Path.GetFileName(path.Value);
+    }
+
     public ObservableCollection<ITreeNode> RootLevel { get; } = [];
     public ITreeNode? Root { get; private set; }
     public ITreeNode? Worlds { get; private set; }
@@ -131,5 +158,6 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     private readonly ILogger _logger;
     private readonly IProjectSession _projectSession;
     private readonly ISelectionCoordinator _selectionCoordinator;
+    private readonly IWorldRepository _worldRepository;
     private readonly IWorldService _worldService;
 }

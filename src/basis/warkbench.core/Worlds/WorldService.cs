@@ -7,107 +7,96 @@ using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.basis.core.Worlds;
 
-public class WorldService(
-    IProjectService projectService, 
-    IPathService pathService, 
-    ILogger logger,
-    IWorldIoService worldIo) : IWorldService
+public class WorldService : IWorldService
 {
-    public IWorld CreateWorld(IProject project, string name, int tileSize, int chunkResolution)
+    public WorldService(
+        ILogger logger,
+        IPathService pathService, 
+        IWorldIoService worldIo,
+        IWorldRepository worldRepository)
     {
-        var worldsFolderPath = project.WorldsFolderPath;
-        
-        IWorld newWorld = new World
-        {
-            Id = Guid.NewGuid(),
-            Name = name,
-            LocalPath = new LocalPath(UnixPath.Combine(worldsFolderPath.Value, $"{name}{IWorldIoService.Extension}")),
-            TileSize = tileSize,
-            ChunkResolution = chunkResolution ,
-            IsDirty = true
-        };
-        
-        SaveWorld(newWorld);
-        project.AddWorld(newWorld);
-        return newWorld;
+        _logger = logger;
+        _pathService = pathService;
+        _worldIoService = worldIo;
+        _worldRepository = worldRepository;
     }
 
     public async Task<IWorld> CreateWorldAsync(IProject project, string name, int tileSize, int chunkResolution)
     {
-        var worldsFolderPath = project.WorldsFolderPath;
+        // 1) Build project-relative world path (e.g. "worlds/<name>.wbworld")
+        var worldPath = new LocalPath(
+            UnixPath.Combine(project.LocalPath.Parent().Value, IProject.WorldsFolderName, $"{name}{IWorldIoService.Extension}")
+        );
+
+        if (project.Worlds.Contains(worldPath))
+        {
+            var errorMsg = $"World already exists in project: {worldPath.Value}";
+            _logger.Error<WorldService>(errorMsg);
+            throw new InvalidOperationException(errorMsg);
+        }
         
-        IWorld newWorld = new World
+        var newWorld = new World
         {
             Id = Guid.NewGuid(),
             Name = name,
-            LocalPath = new LocalPath(UnixPath.Combine(worldsFolderPath.Value, $"{name}{IWorldIoService.Extension}")),
+            LocalPath = worldPath,
             TileSize = tileSize,
             ChunkResolution = chunkResolution,
             IsDirty = true
         };
+
+        // 2) Register loaded instance (cache/registry)
+        _worldRepository.Add(worldPath, newWorld);
+
+        // 3) Persist world file first
+        await SaveWorldAsync(newWorld).ConfigureAwait(false);
         
-        await SaveWorldAsync(newWorld); 
-        project.AddWorld(newWorld);
+        // 4) Update project manifest
+        project.AddWorld(worldPath);
+        
         return newWorld;
     }
 
-    public IWorld? LoadWorld(Guid worldId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<IWorld>? LoadWorldAsync(Guid worldId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void SaveWorld(IWorld world)
+    public async Task<IWorld> LoadWorldAsync(IProject project, LocalPath worldPath)
     {
         var absolutePath = new AbsolutePath(
-            UnixPath.Combine(pathService.ProjectsPath.Value, world.LocalPath.Value)
+            UnixPath.Combine(_pathService.ProjectsPath.Value, worldPath.Value)
+        );
+        
+        var world = await _worldIoService.LoadAsync(absolutePath);
+        if (world is not null) 
+            return world;
+        
+        var errorMsg = $"Loading world {absolutePath.Value} failed";
+        _logger.Error<WorldService>(errorMsg);
+        throw new InvalidOperationException(errorMsg);
+
+    }
+
+    public async Task SaveWorldAsync(IWorld world)
+    {
+        var absolutePath = new AbsolutePath(
+            UnixPath.Combine(_pathService.ProjectsPath.Value, world.LocalPath.Value)
         );
         
         if (world.IsDirty)
-            worldIo.Save(world, absolutePath);
+            await _worldIoService.SaveAsync(world, absolutePath);
 
         world.IsDirty = false;
-    }
-
-    public Task SaveWorldAsync(IWorld world)
-    {
-        var absolutePath = new AbsolutePath(
-            UnixPath.Combine(pathService.ProjectsPath.Value, world.LocalPath.Value)
-        );
-        
-        if (world.IsDirty)
-            return worldIo.SaveAsync(world, absolutePath);
-
-        world.IsDirty = false;
-        return Task.CompletedTask;
-    }
-
-    public void SaveAllDirty(IEnumerable<IWorld> worlds)
-    {
-        foreach (var world in worlds)
-        {
-            if (world.IsDirty)
-                SaveWorld(world);
-        }
     }
 
     public Task SaveAllDirtyAsync(IEnumerable<IWorld> worlds)
     {
-        foreach (var world in worlds)
-        {
-            if (world.IsDirty)
-                SaveWorldAsync(world);
-        }
-        
-        return Task.CompletedTask;
+        throw new NotImplementedException();
     }
-    
-    public void DeleteWorld(IWorld world)
+
+    public Task DeleteWorldAsync(IWorld world)
     {
         throw new NotImplementedException();
     }
+
+    private readonly ILogger _logger;
+    private readonly IPathService _pathService;
+    private readonly IWorldIoService _worldIoService;
+    private readonly IWorldRepository _worldRepository;
 }

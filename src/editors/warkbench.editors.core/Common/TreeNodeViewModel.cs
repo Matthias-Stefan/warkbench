@@ -72,14 +72,26 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
     {
         if (sender is not IDirtyable dirtyable)
             return;
-        
-        Name = dirtyable.IsDirty ? $"{Name}*" : Name;
-    }
 
+        if (IsDirty == dirtyable.IsDirty)
+            return;
+        
+        IsDirty = dirtyable.IsDirty;
+        OnPropertyChanged(nameof(DisplayName));
+    }
+    
     public string Name
     {
         get => _name;
-        private set => SetProperty(ref _name, value);
+        private init => SetProperty(ref _name, value);
+    }
+
+    public string DisplayName => IsDirty ? $"{Name}*" : Name;
+
+    public bool IsDirty
+    {
+        get => _isDirty;
+        private set => SetProperty(ref _isDirty, value);
     }
     
     public ITreeNode? Parent { get; private set; }
@@ -90,5 +102,6 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
     [ObservableProperty] private bool _isSelected = false;
     
     private readonly ObservableCollection<ITreeNode> _children = [];
-    private string _name;
+    private readonly string _name;
+    private bool _isDirty;
 }

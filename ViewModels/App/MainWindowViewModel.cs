@@ -64,16 +64,15 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (!createProjectInfo.OpenAfterCreation)
             return;
         
-        await _projectSession.SwitchToAsync(project);
+        await _projectSession.ActivateAsync(project);
         UpdateWindowBarProjectTitle(project);
-        _logger.Info<MainWindowViewModel>("Project created successfully.");
     }
 
     [RelayCommand]
     private async Task OnOpenProject()
     {
         var path = await _projectPicker.Open();
-        if (string.IsNullOrEmpty(path))
+        if (string.IsNullOrWhiteSpace(path))
             return;
         
         var currentProject = _selectionCoordinator.CurrentProject;
@@ -83,19 +82,29 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
             return;
         }
         
-        var absoluteProjectPath = new AbsolutePath(path);
-        var project = await _projectService.LoadProjectAsync(absoluteProjectPath);
-        
-        await _projectSession.SwitchToAsync(project);
+        var project = await _projectSession.OpenAsync(new AbsolutePath(path), ProjectLoadMode.ManifestOnly);
         UpdateWindowBarProjectTitle(project);
-        _logger.Info<MainWindowViewModel>("Project opened successfully.");
     }
 
     [RelayCommand]
-    private Task OnSaveAll()
+    private async Task OnSaveAll()
     {
-        // TODO:
-        return Task.CompletedTask;
+        var currentProject = _selectionCoordinator.CurrentProject;
+        if (currentProject is null)
+        {
+            _logger.Warn<MainWindowViewModel>(
+                "Save operation requested, but no project is currently open.");
+            return;
+        }
+
+        _logger.Info<MainWindowViewModel>(
+            "Saving project and all associated data.");
+
+        // TODO: cascading save (project + worlds + assets)
+        await _projectService.SaveProjectAsync(currentProject);
+
+        _logger.Info<MainWindowViewModel>(
+            "Project and all changes saved successfully.");
     }
 
     [RelayCommand]

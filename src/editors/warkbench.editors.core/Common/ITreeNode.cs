@@ -29,8 +29,11 @@ public interface ITreeNode : INotifyPropertyChanged
     /// <summary> Returns the full hierarchy path (e.g., "Project/Worlds/Level1"). </summary>
     string GetFullPath(string separator = "/");
     
-    /// <summary> Display name of the node. </summary>
+    /// <summary>Gets the base name of the node without UI decorations.</summary>
     string Name { get; }
+
+    /// <summary> Gets the UI display name of the node, including state-based decorations </summary>
+    string DisplayName { get; }
     
     /// <summary> Reference to the parent node. Null for root elements. </summary>
     ITreeNode? Parent { get; }
@@ -46,7 +49,10 @@ public interface ITreeNode : INotifyPropertyChanged
     
     /// <summary> Gets or sets whether the node is currently selected. </summary>
     bool IsSelected { get; set; }
-    
+
+    /// <summary>Gets or sets whether the object has unsaved changes.</summary>
+    bool IsDirty { get; }
+
     /// <summary> Indicates if the node is at the top of the hierarchy. </summary>
     bool IsRoot => Parent is null;
 }

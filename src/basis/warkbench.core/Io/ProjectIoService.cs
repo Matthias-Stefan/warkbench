@@ -9,27 +9,6 @@ namespace warkbench.src.basis.core.Io;
 
 public class ProjectIoService(ILogger logger) : BaseIoService, IProjectIoService
 {
-    public IProject? Load(AbsolutePath path)
-    {
-        EnsureExtension(path, IProjectIoService.Extension);
-        
-        var filePath = path.Value;
-        
-        if (!File.Exists(path.Value)) 
-            return null;
-
-        try
-        {
-            var json = File.ReadAllText(filePath);
-            return JsonConvert.DeserializeObject<Project>(json, JsonSettings);
-        }
-        catch (Exception ex)
-        {
-            logger.Error<ProjectIoService>($"Load failed for '{filePath}'.", ex);
-            return null;
-        }
-    }
-
     public async Task<IProject?> LoadAsync(AbsolutePath path)
     {
         EnsureExtension(path, IProjectIoService.Extension);
@@ -48,33 +27,6 @@ public class ProjectIoService(ILogger logger) : BaseIoService, IProjectIoService
         {
             logger.Error<ProjectIoService>($"Load failed for '{filePath}'.", ex);
             return null;
-        }
-    }
-
-    public void Save(IProject value, AbsolutePath path)
-    {
-        EnsureExtension(path, IProjectIoService.Extension);
-        
-        var filePath = path.Value;
-        var dir = Path.GetDirectoryName(filePath);
-        
-        if (string.IsNullOrEmpty(dir))
-        {
-            logger.Warn<ProjectIoService>($"Invalid save path: '{filePath}'.");
-            return;   
-        }
-        
-        try
-        {
-            Directory.CreateDirectory(dir);
-
-            var json = JsonConvert.SerializeObject(value, JsonSettings);
-            File.WriteAllText(filePath, json);
-        }
-        catch (Exception ex)
-        {
-            logger.Error<ProjectIoService>($"Save failed for '{filePath}'.", ex);
-            throw;
         }
     }
 
@@ -103,19 +55,6 @@ public class ProjectIoService(ILogger logger) : BaseIoService, IProjectIoService
             logger.Error<ProjectIoService>($"Save failed for '{filePath}'.", ex);
             throw;
         }
-    }
-    
-    public void PopulateProject(AbsolutePath path, IProject target)
-    {
-        EnsureExtension(path, IProjectIoService.Extension);
-        
-        var filePath = path.Value;
-        
-        if (!File.Exists(filePath)) 
-            return;
-
-        var json = File.ReadAllText(filePath);
-        JsonConvert.PopulateObject(json, target, JsonSettings);
     }
 
     public async Task PopulateProjectAsync(AbsolutePath path, IProject target)

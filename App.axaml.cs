@@ -50,6 +50,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             DisableAvaloniaDataAnnotationValidation();
@@ -58,7 +60,7 @@ public partial class App : Application
             {
                 DataContext = mainWindowViewModel
             };
-              
+            
             Avalonia.Threading.Dispatcher.UIThread.Post(async void () =>
             {
                 try
@@ -93,32 +95,9 @@ public partial class App : Application
         if (_host is null) 
             return;
             
-        var logger = _host.Services.GetRequiredService<ILogger>();
-        var appStateService = _host.Services.GetRequiredService<IAppStateService>();
-        var projectService  = _host.Services.GetRequiredService<IProjectService>();
-        var session = _host.Services.GetRequiredService<IProjectSession>();    
-        
-        try
-        {
-            // 1) Load persisted app state
-            appStateService.Load();
-
-            // 2) Try auto-open last project
-            if (appStateService.State.LastProjectPath is not { } lastProjectPath)
-                return;
-            
-            var project = await projectService.LoadProjectAsync(lastProjectPath);
-            logger.Info<App>($"Auto-loading last project: {lastProjectPath.Value}");
-            
-            await session.SwitchToAsync(project);
-        }
-        catch (Exception e)
-        {
-            logger.Warn<App>("Stored application state references a project that no longer exists. " +
-                             "Continuing startup without restoring the previous project.");
-            appStateService.State.LastProjectPath = null;
-            appStateService.Save();
-        }
+        await _host.Services
+            .GetRequiredService<IProjectStartupService>()
+            .RunAsync();
     }
         
     private void ConfigureServices(IServiceCollection services)
@@ -138,11 +117,13 @@ public partial class App : Application
         // project
         services.AddSingleton<IProjectIoService, ProjectIoService>();
         services.AddSingleton<IProjectService, ProjectService>();
+        services.AddSingleton<IProjectStartupService, ProjectStartupService>();
         
         // world
+        services.AddSingleton<IWorldRepository, WorldRepository>();
         services.AddSingleton<IWorldIoService, WorldIoService>();
         services.AddSingleton<IWorldService, WorldService>();
-
+        
         // session
         services.AddSingleton<IProjectSession, ProjectSession>();
         

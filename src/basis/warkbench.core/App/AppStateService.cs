@@ -6,11 +6,11 @@ namespace warkbench.src.basis.core.App;
 
 public class AppStateService(IAppStateIoService appStateIo, ILogger logger) : IAppStateService
 {
-    public void Load()
+    public async Task LoadAsync()
     {
         try
         {
-            var loadedState = appStateIo.Load();
+            var loadedState = await appStateIo.LoadAsync();
             State = loadedState ?? new AppState();
 
             logger.Info<AppStateService>("Application state loaded.");
@@ -22,11 +22,11 @@ public class AppStateService(IAppStateIoService appStateIo, ILogger logger) : IA
         }
     }
 
-    public void Save()
+    public async Task SaveAsync()
     {
         try
         {
-            appStateIo.Save(State);
+            await appStateIo.SaveAsync(State);
             logger.Info<AppStateService>("Application state saved.");
         }
         catch (Exception ex)

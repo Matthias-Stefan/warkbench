@@ -3,13 +3,11 @@
 /// <summary>Provides access to the persisted application state.</summary>
 public interface IAppStateService
 {
-    // TODO: Async!!!
-    
     /// <summary>Loads state from persistent storage (or creates defaults).</summary>
-    void Load();
+    Task LoadAsync();
 
     /// <summary>Saves the current state to persistent storage.</summary>
-    void Save();
+    Task SaveAsync();
     
     /// <summary>Gets the persisted application state (loaded at startup).</summary>
     IAppState State { get; }

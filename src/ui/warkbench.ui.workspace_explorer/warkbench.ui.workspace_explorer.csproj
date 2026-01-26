@@ -22,6 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\editors\warkbench.editors.workspace_explorer\warkbench.editors.workspace_explorer.csproj" />
+      <ProjectReference Include="..\warkbench.ui.core\warkbench.ui.core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -42,7 +42,7 @@
             Command="{Binding OpenProjectCommand}" />
         
         <KeyBinding 
-            Gesture="Ctrl+S"
+            Gesture="Ctrl+Shift+S"
             Command="{Binding SaveAllCommand}" />
     </Window.KeyBindings>
     
@@ -113,10 +113,20 @@
                                                    HorizontalAlignment="Right"/>
                                     </Grid>
                                 </MenuItem.Header>
-                            </MenuItem>    
-                            <MenuItem 
-                                Header="Save All"
-                                Command="{Binding SaveAllCommand}"/>
+                            </MenuItem>   
+                            <!-- Save all -->
+                            <MenuItem Command="{Binding SaveAllCommand}">
+                                <MenuItem.Header>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="Save All"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="Ctrl+Shift+S"
+                                                   Opacity="0.6"
+                                                   Margin="12 0 0 0"
+                                                   HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </MenuItem.Header>
+                            </MenuItem>   
                             <MenuItem 
                                 Header="Exit" 
                                 Command="{Binding ExitCommand}"/>
