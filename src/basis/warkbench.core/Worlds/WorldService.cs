@@ -64,13 +64,15 @@ public class WorldService : IWorldService
         );
         
         var world = await _worldIoService.LoadAsync(absolutePath);
-        if (world is not null) 
-            return world;
-        
-        var errorMsg = $"Loading world {absolutePath.Value} failed";
-        _logger.Error<WorldService>(errorMsg);
-        throw new InvalidOperationException(errorMsg);
+        if (world is null)
+        {
+            var errorMsg = $"Loading world {absolutePath.Value} failed";
+            _logger.Error<WorldService>(errorMsg);
+            throw new InvalidOperationException(errorMsg);
+        }
 
+        _worldRepository.Add(worldPath, world);    
+        return world;
     }
 
     public async Task SaveWorldAsync(IWorld world)

@@ -5,6 +5,7 @@ using System.Globalization;
 using warkbench.src.basis.interfaces.Io;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Worlds;
 
 namespace warkbench.src.ui.workspace_explorer.Converter;
 
@@ -15,6 +16,7 @@ public class ResourceIconConverter : IValueConverter
         var resourceKey = value switch
         {
             IProject => "icon_ad",
+            IWorld => "icon_globe",
 
             LocalPath p when p.Value.Contains(IWorldIoService.Extension)
                 => "icon_globe",

@@ -63,8 +63,9 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
                 "WorkspaceExplorerViewModel.Worlds must not be null when creating a world.");
         }
 
-        Worlds.AddChild(new TreeNodeViewModel(GetDisplayName(newWorld.LocalPath), newWorld));
-
+        var payload = new TreeNodePayload(GetDisplayName(newWorld.LocalPath), newWorld, LoadState.Loaded);
+        Worlds.AddChild(new TreeNodeViewModel(payload));
+        
         _logger.Info<WorkspaceExplorerViewModel>(
             $"World '{newWorld.Name}' added to workspace. " +
             $"Project='{selectedProject.Name}', TileSize={newWorld.TileSize}, " +
@@ -89,17 +90,19 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     
     private void BuildProjectTree(IProject project)
     {
+        Console.WriteLine("Called");
+        
         // Reset
         ClearProjectTree();
         
         // Root
-        Root = new TreeNodeViewModel(GetDisplayName(project.LocalPath), project);
+        Root = new TreeNodeViewModel(new TreeNodePayload(GetDisplayName(project.LocalPath), project, null));
 
         // Folders
-        Worlds = new TreeNodeViewModel(IProject.WorldsFolderName, "Worlds");
-        Packages = new TreeNodeViewModel(IProject.PackagesFolderName, "Packages");
-        Blueprints = new TreeNodeViewModel(IProject.BlueprintsFolderName,  "Blueprints");
-        Properties = new TreeNodeViewModel(IProject.PropertiesFolderName,  "Properties");
+        Worlds = new TreeNodeViewModel(new TreeNodePayload(IProject.WorldsFolderName, "Worlds", null));
+        Packages = new TreeNodeViewModel(new TreeNodePayload(IProject.PackagesFolderName, "Packages", null));
+        Blueprints = new TreeNodeViewModel(new TreeNodePayload(IProject.BlueprintsFolderName,  "Blueprints", null));
+        Properties = new TreeNodeViewModel(new TreeNodePayload(IProject.PropertiesFolderName,  "Properties", null));
 
         Root.AddChild(Worlds);
         Root.AddChild(Packages);
@@ -110,7 +113,9 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         foreach (var worldPath in project.Worlds)
         {
             var displayName = GetDisplayName(worldPath);
-            Worlds.AddChild(new TreeNodeViewModel(displayName, worldPath, LoadState.NotLoaded));
+            Worlds.AddChild(_worldRepository.TryGet(worldPath, out var world)
+                ? new TreeNodeViewModel(new TreeNodePayload(displayName, world, LoadState.Loaded))
+                : new TreeNodeViewModel(new TreeNodePayload(displayName, worldPath, LoadState.NotLoaded)));
         }
 
         RootLevel.Add(Root);
@@ -122,16 +127,14 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     }
     
     private static string GetDisplayName(LocalPath path)
-    {
-        return path.IsEmpty ? string.Empty : Path.GetFileName(path.Value);
-    }
+        => path.IsEmpty ? string.Empty : Path.GetFileName(path.Value);
 
     public ObservableCollection<ITreeNode> RootLevel { get; } = [];
-    public ITreeNode? Root { get; private set; }
-    public ITreeNode? Worlds { get; private set; }
-    public ITreeNode? Packages { get; private set; }
-    public ITreeNode? Blueprints { get; private set; }
-    public ITreeNode? Properties { get; private set; }
+    private ITreeNode? Root { get; set; }
+    private ITreeNode? Worlds { get; set; }
+    private ITreeNode? Packages { get; set; }
+    private ITreeNode? Blueprints { get; set; }
+    private ITreeNode? Properties { get; set; }
 
     public TreeNodeViewModel? Selected
     {
@@ -139,15 +142,39 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         set
         {
             SetProperty(ref _selected, value);
-            switch (_selected?.Data)
-            {
-                case IProject project:
-                    _selectionCoordinator.SelectProject(project);
-                    break;
-                case IWorld world:
-                    _selectionCoordinator.SelectWorld(world);
-                    break;
-            }
+            
+            if (_selected is null)
+                return;
+
+            _ = HandleSelectionAsync(_selected);
+        }
+    }
+    
+    private async Task HandleSelectionAsync(TreeNodeViewModel selected)
+    {
+        if (selected.Data is null)
+            throw new InvalidDataException("Selected data is null.");
+
+        // World lazy-load
+        if (selected.Data is LocalPath localPath)
+        {
+            selected.LoadState = LoadState.Loading;
+            var world = await _worldService.LoadWorldAsync(
+                _currentProject!, localPath);
+
+            selected.Data = world;
+            selected.LoadState = LoadState.Loaded;
+        }
+
+        switch (selected.Data)
+        {
+            case IProject project:
+                _selectionCoordinator.SelectProject(project);
+                break;
+
+            case IWorld world:
+                _selectionCoordinator.SelectWorld(world);
+                break;
         }
     }
 

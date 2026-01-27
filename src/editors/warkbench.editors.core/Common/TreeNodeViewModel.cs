@@ -1,25 +1,22 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.editors.core.Models;
 
-// ReSharper disable once CheckNamespace
 namespace warkbench.src.editors.core.ViewModel;
 
 public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDisposable
 {
-    public TreeNodeViewModel(string name, object? data, LoadState? loadState = null)
+    public TreeNodeViewModel(TreeNodePayload payload)
     {
-        Name = name;
-        Parent = null;
+        _payload = payload;
+        OnPropertyChanged(nameof(Data));
+        
         Children = new ReadOnlyObservableCollection<ITreeNode>(_children);
-        Data = data;
-
-        if (Data is IDirtyable dirtyable)
-            dirtyable.IsDirtyChanged += OnDirtyChanged!;
-
-        LoadState = loadState;
+        Parent = null;
+        
+        if (_payload.Data is IDirtyable dirtyable)
+            dirtyable.IsDirtyChanged += OnDirtyChanged;
     }
     
     public void Dispose()
@@ -83,12 +80,63 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         OnPropertyChanged(nameof(DisplayName));
     }
     
-    public string Name
+    public string Name => _payload.Name;
+
+    public object? Data
     {
-        get => _name;
-        private init => SetProperty(ref _name, value);
+        get => _payload.Data;
+        set
+        {
+            if (ReferenceEquals(_payload.Data, value))
+                return;
+
+            // unsubscribe old
+            if (_payload.Data is IDirtyable oldDirty)
+                oldDirty.IsDirtyChanged -= OnDirtyChanged;
+            
+            _payload.Data = value;
+
+            // subscribe new + refresh
+            if (value is IDirtyable newDirty)
+            {
+                newDirty.IsDirtyChanged += OnDirtyChanged;
+                IsDirty = newDirty.IsDirty;
+            }
+            else
+            {
+                IsDirty = false;
+            }
+
+            OnPropertyChanged(nameof(DisplayName));
+            OnPropertyChanged(nameof(Data));
+        }
     }
 
+    public LoadState? LoadState
+    {
+        get => _payload.LoadState;
+        set
+        {
+            _payload.LoadState = value;
+            OnPropertyChanged(nameof(LoadStateText));
+        }
+    }
+    
+    public string LoadStateText
+    {
+        get
+        {
+            return LoadState switch
+            {
+                Models.LoadState.NotLoaded => "Not Loaded",
+                Models.LoadState.Loading => "Loading",
+                Models.LoadState.Loaded => "Loaded",
+                Models.LoadState.Failed => "Failed",
+                _ => string.Empty
+            };
+        }
+    }
+    
     public string DisplayName => IsDirty ? $"{Name}*" : Name;
 
     public bool IsDirty
@@ -96,20 +144,15 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         get => _isDirty;
         private set => SetProperty(ref _isDirty, value);
     }
-
-    [ObservableProperty]
-    private LoadState? _loadState;
-    public string LoadStateText => LoadState?.ToString() ?? string.Empty;
-    
     
     public ITreeNode? Parent { get; private set; }
     public ReadOnlyObservableCollection<ITreeNode> Children { get; }
 
-    [ObservableProperty] private object? _data = null;
     [ObservableProperty] private bool _isExpanded = false;
     [ObservableProperty] private bool _isSelected = false;
     
-    private readonly ObservableCollection<ITreeNode> _children = [];
-    private readonly string _name;
     private bool _isDirty;
+    
+    private readonly ObservableCollection<ITreeNode> _children = [];
+    private readonly TreeNodePayload _payload;
 }

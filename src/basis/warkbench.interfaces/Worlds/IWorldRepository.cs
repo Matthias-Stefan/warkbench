@@ -3,9 +3,7 @@ using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.basis.interfaces.Worlds;
 
-/// <summary>
-/// Maintains an in-memory registry of loaded world instances, keyed by project-relative paths.
-/// </summary>
+/// <summary> Maintains an in-memory registry of loaded world instances, keyed by project-relative paths. </summary>
 public interface IWorldRepository
 {
     /// <summary>Attempts to retrieve a loaded world by its project-relative path.</summary>
@@ -14,6 +12,9 @@ public interface IWorldRepository
     /// <summary>Registers a loaded world instance under the specified project-relative path.</summary>
     void Add(LocalPath path, IWorld world);
 
+    /// <summary>Checks whether the specified local path exists as a key.</summary>
+    bool ContainsKey(LocalPath path);
+    
     /// <summary>Removes the loaded world instance associated with the specified path.</summary>
     bool Remove(LocalPath path);
 

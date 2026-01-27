@@ -3,6 +3,7 @@ using Avalonia.Media;
 using System.Globalization;
 using warkbench.src.basis.interfaces.Io;
 using warkbench.src.basis.interfaces.Projects;
+using warkbench.src.basis.interfaces.Worlds;
 using warkbench.src.ui.core.Themes;
 
 namespace warkbench.src.ui.workspace_explorer.Converter;
@@ -14,6 +15,7 @@ public class ResourceIconColorConverter : IValueConverter
         return value switch
         {
             IProject => new SolidColorBrush(Colors.White),
+            IWorld => new SolidColorBrush(Colors.White),
 
             string s when s.Contains(IWorldIoService.Extension)
                 => new SolidColorBrush(Colors.White),

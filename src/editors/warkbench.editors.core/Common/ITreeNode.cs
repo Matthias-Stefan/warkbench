@@ -59,5 +59,6 @@ public interface ITreeNode : INotifyPropertyChanged
     /// <summary>Gets the current loading state of the item.</summary>
     LoadState? LoadState { get; }
     
+    /// <summary>Gets a short, user-facing text describing the current load state.</summary>
     string LoadStateText { get; }
 }

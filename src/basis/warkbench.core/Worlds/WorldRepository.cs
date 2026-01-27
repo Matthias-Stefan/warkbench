@@ -10,6 +10,9 @@ public class WorldRepository : IWorldRepository
 
     public void Add(LocalPath path, IWorld world)
         => _worlds[path] = world;
+
+    public bool ContainsKey(LocalPath path)
+        => _worlds.ContainsKey(path);
     
     public bool Remove(LocalPath path)
         => _worlds.Remove(path);    
