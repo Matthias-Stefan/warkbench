@@ -1,4 +1,5 @@
-﻿using Dock.Model.Mvvm.Controls;
+﻿using Avalonia.Threading;
+using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.basis.interfaces.Paths;
@@ -77,7 +78,7 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         if (e.CurrentPrimary is IProject project && !ReferenceEquals(_currentProject, project))
         {
             _currentProject = project;
-            BuildProjectTree(project);
+            _ = BuildProjectTree(project);
             return;
         }
 
@@ -88,39 +89,37 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         ClearProjectTree();
     }
     
-    private void BuildProjectTree(IProject project)
+    private async Task BuildProjectTree(IProject project)
     {
-        Console.WriteLine("Called");
-        
-        // Reset
-        ClearProjectTree();
-        
-        // Root
-        Root = new TreeNodeViewModel(new TreeNodePayload(GetDisplayName(project.LocalPath), project, null));
-
-        // Folders
-        Worlds = new TreeNodeViewModel(new TreeNodePayload(IProject.WorldsFolderName, "Worlds", null));
-        Packages = new TreeNodeViewModel(new TreeNodePayload(IProject.PackagesFolderName, "Packages", null));
-        Blueprints = new TreeNodeViewModel(new TreeNodePayload(IProject.BlueprintsFolderName,  "Blueprints", null));
-        Properties = new TreeNodeViewModel(new TreeNodePayload(IProject.PropertiesFolderName,  "Properties", null));
-
-        Root.AddChild(Worlds);
-        Root.AddChild(Packages);
-        Root.AddChild(Blueprints);
-        Root.AddChild(Properties);
-
-        // World nodes (manifest paths)
-        foreach (var worldPath in project.Worlds)
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var displayName = GetDisplayName(worldPath);
-            Worlds.AddChild(_worldRepository.TryGet(worldPath, out var world)
-                ? new TreeNodeViewModel(new TreeNodePayload(displayName, world, LoadState.Loaded))
-                : new TreeNodeViewModel(new TreeNodePayload(displayName, worldPath, LoadState.NotLoaded)));
-        }
+            ClearProjectTree();
 
-        RootLevel.Add(Root);
+            Root = new TreeNodeViewModel(new TreeNodePayload(GetDisplayName(project.LocalPath), project, null));
+
+            Worlds     = new TreeNodeViewModel(new TreeNodePayload(IProject.WorldsFolderName, "Worlds", null));
+            Packages   = new TreeNodeViewModel(new TreeNodePayload(IProject.PackagesFolderName, "Packages", null));
+            Blueprints = new TreeNodeViewModel(new TreeNodePayload(IProject.BlueprintsFolderName, "Blueprints", null));
+            Properties = new TreeNodeViewModel(new TreeNodePayload(IProject.PropertiesFolderName, "Properties", null));
+
+            Root.AddChild(Worlds);
+            Root.AddChild(Packages);
+            Root.AddChild(Blueprints);
+            Root.AddChild(Properties);
+
+            foreach (var worldPath in project.Worlds)
+            {
+                var displayName = GetDisplayName(worldPath);
+                Worlds.AddChild(_worldRepository.TryGet(worldPath, out var world)
+                    ? new TreeNodeViewModel(new TreeNodePayload(displayName, world, LoadState.Loaded))
+                    : new TreeNodeViewModel(new TreeNodePayload(displayName, worldPath, LoadState.NotLoaded)));
+            }
+
+            RootLevel.Clear();
+            RootLevel.Add(Root);
+        });
     }
-
+    
     private void ClearProjectTree()
     {
         RootLevel.Clear();

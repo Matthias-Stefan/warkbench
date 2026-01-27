@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Scenes;
 using warkbench.src.basis.interfaces.Worlds;
@@ -39,6 +40,7 @@ internal class World : IWorld
         private set => Set(ref _lastModifiedAt, value);
     }
     
+    [JsonIgnore]
     public bool IsDirty
     {
         get => _isDirty;
@@ -83,7 +85,7 @@ internal class World : IWorld
         return true;
     }
     
-    // --- Fields ---
+    //
 
     private int _chunkResolution = 32;
     private string _description = string.Empty;
