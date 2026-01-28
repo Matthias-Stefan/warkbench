@@ -1,5 +1,5 @@
 ﻿using warkbench.src.basis.interfaces.App;
-using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Logger;
 using warkbench.src.basis.interfaces.Projects;
 
 namespace warkbench.src.basis.core.Projects;

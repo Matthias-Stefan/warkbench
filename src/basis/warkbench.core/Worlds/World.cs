@@ -12,32 +12,41 @@ internal class World : IWorld
     // --- Properties ---
     
     public required Guid Id { get; init; }
-    public required string Name { get; init; }
+
+    public required string Name
+    {
+        get => _name;
+        set
+        {
+            SetProperty(ref _name, value);
+            NameChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
     public required LocalPath LocalPath { get; init; }
     public required int TileSize { get; init; } = 32;
 
     public required int ChunkResolution
     {
         get => _chunkResolution;
-        set => Set(ref _chunkResolution, value);
+        set => SetProperty(ref _chunkResolution, value);
     }
     
     public string Description
     {
         get => _description;
-        set => Set(ref _description, value);
+        set => SetProperty(ref _description, value);
     }
     
     public DateTime CreatedAt
     {
         get => _createdAt;
-        set => Set(ref _createdAt, value);
+        set => SetProperty(ref _createdAt, value);
     }
     
     public DateTime LastModifiedAt
     {
         get => _lastModifiedAt;
-        private set => Set(ref _lastModifiedAt, value);
+        private set => SetProperty(ref _lastModifiedAt, value);
     }
     
     [JsonIgnore]
@@ -46,16 +55,15 @@ internal class World : IWorld
         get => _isDirty;
         set
         {
-            Set(ref _isDirty, value);
+            SetProperty(ref _isDirty, value);
             IsDirtyChanged?.Invoke(this, EventArgs.Empty);
         }
-        
     }
 
     public IScene? ActiveScene
     {
         get => _activeScene;
-        set => Set(ref _activeScene, value);
+        set => SetProperty(ref _activeScene, value);
     }
     
     // ---- Container ----
@@ -66,6 +74,7 @@ internal class World : IWorld
     
     // ---- Events ----
     
+    public event EventHandler? NameChanged;
     public event EventHandler? IsDirtyChanged;
     
     // ---- INotifyPropertyChanged ----
@@ -75,7 +84,7 @@ internal class World : IWorld
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-    private bool Set<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
             return false;
@@ -85,13 +94,15 @@ internal class World : IWorld
         return true;
     }
     
-    //
+    // --- Fields ---
 
-    private int _chunkResolution = 32;
-    private string _description = string.Empty;
     private DateTime _createdAt = DateTime.Now;
     private DateTime _lastModifiedAt = DateTime.Now;
     private bool _isDirty;
+    private string _description = string.Empty;
+    private string _name = string.Empty;
+    
+    private int _chunkResolution = 32;
     private IScene? _activeScene;
     
     private readonly List<object> _chunks = [];

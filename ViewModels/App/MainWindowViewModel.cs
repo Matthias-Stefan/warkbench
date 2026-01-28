@@ -1,15 +1,12 @@
-﻿using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Dock.Model.Controls;
 using System.Threading.Tasks;
 using System;
-using warkbench.src.basis.interfaces.Common;
-using warkbench.src.basis.interfaces.Io;
+using warkbench.src.basis.interfaces.Logger;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Selection;
-using warkbench.src.ui.core.Projects;
 
 namespace warkbench.ViewModels;
 

@@ -8,7 +8,7 @@ namespace warkbench.src.basis.interfaces.Projects;
 /// <summary>
 /// Defines the warkbench.core data structure and state of a workbench project.
 /// </summary>
-public interface IProject : IIdentifiable, IDirtyable, INotifyPropertyChanged
+public interface IProject : IIdentifiable, IRenameable, IDirtyable, INotifyPropertyChanged
 {
     /// <summary>Adds a world reference (project-relative path) to the project manifest.</summary>
     void AddWorld(LocalPath worldPath);

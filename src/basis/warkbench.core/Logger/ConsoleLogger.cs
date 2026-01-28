@@ -1,6 +1,6 @@
-﻿using warkbench.src.basis.interfaces.Common;
+﻿using warkbench.src.basis.interfaces.Logger;
 
-namespace warkbench.src.basis.core.Common;
+namespace warkbench.src.basis.core.Logger;
 
 public sealed class ConsoleLogger : ILogger
 {

@@ -1,31 +1,37 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Input;
 using warkbench.src.basis.interfaces.Common;
 using warkbench.src.editors.core.Models;
 
 namespace warkbench.src.editors.core.ViewModel;
 
-public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDisposable
+public sealed partial class TreeNodeViewModel : ObservableObject, IDisposable
 {
     public TreeNodeViewModel(TreeNodePayload payload)
     {
         _payload = payload;
         OnPropertyChanged(nameof(Data));
         
-        Children = new ReadOnlyObservableCollection<ITreeNode>(_children);
+        Children = new ReadOnlyObservableCollection<TreeNodeViewModel>(_children);
         Parent = null;
         
         if (_payload.Data is IDirtyable dirtyable)
-            dirtyable.IsDirtyChanged += OnDirtyChanged;
+            dirtyable.IsDirtyChanged += OnDirtyChanged!;
+
+        if (_payload.Data is IRenameable renameable)
+            renameable.NameChanged += OnNameChanged!;
     }
     
     public void Dispose()
     {
         if (Data is IDirtyable dirtyable)
             dirtyable.IsDirtyChanged -= OnDirtyChanged!;
+        if (Data is IRenameable renameable)
+            renameable.NameChanged -= OnNameChanged!;
     }
 
-    public void AddChild(ITreeNode node)
+    public void AddChild(TreeNodeViewModel node)
     {
         if (node is TreeNodeViewModel vm)
         {
@@ -35,7 +41,7 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         _children.Add(node);
     }
 
-    public bool RemoveChild(ITreeNode node)
+    public bool RemoveChild(TreeNodeViewModel node)
     {
         return _children.Remove(node);
     }
@@ -68,6 +74,34 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         return Parent == null ? Name : $"{Parent.GetFullPath(separator)}{separator}{Name}";
     }
 
+    public void BeginRename()
+    {
+        if (_payload.Data is not IRenameable renameable)
+            return;
+        
+        IsRenaming = true;
+        EditName = Name;
+    }
+    
+    public void CommitRename()
+    {
+        if (_payload.Data is not IRenameable renameable)
+            return;
+        
+        if (Equals(EditName, Name))
+            return;
+        
+        renameable.Name = EditName;
+        _payload.Name = EditName;
+        
+        if (_payload.Data is IDirtyable dirtyable)
+            dirtyable.IsDirty = true;
+        
+        IsRenaming = false;
+        OnPropertyChanged(nameof(Name));
+    }
+    public void CancelRename() => IsRenaming = false;
+
     private void OnDirtyChanged(object sender, EventArgs e)
     {
         if (sender is not IDirtyable dirtyable)
@@ -77,7 +111,20 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
             return;
         
         IsDirty = dirtyable.IsDirty;
-        OnPropertyChanged(nameof(DisplayName));
+        OnPropertyChanged(nameof(Name));
+    }
+
+    private void OnNameChanged(object sender, EventArgs e)
+    {
+        if (sender is not IRenameable renameable)
+            return;
+
+        if (Name == renameable.Name)
+            return;
+        
+        _payload.Name = renameable.Name;
+        IsDirty = true;
+        OnPropertyChanged(nameof(Name));
     }
     
     public string Name => _payload.Name;
@@ -92,23 +139,20 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
 
             // unsubscribe old
             if (_payload.Data is IDirtyable oldDirty)
-                oldDirty.IsDirtyChanged -= OnDirtyChanged;
+                oldDirty.IsDirtyChanged -= OnDirtyChanged!;
+            if (_payload.Data is IRenameable renameable)
+                renameable.NameChanged -= OnNameChanged!;
             
             _payload.Data = value;
 
             // subscribe new + refresh
             if (value is IDirtyable newDirty)
-            {
-                newDirty.IsDirtyChanged += OnDirtyChanged;
-                IsDirty = newDirty.IsDirty;
-            }
-            else
-            {
-                IsDirty = false;
-            }
-
-            OnPropertyChanged(nameof(DisplayName));
-            OnPropertyChanged(nameof(Data));
+                newDirty.IsDirtyChanged += OnDirtyChanged!;
+            if (value is  IRenameable newRenameable)
+                newRenameable.NameChanged += OnNameChanged!;
+            
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged();
         }
     }
 
@@ -137,22 +181,15 @@ public sealed partial class TreeNodeViewModel : ObservableObject, ITreeNode, IDi
         }
     }
     
-    public string DisplayName => IsDirty ? $"{Name}*" : Name;
-
-    public bool IsDirty
-    {
-        get => _isDirty;
-        private set => SetProperty(ref _isDirty, value);
-    }
+    public TreeNodeViewModel? Parent { get; private set; }
+    public ReadOnlyObservableCollection<TreeNodeViewModel> Children { get; }
     
-    public ITreeNode? Parent { get; private set; }
-    public ReadOnlyObservableCollection<ITreeNode> Children { get; }
-
+    [ObservableProperty] private bool _isRenaming = false;
     [ObservableProperty] private bool _isExpanded = false;
     [ObservableProperty] private bool _isSelected = false;
+    [ObservableProperty] private bool _isDirty = false;
+    [ObservableProperty] private string _editName = string.Empty;
     
-    private bool _isDirty;
-    
-    private readonly ObservableCollection<ITreeNode> _children = [];
+    private readonly ObservableCollection<TreeNodeViewModel> _children = [];
     private readonly TreeNodePayload _payload;
 }

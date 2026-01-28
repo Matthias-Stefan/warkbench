@@ -1,4 +1,4 @@
-﻿using warkbench.src.basis.interfaces.Common;
+﻿using warkbench.src.basis.interfaces.Logger;
 using warkbench.src.basis.interfaces.Paths;
 
 namespace warkbench.src.basis.core.Paths;

@@ -1,7 +1,8 @@
 ﻿using Avalonia.Threading;
 using Dock.Model.Mvvm.Controls;
 using System.Collections.ObjectModel;
-using warkbench.src.basis.interfaces.Common;
+using CommunityToolkit.Mvvm.Input;
+using warkbench.src.basis.interfaces.Logger;
 using warkbench.src.basis.interfaces.Paths;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Selection;
@@ -12,7 +13,7 @@ using warkbench.src.editors.core.Worlds;
 
 namespace warkbench.src.editors.workspace_explorer.ViewModels;
 
-public class WorkspaceExplorerViewModel : Tool, IDisposable
+public partial class WorkspaceExplorerViewModel : Tool, IDisposable
 {
     public WorkspaceExplorerViewModel(
         ILogger logger,
@@ -128,12 +129,12 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
     private static string GetDisplayName(LocalPath path)
         => path.IsEmpty ? string.Empty : Path.GetFileName(path.Value);
 
-    public ObservableCollection<ITreeNode> RootLevel { get; } = [];
-    private ITreeNode? Root { get; set; }
-    private ITreeNode? Worlds { get; set; }
-    private ITreeNode? Packages { get; set; }
-    private ITreeNode? Blueprints { get; set; }
-    private ITreeNode? Properties { get; set; }
+    public ObservableCollection<TreeNodeViewModel> RootLevel { get; } = [];
+    private TreeNodeViewModel? Root { get; set; }
+    private TreeNodeViewModel? Worlds { get; set; }
+    private TreeNodeViewModel? Packages { get; set; }
+    private TreeNodeViewModel? Blueprints { get; set; }
+    private TreeNodeViewModel? Properties { get; set; }
 
     public TreeNodeViewModel? Selected
     {
@@ -177,6 +178,57 @@ public class WorkspaceExplorerViewModel : Tool, IDisposable
         }
     }
 
+    [RelayCommand]
+    private async Task OnSave(IProject project)
+    {
+        await _projectSession.SaveAsync(project);
+    }
+    
+    [RelayCommand]
+    private Task OnBeginRename(IProject project)
+    {
+        _selected?.BeginRename();
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private Task OnCommitRename()
+    {
+        _selected?.CommitRename();
+        return Task.CompletedTask;  
+    }
+
+    [RelayCommand]
+    private Task OnCancelRename()
+    {
+        _selected?.CancelRename();
+        return Task.CompletedTask;
+    }
+
+    [RelayCommand]
+    private Task OnClose(IProject project)
+    {
+        return Task.CompletedTask;
+    }
+    
+    [RelayCommand]
+    private Task OnDelete(IProject project)
+    {
+        return Task.CompletedTask;
+    }
+    
+    [RelayCommand]
+    private Task OnCopyPath(IProject project)
+    {
+        return Task.CompletedTask;
+    }
+    
+    [RelayCommand]
+    private Task OnOpenContainingFolder(IProject project)
+    {
+        return Task.CompletedTask;
+    }
+    
     private IProject? _currentProject;
     
     private TreeNodeViewModel? _selected;

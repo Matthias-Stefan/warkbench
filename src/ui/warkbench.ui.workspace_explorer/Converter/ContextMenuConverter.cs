@@ -2,7 +2,10 @@
 using Avalonia.Data.Converters;
 using Avalonia;
 using System.Globalization;
+using Avalonia.Media;
+using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.editors.workspace_explorer.ViewModels;
+using warkbench.src.ui.core.Themes;
 
 namespace warkbench.src.ui.workspace_explorer.Converter;
 
@@ -36,16 +39,53 @@ public class ContextMenuConverter : IMultiValueConverter
         var contextMenu = new ContextMenu();
         switch (value0)
         {
-#if false
             case IProject project:
                 contextMenu.Items.Add(new MenuItem
                 {
-                    Header = "Add package item",
-                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_add_package_item")! },
-                    Command = workspaceExplorerViewModel.AddWorld,
-                    CommandParameter = packageViewModel
+                    Header = "Save",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_save")! },
+                    Command = workspaceExplorerViewModel.SaveCommand,
+                    CommandParameter = project
                 });
-#endif
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Rename",
+                    Command = workspaceExplorerViewModel.BeginRenameCommand,
+                    CommandParameter = project
+                });
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Close",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_close")! },
+                    Command = workspaceExplorerViewModel.SaveCommand,
+                    CommandParameter = project
+                });
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Delete",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_delete")! },
+                    Command = workspaceExplorerViewModel.SaveCommand,
+                    CommandParameter = project
+                });
+
+                contextMenu.Items.Add(new Separator());
+                
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Copy Path",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_content_copy")! },
+                    Command = workspaceExplorerViewModel.SaveCommand,
+                    CommandParameter = project
+                });
+                contextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Open Containing Folder",
+                    Icon = new PathIcon { Data = (Geometry)Application.Current.FindResource("icon_open_in_new")! },
+                    Command = workspaceExplorerViewModel.SaveCommand,
+                    CommandParameter = project
+                });
+                
+                break;
             
             default:
                 contextMenu.IsVisible = false;

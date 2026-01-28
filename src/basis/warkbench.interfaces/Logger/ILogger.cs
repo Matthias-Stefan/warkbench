@@ -1,4 +1,4 @@
-﻿namespace warkbench.src.basis.interfaces.Common;
+﻿namespace warkbench.src.basis.interfaces.Logger;
 
 /// <summary>
 /// Provides a standardized interface for diagnostic messaging and error tracking.

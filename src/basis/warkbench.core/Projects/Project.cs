@@ -42,7 +42,16 @@ internal class Project : IProject
     // --- Properties ---
     
     public required Guid Id { get; init; }
-    public required string Name { get; init; }
+    public required string Name
+    {
+        get => _name;
+        set
+        {
+            SetProperty(ref _name, value);
+            NameChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
     public required LocalPath LocalPath { get; init; }
 
     public required string Version { get; init; }
@@ -80,6 +89,9 @@ internal class Project : IProject
     
     public LocalPath? ActiveWorldPath { get; set; }
 
+    // ---- Events ----
+    
+    public event EventHandler? NameChanged;
     public event EventHandler? IsDirtyChanged;
     
     // ---- INotifyPropertyChanged ----
@@ -103,6 +115,8 @@ internal class Project : IProject
     private DateTime _createdAt = DateTime.Now;
     private DateTime _lastModifiedAt = DateTime.Now;
     private bool _isDirty;
-    private readonly List<LocalPath> _worlds = [];
     private string _description = string.Empty;
+    private string _name = string.Empty;
+    
+    private readonly List<LocalPath> _worlds = [];
 }

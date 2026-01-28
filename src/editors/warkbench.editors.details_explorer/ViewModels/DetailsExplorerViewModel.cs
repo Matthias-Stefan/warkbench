@@ -1,5 +1,5 @@
 using Dock.Model.Mvvm.Controls;
-using warkbench.src.basis.interfaces.Common;
+using warkbench.src.basis.interfaces.Logger;
 using warkbench.src.basis.interfaces.Projects;
 using warkbench.src.basis.interfaces.Selection;
 using warkbench.src.basis.interfaces.Worlds;
