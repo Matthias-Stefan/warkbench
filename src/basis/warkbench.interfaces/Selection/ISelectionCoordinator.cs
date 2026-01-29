@@ -18,15 +18,15 @@ public interface ISelectionCoordinator : INotifyPropertyChanged
     /// <summary>Activates a world as the current selection and sets its owning project as context.</summary>
     void SelectWorld(IWorld world);
     
-    /// <summary>Gets the currently active (focused) selection.</summary>
-    object? ActiveSelection { get; }
-
     /// <summary>Gets the scope of the currently active selection.</summary>
-    SelectionScope ActiveScope { get; }
+    SelectionScope SelectedScope { get; }
+    
+    /// <summary>Gets the currently active (focused) selection.</summary>
+    object? SelectedItem { get; }
 
-    /// <summary>Gets the current project context.</summary>
-    IProject? CurrentProject { get; }
+    /// <summary>Gets the last project within the project scope, if any.</summary>
+    IProject? LastSelectedProject { get; }
 
-    /// <summary>Gets the current world context, if any.</summary>
-    IWorld? CurrentWorld { get; }
+    /// <summary>Gets the last world within the world scope, if any.</summary>
+    IWorld? LastSelectedWorld { get; }
 }

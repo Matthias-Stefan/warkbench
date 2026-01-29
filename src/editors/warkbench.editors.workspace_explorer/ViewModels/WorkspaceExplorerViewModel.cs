@@ -41,7 +41,7 @@ public partial class WorkspaceExplorerViewModel : Tool, IDisposable
     
     public async Task OnCreateNewWorld(CreateWorldInfo createWorldInfo)
     {
-        var selectedProject = _selectionCoordinator.CurrentProject;
+        var selectedProject = _selectionCoordinator.LastSelectedProject;
         if (selectedProject is null)
         {
             _logger.Warn<WorkspaceExplorerViewModel>(
@@ -192,10 +192,12 @@ public partial class WorkspaceExplorerViewModel : Tool, IDisposable
     }
 
     [RelayCommand]
-    private Task OnCommitRename()
+    private async Task OnCommitRename(string newName)
     {
-        _selected?.CommitRename();
-        return Task.CompletedTask;  
+        if (_selected?.Data is not IProject project || string.IsNullOrEmpty(newName))
+            return;
+        
+        await _projectSession.RenameAsync(project, newName);
     }
 
     [RelayCommand]

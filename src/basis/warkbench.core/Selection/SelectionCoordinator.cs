@@ -16,38 +16,40 @@ public class SelectionCoordinator : ISelectionCoordinator
 
     public void SelectProject(IProject project)
     {
+        var currentScope = SelectedScope;
+        var currentProject = _projectSelectionSet.Primary;
+        
+        if (ReferenceEquals(currentProject, project))
+            return;
+        
+        SelectionChanging?.Invoke(this, new SelectionChangingEventArgs<object>(currentProject, currentScope));
+        
         _projectSelectionSet.Select(project);
-        SetActive(SelectionScope.Project, project);
+        
+        SelectedScope = SelectionScope.Project;
+        SelectedItem = project;
+        
+        SelectionChanged?.Invoke(this, new SelectionChangedEventArgs<object>(
+            currentProject, currentScope, SelectedItem, SelectedScope));
     }
 
     public void SelectWorld(IWorld world)
     {
-        _worldSelectionSet.Select(world);
-        SetActive(SelectionScope.World, world);
-    }
-    
-    private void SetActive(SelectionScope scope, object? selection)
-    {
-        var prevScope = ActiveScope;
-        var prevSelection = ActiveSelection;
-
-        var scopeChanged = prevScope != scope;
-        var selectionChanged = !ReferenceEquals(prevSelection, selection);
-
-        if (!scopeChanged && !selectionChanged)
+        var currentScope = SelectedScope;
+        var currentWorld = _worldSelectionSet.Primary;
+        
+        if (ReferenceEquals(currentWorld, world))
             return;
         
-        ActiveScope = scope;
-        ActiveSelection = selection;
+        SelectionChanging?.Invoke(this, new SelectionChangingEventArgs<object>(currentWorld, currentScope));
 
-        OnPropertyChanged(nameof(ActiveScope));
-        OnPropertyChanged(nameof(ActiveSelection));
-        OnPropertyChanged(nameof(CurrentProject));
-        OnPropertyChanged(nameof(CurrentWorld));
+        _worldSelectionSet.Select(world);
         
-        ActiveSelectionChanged?.Invoke(
-            this,
-            new ActiveSelectionChangedEventArgs(prevScope, scope, prevSelection, selection));
+        SelectedScope = SelectionScope.World;
+        SelectedItem = world;
+        
+        SelectionChanged?.Invoke(this, new SelectionChangedEventArgs<object>(
+            currentWorld, currentScope, SelectedItem, SelectedScope));
     }
     
     private static IReadOnlySet<SelectionScope> NormalizeScopes(SelectionScope[] scopes)
@@ -63,12 +65,13 @@ public class SelectionCoordinator : ISelectionCoordinator
             .ToHashSet();
     }
     
-    public object? ActiveSelection { get; private set; }
-    public SelectionScope ActiveScope { get; private set; } = SelectionScope.None; 
-    public IProject? CurrentProject => _projectSelectionSet.Primary;
-    public IWorld? CurrentWorld => _worldSelectionSet.Primary;
+    public SelectionScope SelectedScope { get; private set; } = SelectionScope.None;
+    public object? SelectedItem { get; private set; }
+    public IProject? LastSelectedProject => _projectSelectionSet.Primary;
+    public IWorld? LastSelectedWorld => _worldSelectionSet.Primary;
     
-    internal event EventHandler<ActiveSelectionChangedEventArgs>? ActiveSelectionChanged;
+    internal event EventHandler<SelectionChangingEventArgs<object>>? SelectionChanging;
+    internal event EventHandler<SelectionChangedEventArgs<object>>? SelectionChanged;
     
     private readonly SelectionSet<IProject> _projectSelectionSet = new();
     private readonly SelectionSet<IWorld> _worldSelectionSet = new();

@@ -5,60 +5,42 @@ namespace warkbench.src.basis.core.Selection;
 internal sealed class SelectionSubscription : ISelectionSubscription
 {
     public SelectionSubscription(
-        IReadOnlySet<SelectionScope> selectionScopes,
+        IReadOnlySet<SelectionScope> selectionScopes, 
         SelectionCoordinator selectionCoordinator
         )
     {
         _selectionScopes = selectionScopes;
         _selectionCoordinator = selectionCoordinator;
 
-        _selectionCoordinator.ActiveSelectionChanged += OnActiveSelectionChanged;
+        _selectionCoordinator.SelectionChanging += OnSelectionChanging;
+        _selectionCoordinator.SelectionChanged += OnSelectionChanged;
     }
-    
+
     public void Dispose()
-        => _selectionCoordinator.ActiveSelectionChanged -= OnActiveSelectionChanged;
-
-    private void OnActiveSelectionChanged(object? sender, ActiveSelectionChangedEventArgs e)
     {
-        if (!_selectionScopes.Contains(_selectionCoordinator.ActiveScope))
+        _selectionCoordinator.SelectionChanging -= OnSelectionChanging;
+        _selectionCoordinator.SelectionChanged -= OnSelectionChanged;
+    }
+
+    private void OnSelectionChanging(object? sender, SelectionChangingEventArgs<object> e)
+    {
+        var currentRelevant = _selectionScopes.Contains(e.CurrentScope);
+        if (!currentRelevant)
             return;
         
-        var prevRelevant = _selectionScopes.Contains(e.PreviousScope);
-        var currRelevant = _selectionScopes.Contains(e.CurrentScope);
-
-        // Only notify if this subscription cares about either side of the transition.
-        if (!prevRelevant && !currRelevant)
-            return;
-
-        // For subscribers that don't care about a scope, we publish "no selection".
-        var previousItems = prevRelevant && e.PreviousSelection is not null
-            ? new[] { e.PreviousSelection }
-            : Array.Empty<object>();
-
-        var currentItems = currRelevant && e.CurrentSelection is not null
-            ? new[] { e.CurrentSelection }
-            : Array.Empty<object>();
-
-        var args = new SelectionChangedEventArgs<object>(
-            previousItems,
-            currentItems,
-            prevRelevant ? e.PreviousSelection : null,
-            currRelevant ? e.CurrentSelection : null,
-            e.ScopeChanged);
-        
-        Changed?.Invoke(this, args);
+        Changing?.Invoke(this, e);
     }
     
-    public object? ActiveSelection =>
-        _selectionScopes.Contains(_selectionCoordinator.ActiveScope) 
-            ? _selectionCoordinator.ActiveSelection 
-            : null;
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs<object> e)
+    {
+        var currentRelevant = _selectionScopes.Contains(e.CurrentScope);
+        if (!currentRelevant)
+            return;
 
-    public SelectionScope ActiveScope =>
-        _selectionScopes.Contains(_selectionCoordinator.ActiveScope)
-            ? _selectionCoordinator.ActiveScope
-            : SelectionScope.None;
+        Changed?.Invoke(this, e);
+    }
     
+    public event SelectionChangingEventHandler<object>? Changing;
     public event SelectionChangedEventHandler<object>? Changed;
     
     private readonly SelectionCoordinator _selectionCoordinator;

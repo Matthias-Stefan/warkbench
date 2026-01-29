@@ -35,11 +35,13 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         _projectPicker = projectPicker;
         
         _selectionSubscription = selectionCoordinator.Subscribe(SelectionScope.Project);
+        _selectionSubscription.Changing += OnSelectionChanging;
         _selectionSubscription.Changed += OnSelectionChanged;
     }
         
     public void Dispose()
     {
+        _selectionSubscription.Changing -= OnSelectionChanging;
         _selectionSubscription.Changed -= OnSelectionChanged;
         _selectionSubscription.Dispose();
     }
@@ -72,7 +74,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         if (string.IsNullOrWhiteSpace(path))
             return;
         
-        var currentProject = _selectionCoordinator.CurrentProject;
+        var currentProject = _selectionCoordinator.LastSelectedProject;
         if (currentProject is not null && path.Contains(currentProject.LocalPath.Value))
         {
             _logger.Warn<MainWindowViewModel>("The selected project is already open and will not be reloaded.");
@@ -86,7 +88,7 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
     [RelayCommand]
     private async Task OnSaveAll()
     {
-        var currentProject = _selectionCoordinator.CurrentProject;
+        var currentProject = _selectionCoordinator.LastSelectedProject;
         if (currentProject is null)
         {
             _logger.Warn<MainWindowViewModel>(
@@ -116,8 +118,23 @@ public partial class MainWindowViewModel : ObservableObject, IDisposable
         WindowBarProjectTitle = project?.Name ?? string.Empty;
     }
 
+    private void OnSelectionChanging(object? sender, SelectionChangingEventArgs<object> e)
+    {
+        if (_selectionCoordinator.LastSelectedProject != null)
+            _selectionCoordinator.LastSelectedProject.NameChanged -= OnProjectNameChanged;
+    }
+
     private void OnSelectionChanged(object? sender, SelectionChangedEventArgs<object> e)
-        => UpdateWindowBarProjectTitle(_selectionCoordinator.CurrentProject);
+    {
+        UpdateWindowBarProjectTitle(_selectionCoordinator.LastSelectedProject);
+        if (_selectionCoordinator.LastSelectedProject != null)
+            _selectionCoordinator.LastSelectedProject.NameChanged += OnProjectNameChanged;
+    }
+
+    private void OnProjectNameChanged(object sender, EventArgs e)
+    {
+        UpdateWindowBarProjectTitle(_selectionCoordinator.LastSelectedProject);
+    }
 
     [ObservableProperty] 
     private string _windowBarProjectTitle = string.Empty;

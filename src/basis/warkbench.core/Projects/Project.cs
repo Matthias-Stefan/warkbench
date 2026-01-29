@@ -38,7 +38,20 @@ internal class Project : IProject
 
         OnPropertyChanged(nameof(Worlds));
     }
-    
+
+    public void Rename(string newName)
+    {
+        var directory = Path.GetFileNameWithoutExtension(newName);
+        if (string.IsNullOrEmpty(directory))
+            return;
+        
+        var newLocalPath = new LocalPath(UnixPath.Combine(directory, newName));
+
+        Name = newName;
+        LocalPath = newLocalPath;
+        IsDirty = true;
+    }
+
     // --- Properties ---
     
     public required Guid Id { get; init; }
@@ -52,7 +65,7 @@ internal class Project : IProject
         }
     }
 
-    public required LocalPath LocalPath { get; init; }
+    public required LocalPath LocalPath { get; set; }
 
     public required string Version { get; init; }
     

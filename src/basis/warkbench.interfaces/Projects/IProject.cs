@@ -15,6 +15,9 @@ public interface IProject : IIdentifiable, IRenameable, IDirtyable, INotifyPrope
 
     /// <summary>Removes a world reference (project-relative path) from the project manifest.</summary>
     void RemoveWorld(LocalPath worldPath);
+
+    /// <summary>Renames the project.</summary>
+    void Rename(string newName);
     
     /// <summary>Gets the project file path relative to the projects root.</summary>
     LocalPath LocalPath { get; }

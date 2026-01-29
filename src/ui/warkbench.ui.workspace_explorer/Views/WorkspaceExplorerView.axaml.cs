@@ -43,24 +43,22 @@ public partial class WorkspaceExplorerView : UserControl
         if (sender is not TextBox tb) 
             return;
 
-        if (tb.IsKeyboardFocusWithin) 
-            return;
-        
-        #if false
         if (DataContext is WorkspaceExplorerViewModel vm)
-            vm.CommitRenameCommand.Execute(null);
-#endif 
+            vm.CommitRenameCommand.Execute(tb.Text ?? string.Empty);
     }
 
     private void TextBox_DisplayName_OnKeyDown(object? sender, KeyEventArgs e)
     {
+        if (sender is not TextBox tb) 
+            return;
+        
         if (DataContext is not WorkspaceExplorerViewModel vm)
             return;
 
         switch (e.Key)
         {
             case Key.Enter: 
-                vm.CommitRenameCommand.Execute(null);
+                vm.CommitRenameCommand.Execute(tb.Text ?? string.Empty);
                 e.Handled = true;
                 break;
             case Key.Escape:

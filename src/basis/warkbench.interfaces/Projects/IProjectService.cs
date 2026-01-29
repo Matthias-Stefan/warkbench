@@ -13,6 +13,9 @@ public interface IProjectService
 
     /// <summary>Asynchronously saves the specified project to persistent storage.</summary>
     Task SaveProjectAsync(IProject project);
+    
+    /// <summary>Provides asynchronous operations for persisting and renaming a project.</summary>
+    Task RenameProjectAsync(IProject project, string name);
 
     /// <summary>Deletes the specified project and its associated data from storage.</summary>
     Task DeleteProjectAsync(IProject project);

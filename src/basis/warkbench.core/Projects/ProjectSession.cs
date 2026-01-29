@@ -29,7 +29,7 @@ public class ProjectSession(
         {
             _isBusy = true;
 
-            var current = selectionCoordinator.CurrentProject;
+            var current = selectionCoordinator.LastSelectedProject;
             if (current is not null)
                 await CloseAsync(current).ConfigureAwait(false);
 
@@ -71,7 +71,7 @@ public class ProjectSession(
         {
             _isBusy = true;
 
-            var current = selectionCoordinator.CurrentProject;
+            var current = selectionCoordinator.LastSelectedProject;
             if (ReferenceEquals(current, project))
                 return;
 
@@ -86,14 +86,30 @@ public class ProjectSession(
         }
     }
 
-    public Task SaveAsync(IProject? project)
+    public Task SaveAsync(IProject project)
     {
         throw new NotImplementedException();
     }
 
-    public Task CloseAsync(IProject? project)
+    public Task CloseAsync(IProject project)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task RenameAsync(IProject project, string name)
+    {
+        await _renameLock.WaitAsync();
+        if (Equals(project.Name, name))
+            return;
+        try
+        {
+            await projectService.RenameProjectAsync(project, name);
+            await PersistLastProjectPath(project?.LocalPath ?? new LocalPath());
+        }
+        finally
+        {
+            _renameLock.Release();
+        }
     }
 
     private async Task<IProject?> LoadAsync(AbsolutePath projectPath, ProjectLoadMode mode)
@@ -124,9 +140,9 @@ public class ProjectSession(
         return project;
     }
     
-    private Task SwitchToAsync(IProject? project)
+    private Task SwitchToAsync(IProject project)
     {
-        var current = selectionCoordinator.CurrentProject;
+        var current = selectionCoordinator.LastSelectedProject;
         if (ReferenceEquals(current, project))
             return Task.CompletedTask;;
 
@@ -141,4 +157,5 @@ public class ProjectSession(
     }
 
     private bool _isBusy;
+    private readonly SemaphoreSlim _renameLock = new(1, 1);
 }

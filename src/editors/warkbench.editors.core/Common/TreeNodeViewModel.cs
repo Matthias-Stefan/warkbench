@@ -82,24 +82,6 @@ public sealed partial class TreeNodeViewModel : ObservableObject, IDisposable
         IsRenaming = true;
         EditName = Name;
     }
-    
-    public void CommitRename()
-    {
-        if (_payload.Data is not IRenameable renameable)
-            return;
-        
-        if (Equals(EditName, Name))
-            return;
-        
-        renameable.Name = EditName;
-        _payload.Name = EditName;
-        
-        if (_payload.Data is IDirtyable dirtyable)
-            dirtyable.IsDirty = true;
-        
-        IsRenaming = false;
-        OnPropertyChanged(nameof(Name));
-    }
     public void CancelRename() => IsRenaming = false;
 
     private void OnDirtyChanged(object sender, EventArgs e)
@@ -121,8 +103,10 @@ public sealed partial class TreeNodeViewModel : ObservableObject, IDisposable
 
         if (Name == renameable.Name)
             return;
-        
+
         _payload.Name = renameable.Name;
+        
+        IsRenaming = false;
         IsDirty = true;
         OnPropertyChanged(nameof(Name));
     }

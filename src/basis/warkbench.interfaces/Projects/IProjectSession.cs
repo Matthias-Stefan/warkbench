@@ -16,8 +16,11 @@ public interface IProjectSession
     Task ActivateAsync(IProject project);
     
     /// <summary>Saves the given project and all associated data using a cascading workflow.</summary>
-    Task SaveAsync(IProject? project);
+    Task SaveAsync(IProject project);
 
     /// <summary>Closes the given project and persists its state.</summary>
-    Task CloseAsync(IProject? project);
+    Task CloseAsync(IProject project);
+    
+    /// <summary>Renames the given project and persists its state.</summary>
+    Task RenameAsync(IProject project, string name);
 }
