@@ -59,11 +59,9 @@ public partial class WorkspaceExplorerView : UserControl
         {
             case Key.Enter: 
                 vm.CommitRenameCommand.Execute(tb.Text ?? string.Empty);
-                e.Handled = true;
                 break;
             case Key.Escape:
                 vm.CancelRenameCommand.Execute(null);
-                e.Handled = true;
                 break;
             case Key.Left:
             case Key.Up:

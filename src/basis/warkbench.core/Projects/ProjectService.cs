@@ -90,7 +90,7 @@ public class ProjectService(
             await Task.Run(() => Directory.Move(tempDirectory.Value, newDirectory.Value));
             
             // 3. Rename project file
-            var oldProjectFile = UnixPath.Combine(newDirectory.Value, $"{project.Name}{IProjectIoService.Extension}");
+            var oldProjectFile = UnixPath.Combine(newDirectory.Value, project.Name);
             var newProjectFile = UnixPath.Combine(newDirectory.Value, $"{newName}{IProjectIoService.Extension}");
             await Task.Run(() => File.Move(oldProjectFile, newProjectFile));
             
